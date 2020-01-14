@@ -174,8 +174,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 borderColor: colors.borderColor,
                             }}
                             onPress={() => {
-                                console.log(this.state.selectedStoks);
-
                                 this.setState({ modalVisible: false })
                             }}
                         >
@@ -216,6 +214,25 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                 }}>
                 <Icon name="plus" size={30} color={colors.inputTextColor} />
             </TouchableOpacity>
+            <TouchableOpacity style={{
+                zIndex: 1,
+                position: "absolute",
+                flex: 1,
+                bottom: 120,
+                right: 20,
+                backgroundColor: "#4dabf7",
+                borderRadius: 50,
+                width: 55,
+                alignItems: "center",
+                borderColor: colors.borderColor,
+                borderWidth: 2,
+                padding: 10
+            }}
+                onPress={() => {
+                    this.setState({ modalVisible: true })
+                }}>
+                <Icon name="share-square" size={30} color={colors.inputTextColor} />
+            </TouchableOpacity>
             <View
                 style={{
                     flex: 0,
@@ -252,12 +269,17 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     borderWidth: 2,
                     padding: 10
                 }}>
-                <FlatList data={this.props.Adisyon.current ? this.props.Adisyon.current.PRODUCTS : []}
-                    renderItem={({ item }) => (
-                        <View style={{ flex: 1, flexDirection: 'row', margin: 1 }}>
-                            <Text>{item.PRICE}</Text>
+                <FlatList data={this.state.selectedStoks ? Object.keys(this.state.selectedStoks) : []}
+                    renderItem={({ item }) => {
+                        const stok = this.props.Stok.items.find(itm => itm.STOKID == parseInt(item))
+                        return <View style={{ flex: 1, flexDirection: 'row', margin: 1 }}>
+                            <Text style={{ color: colors.inputTextColor, flexDirection: "column" }}>{stok.ADI}</Text>
+                            <Text style={{ color: colors.inputTextColor, marginLeft: "auto" }}>{Intl.NumberFormat("TR", {
+                                style: "currency",
+                                currency: "TRL"
+                            }).format(stok.SFIYAT1 * this.state.selectedStoks[item])}</Text>
                         </View>
-                    )}
+                    }}
                     keyExtractor={(item, index) => index.toString()}
                 />
             </View>
