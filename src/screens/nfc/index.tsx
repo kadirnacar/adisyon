@@ -23,11 +23,13 @@ interface CustomerProps {
 type Props = NavigationInjectedProps & CustomerProps & ApplicationState;
 
 class NfcScreen extends Component<Props, any> {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: "Kart Oku",
+        };
+    };
     constructor(props) {
         super(props);
-    }
-
-    async UNSAFE_componentWillMount() {
     }
 
     async componentDidMount() {
@@ -53,56 +55,56 @@ class NfcScreen extends Component<Props, any> {
 
     }
     render() {
-        return (<ImageBackground source={require("../../../assets/background.jpg")}
-            style={{ flex: 1, width: width, height: height }}>
-            <TouchableOpacity style={{
-                zIndex: 2,
-                position: "absolute",
-                flex: 1,
-                top: 50,
-                right: 20,
-                backgroundColor: colors.transparentBackColor,
-                borderRadius: 40,
-                borderColor: colors.borderColor,
-                borderWidth: 2,
-                padding: 10
-            }}
-                onPress={() => {
-                    NfcManager.goToNfcSetting();
-                }}>
-                <Icon name="wrench" size={35} color={colors.inputTextColor} />
-            </TouchableOpacity>
-            <View style={{ flex: 1, width: width, height: 500, flexDirection: "row" }}>
-                <LottieView source={require('../../../assets/animation.json')} autoPlay loop />
-            </View>
-            <TouchableOpacity
-                disabled={this.props.Customer.current == null}
-                onPress={() => { this.props.navigation.navigate("Adisyon") }}
-                style={{
-                    flex: 0,
-                    width: width,
-                    height: 150,
-                    bottom: 40,
-                    flexDirection: "row",
+        return (
+            <React.Fragment>
+                <TouchableOpacity style={{
+                    zIndex: 2,
+                    position: "absolute",
+                    flex: 1,
+                    top: 50,
+                    right: 20,
                     backgroundColor: colors.transparentBackColor,
-                    borderRadius: 10,
+                    borderRadius: 40,
                     borderColor: colors.borderColor,
                     borderWidth: 2,
                     padding: 10
-                }}>
-                <View>
-                    <Text style={{ color: colors.transparentBackColor }}>Misafir Adı</Text>
-                    <Text style={{ fontWeight: "bold", fontSize: 18, color: colors.inputTextColor }}>
-                        {this.props.Customer.current ? this.props.Customer.current.ADI + " " + this.props.Customer.current.SOYADI : null}
-                    </Text>
-                    <Text style={{ color: colors.transparentBackColor }}>Bakiye</Text>
-                    <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
-                        style: "currency",
-                        currency: "TRL"
-                    }).format((this.props.Customer.current ? this.props.Customer.current.BAKIYE : 0))}</Text>
+                }}
+                    onPress={() => {
+                        NfcManager.goToNfcSetting();
+                    }}>
+                    <Icon name="wrench" size={35} color={colors.inputTextColor} />
+                </TouchableOpacity>
+                <View style={{ flex: 1, width: width, height: 500, flexDirection: "row" }}>
+                    <LottieView source={require('../../../assets/animation.json')} autoPlay loop />
                 </View>
-            </TouchableOpacity>
-        </ImageBackground>
+                <TouchableOpacity
+                    disabled={this.props.Customer.current == null}
+                    onPress={() => { this.props.navigation.navigate("Adisyon") }}
+                    style={{
+                        flex: 0,
+                        width: width,
+                        height: 150,
+                        bottom: 40,
+                        flexDirection: "row",
+                        backgroundColor: colors.transparentBackColor,
+                        borderRadius: 10,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 10
+                    }}>
+                    <View>
+                        <Text style={{ color: colors.borderColor }}>Misafir Adı</Text>
+                        <Text style={{ fontWeight: "bold", fontSize: 18, color: colors.inputTextColor }}>
+                            {this.props.Customer.current ? this.props.Customer.current.ADI + " " + this.props.Customer.current.SOYADI : null}
+                        </Text>
+                        <Text style={{ color: colors.borderColor }}>Bakiye</Text>
+                        <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
+                            style: "currency",
+                            currency: "TRL"
+                        }).format((this.props.Customer.current ? this.props.Customer.current.BAKIYE : 0))}</Text>
+                    </View>
+                </TouchableOpacity>
+            </React.Fragment>
         )
     }
 }

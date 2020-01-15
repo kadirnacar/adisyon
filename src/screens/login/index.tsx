@@ -21,6 +21,11 @@ interface UserProps {
 type Props = NavigationInjectedProps & UserProps & ApplicationState;
 
 class LoginScreen extends Component<Props, LoginState> {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: "Şifre Giriş",
+        };
+    };
     constructor(props) {
         super(props);
         this.handleLogin = this.handleLogin.bind(this);
@@ -44,8 +49,7 @@ class LoginScreen extends Component<Props, LoginState> {
         const { container, content } = styles;
 
         return (
-            <ImageBackground source={require("../../../assets/background.jpg")}
-                style={{ flex: 1, width: width, height: height }}>
+            <React.Fragment>
                 <SafeAreaView style={container}>
                     <View style={styles.formContainer}>
                         {!!this.state.errorMessage && (
@@ -64,7 +68,7 @@ class LoginScreen extends Component<Props, LoginState> {
                                 backgroundColor: colors.inputBackColor,
                                 borderColor: colors.borderColor,
                                 borderWidth: 1,
-                                paddingVertical: 20,
+                                paddingVertical: 10,
                                 paddingHorizontal: 15,
                                 textAlign: "center",
                                 fontSize: 20,
@@ -83,7 +87,7 @@ class LoginScreen extends Component<Props, LoginState> {
                             style={{
                                 width: "100%",
                                 alignItems: "center",
-                                paddingVertical: 20,
+                                paddingVertical: 10,
                                 marginTop: 10,
                                 borderColor: colors.borderColor,
                                 borderWidth: 1,
@@ -96,7 +100,7 @@ class LoginScreen extends Component<Props, LoginState> {
                         </TouchableOpacity>
                     </View>
                 </SafeAreaView >
-            </ImageBackground>
+            </React.Fragment>
         )
     }
 }

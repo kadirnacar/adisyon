@@ -1,8 +1,8 @@
 export const colors = {
-    borderColor: "#636161",
+    borderColor: "#51bdec",
     inputTextColor: "#000000",
-    inputBackColor: "black",
-    buttonBackColor: "#f32424",
-    buttonTextColor: "#fff",
+    inputBackColor: "#51bdec50",
+    buttonBackColor: "#51bdec",
+    buttonTextColor: "#ffffff",
     transparentBackColor: 'rgba(255,255,255,1)',
 }

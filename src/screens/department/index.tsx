@@ -25,7 +25,6 @@ type Props = NavigationInjectedProps & DepartmentProps & ApplicationState;
 
 class DepartmentScreen extends Component<Props, DepartmentState> {
     static navigationOptions = ({ navigation }) => {
-        console.log(navigation)
         return {
             title: "Departman Seçimi",
         };
