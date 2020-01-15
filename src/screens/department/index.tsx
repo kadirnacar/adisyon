@@ -3,12 +3,15 @@ import { IDepartment } from '@models';
 import { DepartmentActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, TouchableHighlight, Image } from 'react-native';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import ColorScheme from 'color-scheme';
+import RNMaterialLetterIcon from 'react-native-material-letter-icon';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
-const { height } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window");
 
 interface DepartmentState {
     selectedItem: IDepartment;
@@ -21,20 +24,35 @@ interface DepartmentProps {
 type Props = NavigationInjectedProps & DepartmentProps & ApplicationState;
 
 class DepartmentScreen extends Component<Props, DepartmentState> {
+    static navigationOptions = ({ navigation }) => {
+        console.log(navigation)
+        return {
+            title: "Departman Seçimi",
+        };
+    };
     constructor(props) {
         super(props);
         this.state = {
             selectedItem: null
         }
+        this.scheme = new ColorScheme();
+        this.scheme.from_hue(10)
+            .scheme('triade')
+            .variation('pastel');
     }
-
+    scheme;
     render() {
         const { container } = styles;
+        let clrs = this.scheme.colors();
+        // const l = this.props.Department.items.length;
+        // for (var i = 0; i < l; i++) {
+        //     this.props.Department.items.push(this.props.Department.items[i])
+
+        // }
         return (
             <SafeAreaView style={container}>
-                <View style={{}}>
-                    <Text style={{ color: colors.inputTextColor, textAlign: "center", padding: 7, fontSize: 25 }}>Departman Seçiniz</Text>
-                    <FlatList
+                <View style={{ width: width }}>
+                    {/* <FlatList
                         data={this.props.Department.items}
                         style={{ height: height - 160 }}
                         renderItem={({ item }) => (
@@ -49,19 +67,84 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                         )}
                         numColumns={3}
                         keyExtractor={(item, index) => index.toString()}
+                    /> */}
+                    <FlatList
+                        data={this.props.Department.items}
+                        style={{ height: height - 160 }}
+                        renderItem={({ item, index }) => {
+                            return (
+                                <TouchableHighlight underlayColor="#ffffff00" key={index}
+                                    style={{
+                                        width: width / 3 - 18,
+                                        height: 150,
+                                        alignContent: "center",
+                                        alignItems: "center",
+                                        alignSelf: "center",
+                                        justifyContent: "center",
+                                        borderColor: this.state.selectedItem == item ? "red" : "transparent",//colors.borderColor,
+                                        borderWidth: 4,
+                                        margin: 5,
+                                        borderRadius: 25,
+                                        backgroundColor: this.state.selectedItem == item ? colors.transparentBackColor : "#ffffff"
+                                    }}
+                                    onPress={() => {
+                                        this.setState({ selectedItem: item })
+                                    }}>
+                                    <View style={{ width: '100%', alignItems: "center" }}>
+                                        <RNMaterialLetterIcon
+                                            size={80}
+                                            border={true}
+                                            shapeColor={'#' + clrs[index % clrs.length]}
+                                            letterColor={"#ffffff"}
+                                            borderColor={this.state.selectedItem == item ? "red" : "#ffffff"}
+                                            borderSize={2}
+                                            lettersNumber={3}
+                                            initialsNumber={3}
+                                            letterSize={36}
+                                            bold
+                                            letter={item.ADI}
+                                        />
+                                        <Text style={{
+                                            fontSize: 14,
+                                            color: colors.inputTextColor,
+                                            marginTop: 6,
+                                            flexWrap: "nowrap",
+                                            textAlignVertical: "center",
+                                            textAlign: "center"
+                                        }}>{item.ADI}</Text>
+                                        {this.state.selectedItem == item ?
+                                            <View style={{
+                                                position: "absolute",
+                                                borderWidth: 2,
+                                                borderColor: "#ff5555",
+                                                marginTop: 22,
+                                                borderRadius: 20,
+                                                padding: 2
+                                            }}>
+                                                <Icon name={"check"} size={25} color={"#ff5555"} />
+                                            </View> : null}
+                                    </View>
+
+                                </TouchableHighlight>
+                            )
+                        }}
+                        numColumns={3}
+                        keyExtractor={(item, index) => index.toString()}
                     />
                 </View>
-                <View style={{ flex: 1, height: 50 }}>
+                <View style={{ position: "absolute", bottom: 10, width: width }}>
                     <TouchableOpacity
                         disabled={this.state.selectedItem == null}
                         style={{
-                            width: "100%",
+                            width: width - 20,
                             alignItems: "center",
-                            paddingVertical: 20,
-                            marginTop: 10,
+                            alignSelf: "center",
+                            alignContent: "center",
+                            justifyContent: "center",
+                            marginHorizontal: 10,
+                            height: 50,
                             borderColor: colors.borderColor,
-                            borderWidth: 1,
-                            backgroundColor: this.state.selectedItem == null ? "gray" : colors.buttonBackColor,
+                            backgroundColor: this.state.selectedItem == null ? "gray" : "#51bdec",
                             borderRadius: 25
                         }}
                         onPress={async () => {
@@ -90,7 +173,6 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         padding: 16,
-        backgroundColor: "transparent",
     },
     content: {
         flexGrow: 1,

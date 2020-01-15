@@ -1,10 +1,10 @@
-import { Home, Login, Department, Nfc, Adisyon } from "@screens";
+import { Login, Department, Nfc, Adisyon } from "@screens";
 import { createStackNavigator } from "react-navigation-stack";
+import { colors } from "@components";
 
 export const AppNavigator = createStackNavigator({
     Department: Department,
     Login: Login,
-    Home: Home,
     Nfc: Nfc,
     Adisyon: Adisyon,
 }, {
@@ -12,10 +12,13 @@ export const AppNavigator = createStackNavigator({
     mode: "card",
 
     defaultNavigationOptions: {
-        cardStyle: { backgroundColor: "transparent", opacity: 1 },
-        headerTransparent: true,
-        headerTitle: "",
-        headerStyle: { height: 70 }
+        cardStyle: { backgroundColor: "white", opacity: 1 },
+        // headerTransparent: true,
+        // headerTitle: "",
+        headerStyle: { backgroundColor: "#266580" },
+        headerTitleAlign: "center",
+        headerTitleStyle: { color: colors.buttonTextColor, fontWeight: "bold", textShadowColor: "#00000090", textShadowOffset: { height: 0, width: 0 }, textShadowRadius: 7 }
+
     },
     headerMode: 'screen',
 })

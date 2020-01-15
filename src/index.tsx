@@ -27,7 +27,7 @@ export default class App extends Component<any, any> {
         const initialState = await FileService.readStateFromFile();
         initialState.User = null;
         this.store = configureStore(initialState);
-        await this.loadDataFromServer();
+        this.loadDataFromServer();
         this.setState({ isLoaded: true });
     }
 
@@ -42,16 +42,12 @@ export default class App extends Component<any, any> {
 
     render() {
         return <SafeAreaProvider>
-            <SafeAreaView style={{ flex: 1, backgroundColor: 'black' }} forceInset={{ top: "always", bottom: "always" }}>
-                <ImageBackground source={require("../assets/background.jpg")}
-                    style={{ flex: 1, width: width, height: height }}>
-                    {this.state.isLoaded ?
-                        <Provider store={this.store}>
-                            <AppContainer style={{ backgroundColor: 'transparent' }} theme={"dark"} >
-
-                            </AppContainer>
-                        </Provider> : <View style={{ flex: 1, backgroundColor: 'transparent' }} />}
-                </ImageBackground>
+            <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }} forceInset={{ top: "always", bottom: "always" }}>
+                {this.state.isLoaded ?
+                    <Provider store={this.store}>
+                        <AppContainer style={{ backgroundColor: 'white' }} >
+                        </AppContainer>
+                    </Provider> : <View style={{ flex: 1, backgroundColor: 'transparent' }} />}
             </SafeAreaView>
         </SafeAreaProvider>
     }
