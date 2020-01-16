@@ -3,12 +3,12 @@ import { createStackNavigator } from "react-navigation-stack";
 import { colors } from "@components";
 
 export const AppNavigator = createStackNavigator({
-    Department: Department,
     Login: Login,
+    Department: Department,
     Nfc: Nfc,
     Adisyon: Adisyon,
 }, {
-    initialRouteName: 'Department',
+    initialRouteName: 'Login',
     mode: "card",
 
     defaultNavigationOptions: {

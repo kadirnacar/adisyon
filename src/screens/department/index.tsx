@@ -68,7 +68,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                         keyExtractor={(item, index) => index.toString()}
                     /> */}
                     <FlatList
-                        data={this.props.Department.items}
+                        data={this.props.Department.items.filter(itm => this.props.User.current.departments.indexOf(itm.KODU) > -1)}
                         style={{ height: height - 160 }}
                         renderItem={({ item, index }) => {
                             return (
@@ -148,7 +148,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                         }}
                         onPress={async () => {
                             await this.props.DepartmentActions.setCurrent(this.state.selectedItem);
-                            this.props.navigation.navigate("Login");
+                            this.props.navigation.navigate("Nfc");
                         }}
                     >
                         <Text style={{ color: colors.buttonTextColor, fontSize: 18, fontWeight: "bold" }}>Giriş</Text>

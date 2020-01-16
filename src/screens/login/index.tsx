@@ -41,7 +41,7 @@ class LoginScreen extends Component<Props, LoginState> {
             this.setState({ errorMessage: "Hatalı giriş" })
         } else {
             await this.props.CustomerActions.clear();
-            this.props.navigation.navigate("Nfc");
+            this.props.navigation.navigate("Department");
         }
     }
 

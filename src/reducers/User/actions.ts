@@ -16,12 +16,12 @@ export const actionCreators = {
             payload: user
         });
 
-        if (user) {
-            const state: ApplicationState = getState();
-            const isDep = state.User.current.departments.indexOf(state.Department.current.KODU);
-            if (isDep < 0)
-                return false;
-        }
+        // if (user) {
+        //     const state: ApplicationState = getState();
+        //     const isDep = state.User.current.departments.indexOf(state.Department.current.KODU);
+        //     if (isDep < 0)
+        //         return false;
+        // }
         return user != null;
     }
 }
