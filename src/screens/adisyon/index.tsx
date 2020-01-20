@@ -38,21 +38,23 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
             <React.Fragment>
                 <Modal
                     animationType="slide"
-                    transparent={true}
+                    transparent={false}
+
                     visible={this.state.modalVisible}
                     onRequestClose={() => {
+                        this.setState({ modalVisible: false })
                     }}>
                     <View style={{
                         width: '100%',
                         flexDirection: "row",
-                        height: 70,
-                        borderBottomEndRadius: 15,
-                        borderBottomStartRadius: 15,
-                        backgroundColor: colors.inputBackColor
                     }}>
-                        <StokSelect />
-                        <TouchableOpacity
-                            style={{
+                        <StokSelect onPress={(data) => {
+                            this.setState({ selectedStoks: data });
+                        }} />
+
+                        {/* <View>
+                            
+                            <TouchableOpacity style={{
                                 width: "50%",
                                 flex: 1,
                                 flexDirection: "column",
@@ -60,26 +62,12 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 alignSelf: "center",
                                 padding: 10,
                                 borderColor: colors.borderColor,
-                            }}
-                            onPress={() => {
-                                this.setState({ modalVisible: false })
-                            }}
-                        >
-                            <Text style={{ color: colors.inputTextColor, fontSize: 18, fontWeight: "bold" }}>Ekle</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity style={{
-                            width: "50%",
-                            flex: 1,
-                            flexDirection: "column",
-                            alignItems: "center",
-                            alignSelf: "center",
-                            padding: 10,
-                            borderColor: colors.borderColor,
-                        }} onPress={() => {
-                            this.setState({ selectedStoks: {}, modalVisible: false });
-                        }}>
-                            <Text style={{ color: colors.inputTextColor, fontSize: 18, fontWeight: "bold" }}>İptal</Text>
-                        </TouchableOpacity>
+                            }} onPress={() => {
+                                this.setState({ selectedStoks: {}, modalVisible: false });
+                            }}>
+                                <Text style={{ color: colors.inputTextColor, fontSize: 18, fontWeight: "bold" }}>İptal</Text>
+                            </TouchableOpacity>
+                        </View> */}
                     </View>
                 </Modal>
                 <CustomerInfo style={{ height: 120, top: 10 }} />

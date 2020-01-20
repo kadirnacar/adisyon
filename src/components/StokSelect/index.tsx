@@ -1,23 +1,30 @@
 import { colors } from '@components';
+import { IStokGrup, IStok } from '@models';
 import { StokActions } from '@reducers';
 import { ApplicationState } from '@store';
+import ColorScheme from 'color-scheme';
+import colorPalette from 'nice-color-palettes';
 import React, { Component } from 'react';
-import { Dimensions, GestureResponderEvent, StyleProp, Text, TouchableOpacity, View, ViewStyle, Picker, TextInput, StyleSheet, Image } from 'react-native';
-import { NavigationInjectedProps, withNavigation, FlatList } from 'react-navigation';
+import { Dimensions, GestureResponderEvent, KeyboardAvoidingView, StyleProp, StyleSheet, Text, TextInput, TouchableHighlight, View, ViewStyle } from 'react-native';
+import RNMaterialLetterIcon from 'react-native-material-letter-icon';
+import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import Fuse, { FuseResultWithMatches, FuseOptions } from 'fuse.js';
+
 const { width, scale, height } = Dimensions.get("window");
 
 interface StokSelectState {
-    selectedGrup?: any;
+    selectedGrup?: IStokGrup;
     search?: string;
     selectedStoks?: { [key: number]: number };
+    searchOptions?: Fuse.FuseOptions<IStok>;
+    data?: Fuse<IStok, FuseOptions<IStok>>;
 }
 
 interface StokSelectProps {
     style?: StyleProp<ViewStyle>;
-    onPress?: (event: GestureResponderEvent) => void;
+    onPress?: (data: { [key: number]: number }) => void;
 }
 
 type Props = NavigationInjectedProps & StokSelectProps & ApplicationState;
@@ -27,222 +34,217 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         super(props);
         this.state = {
             search: "",
-            selectedStoks: {}
-        }
-    }
+            selectedStoks: {},
+            searchOptions: {
+                keys: ['ADI'],
+            }
+        };
 
+        this.scheme = new ColorScheme();
+        this.scheme.from_hue(10)
+            .scheme('triade')
+            .variation('pastel');
+    }
+    componentDidMount() {
+        this.setState({ data: new Fuse(this.props.Stok.items, this.state.searchOptions) });
+    }
+    scheme;
+    invertColor(hex, bw?) {
+        if (hex.indexOf('#') === 0) {
+            hex = hex.slice(1);
+        }
+        if (hex.length === 3) {
+            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
+        }
+        if (hex.length !== 6) {
+            throw new Error('Invalid HEX color.');
+        }
+        var r = parseInt(hex.slice(0, 2), 16),
+            g = parseInt(hex.slice(2, 4), 16),
+            b = parseInt(hex.slice(4, 6), 16);
+        if (bw) {
+            return (r * 0.299 + g * 0.587 + b * 0.114) > 186
+                ? '#000000'
+                : '#FFFFFF';
+        }
+        var rString = (255 - r).toString(16);
+        var gString = (255 - g).toString(16);
+        var bString = (255 - b).toString(16);
+        return "#" + this.padZero(rString) + this.padZero(gString) + this.padZero(bString);
+    }
+    padZero(str, len?) {
+        len = len || 2;
+        var zeros = new Array(len).join('0');
+        return (zeros + str).slice(-len);
+    }
     render() {
         return (
-            <View style={{
-                flex: 1,
-                padding: 5,
-                borderRadius: 20,
-                borderColor: colors.borderColor,
-                borderWidth: 1,
-                marginHorizontal: 10,
-                marginVertical: 10,
-                backgroundColor: 'rgba(0,0,0,0.8)'
-            }}>
 
-                <View style={{ flex: 1 }}>
-                    <View style={{
-                        flexDirection: "column",
-                        height: 50,
-                        alignSelf: "center",
-                        alignContent: "center",
-                        width: "100%",
-                        borderRadius: 10,
-                        padding: 3,
-                        backgroundColor: colors.inputTextColor
-                    }}>
-                        <Picker
-                            selectedValue={this.state.selectedGrup}
-                            mode="dropdown"
-                            style={{ height: 40, backgroundColor: colors.inputTextColor, borderRadius: 10 }}
-                            onValueChange={(itemValue, itemIndex) =>
-                                this.setState({ selectedGrup: itemValue })
-                            }>
-                            <Picker.Item label={"Tümü"} value={null} />
-                            {this.props.StokGrup.items ? this.props.StokGrup.items.map((grp, index) => {
-                                return <Picker.Item key={index} label={grp.ADI} value={grp.STOKGRUPID} />
-                            }) : null}
-                        </Picker>
+            <KeyboardAvoidingView style={{ flex: 1, width: width, height: height }}
+                behavior="padding"
+                enabled
+                keyboardVerticalOffset={25}>
+                <View style={{
+                    flex: 1,
+                    width: width,
+                    height: height,
+                    flexDirection: "row",
+                    marginBottom: 0,
+                    padding: 5,
+                    paddingBottom: 0
+                }}>
+                    <View
+                        style={{
+                            borderColor: colors.borderColor,
+                            flexDirection: "column",
+                            width: "65%",
+                            paddingRight: 10
+                        }}>
+                        <FlatList
+                            data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : this.props.Stok.items}
+                            renderItem={({ item, index }) => {
+                                const stok = this.state.selectedStoks[item.STOKID];
+                                return (
+                                    <TouchableHighlight underlayColor="#ffffff00" key={index}
+                                        style={{
+                                            flex: 1,
+                                            borderColor: colors.borderColor,
+                                            borderWidth: 3,
+                                            margin: 2,
+                                            borderRadius: 10,
+                                            padding: 0,
+                                            backgroundColor: this.state.selectedGrup == item ? colors.buttonBackColor : "#ffffff"
+                                        }}
+                                        onPress={() => {
+                                            const { selectedStoks } = this.state;
+                                            selectedStoks[item.STOKID] = selectedStoks[item.STOKID] ? selectedStoks[item.STOKID] + 1 : 1;
+                                            this.setState({ selectedStoks }, () => {
+                                                if (this.props.onPress)
+                                                    this.props.onPress(this.state.selectedStoks);
+                                            });
 
-                    </View>
-                    <View style={{
-                        flexDirection: "column",
-                        height: 50,
-                        alignSelf: "center",
-                        alignContent: "center",
-                        width: "100%",
-                        borderRadius: 10,
-                        marginTop: 5,
-                        padding: 3,
-                        backgroundColor: colors.inputTextColor
-                    }}>
-                        <TextInput
-                            style={{ backgroundColor: colors.inputTextColor }}
-                            placeholder="Ürün Ara"
-                            value={this.state.search}
-                            onChangeText={text => { this.setState({ search: text }) }} />
-                    </View>
-                    <View style={{ flex: 1, marginTop: 10 }}>
-                        {this.props.Stok.items ?
-                            <FlatList
-                                data={this.props.Stok.items.filter(itm => (this.state.selectedGrup ? itm.STOKGRUPID == this.state.selectedGrup : true) && (this.state.search ? itm.ADI.indexOf(this.state.search) > -1 : true))}
-                                numColumns={1}
-                                keyExtractor={(item, index) => index.toString()}
-                                renderItem={({ item, index }) => {
-                                    return <View style={[styles.imageThumbnail, { height: 60, flexDirection: "row", width: "100%", justifyContent: "flex-start" }]}>
-                                        <View style={{ flexDirection: "column" }}>
-                                            <Image style={{
-                                                width: 40,
-                                                height: 40,
-                                                resizeMode: "cover",
-                                                borderRadius: 2,
-                                                marginRight: 5
-                                            }} source={{ uri: item.FOTO, cache: 'force-cache' }} />
-                                        </View>
-                                        <View style={{ flexDirection: "column" }}>
-                                            <Text style={{
-                                                color: colors.inputTextColor,
-                                                fontSize: 14,
-                                            }}>{item.ADI}</Text>
-                                        </View>
-                                        <View style={{ flexDirection: "column" }}>
-                                            <Text style={{
-                                                color: colors.inputTextColor,
-                                                fontSize: 12,
-                                            }}>{item.SFIYAT1}</Text>
-                                        </View>
-                                        <View style={{ flex: 1, flexDirection: "column", alignItems: "flex-end" }}>
-                                            <View style={{ flexDirection: "row" }}>
-                                                <View style={{ flexDirection: "column", marginRight: 5 }}>
-                                                    <TouchableOpacity
-                                                        style={{
-                                                            alignItems: "center",
-                                                            alignSelf: "center",
-                                                            alignContent: "center",
-                                                            borderRadius: 4,
-                                                            height: 40,
-                                                            backgroundColor: 'rgba(255,255,255,0.5)',
-                                                            width: 40
-                                                        }}
-                                                        onPress={() => {
-                                                            const { selectedStoks } = this.state;
-                                                            selectedStoks[item.STOKID] = selectedStoks[item.STOKID] ? selectedStoks[item.STOKID] - 1 : 0;
-                                                            if (selectedStoks[item.STOKID] < 0)
-                                                                delete selectedStoks[item.STOKID];
-                                                            this.setState({ selectedStoks: selectedStoks });
-                                                        }}>
-                                                        <Icon name="minus" size={35} color={colors.inputBackColor} />
-                                                    </TouchableOpacity>
-                                                </View>
-                                                <View style={{ flexDirection: "column", marginHorizontal: 3 }}>
-                                                    <Text style={{ color: colors.inputTextColor, fontSize: 18 }}>
-                                                        {this.state.selectedStoks[item.STOKID] || 0}
-                                                    </Text>
-                                                </View>
-                                                <View style={{ flexDirection: "column" }}>
-                                                    <TouchableOpacity
-                                                        style={{
-                                                            alignItems: "center",
-                                                            alignSelf: "center",
-                                                            alignContent: "center",
-                                                            borderRadius: 4,
-                                                            height: 40,
-                                                            backgroundColor: 'rgba(255,255,255,0.5)',
-                                                            width: 40
-                                                        }}
-                                                        onPress={() => {
-                                                            const { selectedStoks } = this.state;
-                                                            selectedStoks[item.STOKID] = selectedStoks[item.STOKID] ? selectedStoks[item.STOKID] + 1 : 1;
-                                                            this.setState({ selectedStoks: selectedStoks });
-                                                        }}>
-                                                        <Icon name="plus" size={35} color={colors.inputBackColor} />
-                                                    </TouchableOpacity>
-                                                </View>
+                                        }}>
+                                        <View style={{ width: "100%", overflow: "hidden", alignItems: "center", alignSelf: "center" }}>
+                                            <View style={{ alignItems: "center", marginRight: 3, alignSelf: "center" }}>
+                                                <RNMaterialLetterIcon
+                                                    size={50}
+                                                    border={false}
+                                                    shapeColor={colorPalette[(colorPalette.length - index) % colorPalette.length][0]}
+                                                    letterColor={this.invertColor(colorPalette[index % colorPalette.length][0])}
+                                                    shapeType={"circle"}
+                                                    borderRy={6}
+                                                    borderRx={6}
+                                                    borderSize={2}
+                                                    lettersNumber={4}
+                                                    initialsNumber={4}
+                                                    letterSize={20}
+                                                    letter={(stok ? stok : 0).toString()}
+                                                />
+                                            </View>
+                                            <View style={{ flex: 1, alignContent: "center", alignSelf: "center" }}>
+                                                <Text style={{
+                                                    fontWeight: this.state.selectedGrup == item ? "bold" : "normal",
+                                                    fontSize: 14,
+                                                    color: colors.inputTextColor,
+                                                    flexWrap: "wrap",
+                                                    overflow: "hidden",
+                                                    textAlignVertical: "center",
+                                                    textAlign: "center"
+                                                }}>{item.ADI}</Text>
 
                                             </View>
                                         </View>
-                                    </View>
-                                }}
-                            /> : null}
-                        {/* {this.props.Stok.items ?
-                        <FlatList
-                            data={this.props.Stok.items.filter(itm => (this.state.selectedGrup ? itm.STOKGRUPID == this.state.selectedGrup : true) && (this.state.search ? itm.ADI.indexOf(this.state.search) > -1 : true))}
+                                    </TouchableHighlight>
+                                )
+                            }}
                             numColumns={2}
                             keyExtractor={(item, index) => index.toString()}
+                        />
+                    </View>
+                    <View
+                        style={{
+                            borderWidth: 1,
+                            borderColor: colors.borderColor,
+                            flexDirection: "column",
+                            width: "35%",
+                        }}>
+                        <FlatList
+                            data={this.props.StokGrup.items}
                             renderItem={({ item, index }) => {
-                                return <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
-                                    <View style={styles.imageThumbnail}>
-                                        <TouchableOpacity style={{
-                                            alignItems: "center",
-                                            alignSelf: "center",
-                                            alignContent: "center",
-                                            position: "absolute",
-                                            height: 45,
-                                            zIndex: 2,
-                                            top: 0,
-                                            backgroundColor: 'rgba(255,255,255,0.5)',
-                                            width: "100%"
+                                return (
+                                    <TouchableHighlight underlayColor="#ffffff00" key={index}
+                                        style={{
+                                            width: "100%",
+                                            borderColor: colors.borderColor,
+                                            borderWidth: 3,
+                                            margin: 2,
+                                            borderRadius: 10,
+                                            padding: 0,
+                                            backgroundColor: this.state.selectedGrup == item ? colors.buttonBackColor : "#ffffff"
                                         }}
-                                            onPress={() => {
-                                                const { selectedStoks } = this.state;
-                                                selectedStoks[item.STOKID] = selectedStoks[item.STOKID] ? selectedStoks[item.STOKID] + 1 : 1;
-                                                this.setState({ selectedStoks: selectedStoks });
-                                            }}>
-                                            <Icon name="plus" size={35} color={colors.inputBackColor} />
-                                        </TouchableOpacity>
-                                        <TouchableOpacity style={{
-                                            alignItems: "center",
-                                            alignSelf: "center",
-                                            alignContent: "center",
-                                            position: "absolute",
-                                            height: 45,
-                                            zIndex: 2,
-                                            top: 45,
-                                            backgroundColor: 'rgba(255,255,255,0.5)',
-                                            width: "100%"
-                                        }}
-                                            onPress={() => {
-                                                const { selectedStoks } = this.state;
-                                                selectedStoks[item.STOKID] = selectedStoks[item.STOKID] ? selectedStoks[item.STOKID] - 1 : 0;
-                                                if (selectedStoks[item.STOKID] < 0)
-                                                    delete selectedStoks[item.STOKID];
-                                                this.setState({ selectedStoks: selectedStoks });
-                                            }}>
-                                            <Icon name="minus" size={35} color={colors.buttonBackColor} />
-                                        </TouchableOpacity>
-                                        <Image style={{
-                                            width: '100%',
-                                            height: 80,
-                                            top: 5,
-                                            position: "absolute",
-                                            resizeMode: "cover",
-                                            borderRadius: 10
-                                        }} source={{ uri: item.FOTO, cache: 'force-cache' }} />
-                                        <Text style={{
-                                            position: "absolute",
-                                            fontWeight: "bold",
-                                            color: colors.buttonBackColor,
-                                            fontSize: 16,
-                                            top: 85
-                                        }}>{this.state.selectedStoks[item.STOKID]}</Text>
-                                        <Text style={{
-                                            position: "absolute",
-                                            color: colors.inputTextColor,
-                                            fontSize: 14,
-                                            bottom: 0
-                                        }}>{item.ADI}</Text>
-                                    </View>
-                                </View>
+                                        onPress={() => {
+                                            this.setState({ selectedGrup: item })
+                                        }}>
+                                        <View style={{ flexDirection: "row", width: "100%", overflow: "hidden", alignItems: "flex-start", alignSelf: "flex-start" }}>
+                                            <View style={{ flexDirection: "column", alignItems: "flex-start", marginRight: 3, alignSelf: "flex-start" }}>
+                                                <RNMaterialLetterIcon
+                                                    size={35}
+                                                    border={false}
+                                                    shapeColor={colorPalette[index % colorPalette.length][0]}
+                                                    letterColor={this.invertColor(colorPalette[index % colorPalette.length][0])}
+                                                    shapeType={"round"}
+                                                    borderRy={6}
+                                                    borderRx={6}
+                                                    borderSize={1}
+                                                    lettersNumber={1}
+                                                    initialsNumber={1}
+                                                    letterSize={20}
+                                                    letter={item.ADI}
+                                                />
+                                            </View>
+                                            <View style={{ flexDirection: "column", flex: 1, alignContent: "flex-start", alignSelf: "center" }}>
+                                                <Text style={{
+                                                    fontWeight: this.state.selectedGrup == item ? "bold" : "normal",
+                                                    fontSize: 12,
+                                                    color: colors.inputTextColor,
+                                                    flexWrap: "wrap",
+                                                    overflow: "hidden",
+                                                    textAlignVertical: "center",
+                                                    textAlign: "left"
+                                                }}>{item.ADI}</Text>
+
+                                            </View>
+                                        </View>
+                                    </TouchableHighlight>
+                                )
                             }}
-                        /> : null} */}
+                            numColumns={1}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
                     </View>
                 </View>
-               
-            </View>
+
+                <TextInput
+                    placeholder="Ara"
+                    autoFocus={true}
+                    clearButtonMode="always"
+                    clearTextOnFocus
+                    onChangeText={text => {
+                        this.setState({ search: text })
+                    }}
+                    style={{
+                        color: colors.inputTextColor,
+                        backgroundColor: "#fff",
+                        borderColor: colors.borderColor,
+                        borderWidth: 1,
+                        paddingVertical: 5,
+                        paddingHorizontal: 15,
+                        textAlign: "left",
+                        fontSize: 20,
+                        borderRadius: 0
+                    }} />
+            </KeyboardAvoidingView>
+
         )
     }
 }
@@ -265,7 +267,6 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: colors.borderColor,
         borderRadius: 5,
-        backgroundColor: "rgba(27,27,27,0.8)",
         margin: 2,
         height: 150,
     }
