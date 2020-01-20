@@ -17,13 +17,13 @@ const { width, scale, height } = Dimensions.get("window");
 interface StokSelectState {
     selectedGrup?: IStokGrup;
     search?: string;
-    selectedStoks?: { [key: number]: number };
     searchOptions?: Fuse.FuseOptions<IStok>;
     data?: Fuse<IStok, FuseOptions<IStok>>;
 }
 
 interface StokSelectProps {
     style?: StyleProp<ViewStyle>;
+    selectedStoks?: { [key: number]: number };
     onPress?: (data: { [key: number]: number }) => void;
 }
 
@@ -34,7 +34,6 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         super(props);
         this.state = {
             search: "",
-            selectedStoks: {},
             searchOptions: {
                 keys: ['ADI'],
             }
@@ -103,7 +102,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         <FlatList
                             data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : this.props.Stok.items}
                             renderItem={({ item, index }) => {
-                                const stok = this.state.selectedStoks[item.STOKID];
+                                const stok = this.props.selectedStoks[item.STOKID];
                                 return (
                                     <TouchableHighlight underlayColor="#ffffff00" key={index}
                                         style={{
@@ -116,12 +115,10 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                             backgroundColor: this.state.selectedGrup == item ? colors.buttonBackColor : "#ffffff"
                                         }}
                                         onPress={() => {
-                                            const { selectedStoks } = this.state;
+                                            const { selectedStoks } = this.props;
                                             selectedStoks[item.STOKID] = selectedStoks[item.STOKID] ? selectedStoks[item.STOKID] + 1 : 1;
-                                            this.setState({ selectedStoks }, () => {
-                                                if (this.props.onPress)
-                                                    this.props.onPress(this.state.selectedStoks);
-                                            });
+                                            if (this.props.onPress)
+                                                this.props.onPress(selectedStoks);
 
                                         }}>
                                         <View style={{ width: "100%", overflow: "hidden", alignItems: "center", alignSelf: "center" }}>

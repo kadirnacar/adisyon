@@ -48,7 +48,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         width: '100%',
                         flexDirection: "row",
                     }}>
-                        <StokSelect onPress={(data) => {
+                        <StokSelect selectedStoks={this.state.selectedStoks} onPress={(data) => {
                             this.setState({ selectedStoks: data });
                         }} />
 
