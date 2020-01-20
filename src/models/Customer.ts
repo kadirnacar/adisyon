@@ -1,6 +1,9 @@
 export interface ICustomer {
-    ID: number;
-    ADI: string;
-    SOYADI: string;
-    BAKIYE: number;
+    BALANCE: number;
+    BOARDTYPE: string;
+    GUESTNO: number;
+    NAME: string;
+    ODANO: string;
+    RESID: string;
+    SURNAME: string
 }

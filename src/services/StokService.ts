@@ -23,7 +23,12 @@ export class StokService extends ServiceBase {
                     {
                         "Column": "MOBILPOS",
                         "Operator": "=",
-                        "Value": "1"
+                        "Value": "1",
+                    },
+                    {
+                        "Column": "ISACTIVITIY",
+                        "Operator": "=",
+                        "Value": false//Activitiler için true 
                     }
                 ],
                 "Paging": {

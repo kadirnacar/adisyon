@@ -2,7 +2,7 @@ import config from '@config';
 import { ServiceBase } from "./ServiceBase";
 
 export class UserService extends ServiceBase {
-    public static async getItem(username: string) {
+    public static async getItem(password: string) {
         var result = await this.requestJson<any>({
             url: `${config.restUrl}`,
             method: "POST",
@@ -20,7 +20,7 @@ export class UserService extends ServiceBase {
                     {
                         "Column": "GSIFRE",
                         "Operator": "=",
-                        "Value": username
+                        "Value": password
                     }
                 ],
                 "Paging": {

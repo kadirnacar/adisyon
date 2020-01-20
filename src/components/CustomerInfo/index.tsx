@@ -44,13 +44,13 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                 <View>
                     <Text style={{ color: colors.borderColor }}>Misafir Adı</Text>
                     <Text style={{ fontWeight: "bold", fontSize: 18, color: colors.inputTextColor }}>
-                        {this.props.Customer.current ? this.props.Customer.current.ADI + " " + this.props.Customer.current.SOYADI : null}
+                        {this.props.Customer.current ? this.props.Customer.current.NAME + " " + this.props.Customer.current.SURNAME : null}
                     </Text>
                     <Text style={{ color: colors.borderColor }}>Bakiye</Text>
                     <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
                         style: "currency",
                         currency: "TRL"
-                    }).format((this.props.Customer.current ? this.props.Customer.current.BAKIYE : 0))}</Text>
+                    }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0))}</Text>
                 </View>
             </TouchableOpacity>
         )

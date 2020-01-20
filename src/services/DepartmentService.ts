@@ -12,13 +12,13 @@ export class DepartmentService extends ServiceBase {
                 "Select": [
                     "KODU",
                     "ADI",
-                    "ID"
+                    "ID",
                 ],
                 "Where": [
                     {
                         "Column": "ISLEMTURU",
                         "Operator": "=",
-                        "Value": "1"
+                        "Value": "1"//4:activity
                     }
                 ],
                 "Paging": {

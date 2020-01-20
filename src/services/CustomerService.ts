@@ -7,36 +7,11 @@ export class CustomerService extends ServiceBase {
             url: `${config.restUrl}`,
             method: "POST",
             data: {
-                "Action": "Select",
-                "Object": "GARSON",
-                "Select": [
-                    "ID",
-                    "GADI",
-                    "GKODU",
-                    "DEPKODU",
-                    "GGRUPID"
-                ],
-                "Where": [
-                    {
-                        "Column": "GSIFRE",
-                        "Operator": "=",
-                        "Value": nfcCode
-                    }
-                ],
-                "Paging": {
-                    "Current": 1,
-                    "ItemsPerPage": 1
-                },
-                "Joins": [
-                    {
-                        "Object": "GARSONGRUP",
-                        "Key": "GGRUPID",
-                        "Field": "GGRUPID",
-                        "Fields": [
-                            "GRUPADI"
-                        ]
-                    }
-                ]
+                "Action": "Execute",
+                "Object": "SP_EASYPOS_FINDGUEST",
+                "Parameters": {
+                    "CARDNO": nfcCode
+                }
             }
         });
         return result.value;

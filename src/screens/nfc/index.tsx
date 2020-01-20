@@ -42,7 +42,7 @@ class NfcScreen extends Component<Props, any> {
                     });
                     NfcManager.registerTagEvent();
                 } else {
-                    console.log("disaled");
+                    console.log("disabled");
                 }
             }).catch(ex => {
                 console.log("ex", ex)
