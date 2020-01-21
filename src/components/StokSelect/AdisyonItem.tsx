@@ -23,20 +23,11 @@ export class AdisyonItem extends Component<Props, any> {
     }
 
     componentDidMount() {
-        const { item } = this.props;
-        const stok = this.props.selectedStoks[item.STOKID];
-        if (stok.DESC) {
-            this.setState({ collapsed: false })
-        }
+       
     }
 
     UNSAFE_componentWillReceiveProps(nextProps) {
-        const { item } = this.props;
-        const stok = this.props.selectedStoks[item.STOKID];
-        const prevstok = nextProps.selectedStoks[item.STOKID];
-        if (stok.DESC != prevstok.DESC && stok.DESC) {
-            this.setState({ collapsed: false })
-        }
+        
     }
     
     render() {

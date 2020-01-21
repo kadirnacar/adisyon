@@ -4,7 +4,7 @@ import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
-import { Alert, Dimensions, Image, ImageBackground, Modal, Picker, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { Alert, Dimensions, Image, ImageBackground, Modal, Picker, StyleSheet, Text, TextInput, TouchableHighlight, View, KeyboardAvoidingView } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -55,7 +55,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     </View>
                 </Modal>
                 <CustomerInfo style={{ height: 120, top: 10 }} />
-                <View
+                <KeyboardAvoidingView
                     style={{
                         flex: 1,
                         width: width - 10,
@@ -150,7 +150,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         }}
                     />
 
-                </View>
+                </KeyboardAvoidingView>
                 <View
                     style={{
                         width: width,
