@@ -11,9 +11,11 @@ export const reducer = (currentState: StokGrupState = unloadedState, incomingAct
     const action = incomingAction as KnownAction;
     switch (action.type) {
         case Actions.ReceiveStokGrupItems:
+            currentState.isRequest = false;
             currentState.items = action.payload;
             return { ...currentState };
         case Actions.RequestStokGrupItems:
+            currentState.isRequest = true;
             return { ...currentState };
         default:
             break;

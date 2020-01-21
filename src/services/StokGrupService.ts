@@ -1,9 +1,11 @@
 import config from '@config';
 import { ServiceBase } from "./ServiceBase";
+import { AngusResponse } from './AngusResponse';
+import { IStokGrup } from '@models';
 
 export class StokGrupService extends ServiceBase {
     public static async getItems() {
-        var result = await this.requestJson<any>({
+        var result = await this.requestJson<AngusResponse<IStokGrup>>({
             url: `${config.restUrl}`,
             method: "POST",
             data: {

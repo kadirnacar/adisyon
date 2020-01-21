@@ -14,10 +14,13 @@ export const reducer = (currentState: CustomerState = unloadedState, incomingAct
             if (action.payload) {
                 currentState.current = action.payload;
             }
+            currentState.isRequest = false;
             return { ...currentState };
         case Actions.RequestCustomerItem:
+            currentState.isRequest = true;
             return { ...currentState };
         case Actions.ClearItem:
+            currentState.isRequest = false;
             currentState.current = null;
             return { ...currentState };
         default:

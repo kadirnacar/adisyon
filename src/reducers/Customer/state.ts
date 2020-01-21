@@ -1,4 +1,5 @@
 import { ICustomer } from '@models';
+import { IBaseReducer } from '../BaseReducer';
 
 export enum Actions {
     RequestCustomerItem = "REQUEST_CUSTOMER",
@@ -6,7 +7,7 @@ export enum Actions {
     ClearItem = "CLEAR_CUSTOMER",
 }
 
-export interface CustomerState {
+export interface CustomerState extends IBaseReducer {
     current: ICustomer;
 }
 

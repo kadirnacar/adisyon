@@ -1,6 +1,8 @@
 import { Login, Department, Nfc, Adisyon } from "@screens";
-import { createStackNavigator } from "react-navigation-stack";
+import { createStackNavigator, StackHeaderLeftButtonProps } from "react-navigation-stack";
 import { colors } from "@components";
+import { TouchableHighlight, Text } from "react-native";
+import React, { Component } from 'react';
 
 export const AppNavigator = createStackNavigator({
     Login: Login,
@@ -15,7 +17,8 @@ export const AppNavigator = createStackNavigator({
         cardStyle: { backgroundColor: "white", opacity: 1 },
         // headerTransparent: true,
         // headerTitle: "",
-        headerTintColor:"#ffffff",
+       
+        headerTintColor: "#ffffff",
         headerBackTitleStyle: { color: "#ffffff" },
         headerStyle: { backgroundColor: "#266580" },
         headerTitleAlign: "center",

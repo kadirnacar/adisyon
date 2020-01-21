@@ -29,7 +29,7 @@ export abstract class ServiceBase {
     public static async requestJson<T>(opts: IRequestOptions): Promise<Result<T>> {
 
         var axiosResult = null;
-        let result: Result<any> = null;
+        let result: Result<T> = null;
 
         // opts.url = transformUrl(opts.url); // Allow requests also for Node.
 
@@ -74,9 +74,11 @@ export abstract class ServiceBase {
                     axiosResult = await Axios.delete(processQuery(opts.url, opts.data), axiosRequestConfig);
                     break;
             }
-            result = new Result(axiosResult.data, null);
+
+            result = new Result<T>(axiosResult.data, null);
         } catch (error) {
-            result = new Result(null, error.response && error.response.data ? error.response.data.message : error.message);
+            console.warn("error",error)
+            result = new Result<T>(null, error.response && error.response.data ? error.response.data.message : error.message);
         }
 
         if (result.hasErrors) {

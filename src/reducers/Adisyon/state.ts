@@ -1,11 +1,12 @@
 import { IAdisyon } from '@models';
+import { IBaseReducer } from '../BaseReducer';
 
 export enum Actions {
     RequestSendAdisyonItems = "REQUEST_SEND_ADISYON_ITEMS",
     ReceiveSendAdisyonItems = "RECEIVE_SEND_ADISYON_ITEMS"
 }
 
-export interface AdisyonState {
+export interface AdisyonState extends IBaseReducer {
     current?: IAdisyon;
 }
 

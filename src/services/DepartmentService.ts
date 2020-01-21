@@ -1,9 +1,11 @@
 import config from '@config';
 import { ServiceBase } from "./ServiceBase";
+import { AngusResponse } from './AngusResponse';
+import { IDepartment } from '@models';
 
 export class DepartmentService extends ServiceBase {
     public static async getItems() {
-        var result = await this.requestJson<any>({
+        var result = await this.requestJson<AngusResponse<IDepartment>>({
             url: `${config.restUrl}`,
             method: "POST",
             data: {
@@ -25,7 +27,7 @@ export class DepartmentService extends ServiceBase {
                     "Current": 1,
                     "ItemsPerPage": 9999
                 }
-            }                
+            }
         });
         return result.value;
     }

@@ -1,41 +1,23 @@
 import config from '@config';
 import { ServiceBase } from "./ServiceBase";
 import { IAdisyon } from '@models';
+import { AngusProcedureResponse } from './AngusResponse';
 
 export class AdisyonService extends ServiceBase {
     public static async sendItem(data: IAdisyon) {
-
-        const items = [
-            {
-                "ID": 26139,
-                "QUANTITY": 1.5,
-                "DESC": ""
-                
-            },
-            {
-                "ID": 26141,
-                "QUANTITY": 1.5,
-                "DESC": ""
-            },
-            {
-                "ID": 26154,
-                "QUANTITY": 2,
-                "DESC": ""
-            }
-        ]
 
         var result = await this.requestJson<any>({
             url: `${config.restUrl}`,
             method: "POST",
             data: {
                 "Parameters": {
-                    "ITEMS": JSON.stringify(items),
-                    "DEPCODE": "02",
+                    "ITEMS": JSON.stringify(data.ITEMS),
+                    "DEPCODE": data.DEPCODE,
                     "PAYTYPE": "ROOM",
                     "RESID": "44089",
-                    "GUESTNO": 1,
-                    "NOTES": null,
-                    "GARSONID": 498
+                    "GUESTNO": data.GUESTNO,
+                    "NOTES": data.NOTES,
+                    "GARSONID": data.GARSONID
                 },
                 "Action": "Execute",
                 "Object": "SP_EASYPOS_SENDCHECK_V1"

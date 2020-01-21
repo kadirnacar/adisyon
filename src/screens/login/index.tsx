@@ -1,11 +1,12 @@
+import { colors, LoaderSpinner } from '@components';
+import { CustomerActions, UserActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { TouchableHighlight, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Dimensions, ImageBackground } from 'react-native';
-import { withNavigation, NavigationInjectedProps } from 'react-navigation';
+import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { NavigationEventPayload, NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
-import { colors } from '@components';
 import { bindActionCreators } from 'redux';
-import { UserActions, CustomerActions } from '@reducers';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 const { width, scale, height } = Dimensions.get("window");
 
 interface LoginState {
@@ -29,6 +30,8 @@ class LoginScreen extends Component<Props, LoginState> {
     constructor(props) {
         super(props);
         this.handleLogin = this.handleLogin.bind(this);
+        this.handleComponentMount = this.handleComponentMount.bind(this);
+        this.handleComponentUnMount = this.handleComponentUnMount.bind(this);
         this.state = {
             errorMessage: "",
             password: null
@@ -45,16 +48,69 @@ class LoginScreen extends Component<Props, LoginState> {
         }
     }
 
+    async handleComponentMount(payload: NavigationEventPayload) {
+        await this.props.UserActions.clear();
+    }
+
+    async handleComponentUnMount(payload: NavigationEventPayload) {
+        this.setState({
+            errorMessage: "",
+            password: null
+        });
+    }
     render() {
-        const { container, content } = styles;
+        const { container } = styles;
 
         return (
             <React.Fragment>
+                <NavigationEvents
+                    onWillFocus={this.handleComponentMount}
+                    onWillBlur={this.handleComponentUnMount}
+                />
                 <SafeAreaView style={container}>
+                    <LoaderSpinner
+                        showLoader={this.props.User.isRequest}
+                        onCloseModal={async () => {
+                            this.setState({
+                                errorMessage: "",
+                                password: null
+                            });
+                            await this.props.UserActions.clear();
+                        }} />
                     <View style={styles.formContainer}>
                         {!!this.state.errorMessage && (
-                            <View style={{ marginHorizontal: 8, marginVertical: 20 }}>
-                                <Text style={{ color: "#f1c6c6" }}>{this.state.errorMessage}</Text>
+                            <View style={{
+                                flexDirection: "row",
+                                marginHorizontal: 8,
+                                marginVertical: 20,
+                                borderColor: "#ff0000",
+                                borderWidth: 2,
+                                padding: 10,
+                                backgroundColor: "#ff000011",
+                                borderRadius: 25
+                            }}>
+                                <FontAwesome5Icon
+                                    name="times"
+                                    size={20}
+                                    color={"#ff0000"}
+                                    style={{
+                                        borderColor: colors.errorTextColor,
+                                        borderWidth: 2,
+                                        borderRadius: 20,
+                                        width: 25,
+                                        height: 25,
+                                        padding: 2,
+                                        alignContent: "center",
+                                        alignItems: "center",
+                                        textAlign: "center",
+                                        marginRight: 10
+                                    }}
+                                />
+                                <Text style={{
+                                    color: colors.errorTextColor,
+                                    fontSize: 16,
+                                    fontWeight: "bold",
+                                }}>{this.state.errorMessage} Hata</Text>
                             </View>
                         )}
                         <TextInput
@@ -84,6 +140,7 @@ class LoginScreen extends Component<Props, LoginState> {
                     </View>
                     <View style={{ flex: 1, height: 50 }}>
                         <TouchableHighlight underlayColor="#ffffff00"
+                            disabled={this.props.User.isRequest}
                             style={{
                                 width: "100%",
                                 alignItems: "center",
@@ -91,7 +148,7 @@ class LoginScreen extends Component<Props, LoginState> {
                                 marginTop: 10,
                                 borderColor: colors.borderColor,
                                 borderWidth: 1,
-                                backgroundColor: colors.buttonBackColor,
+                                backgroundColor: this.props.User.isRequest ? colors.inputBackColor : colors.buttonBackColor,
                                 borderRadius: 25
                             }}
                             onPressIn={async () => await this.handleLogin()}

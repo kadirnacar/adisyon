@@ -1,4 +1,5 @@
 import { IDepartment } from '@models';
+import { IBaseReducer } from '../BaseReducer';
 
 export enum Actions {
     RequestDepartmentItems = "REQUEST_DEPARTMENT_ITEMS",
@@ -6,7 +7,7 @@ export enum Actions {
     SetCurrent = "SET_CURRENT_DEPARTMENT"
 }
 
-export interface DepartmentState {
+export interface DepartmentState extends IBaseReducer {
     items?: IDepartment[];
     current: IDepartment;
 }

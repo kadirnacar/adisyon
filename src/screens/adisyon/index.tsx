@@ -4,12 +4,13 @@ import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
-import { Alert, Dimensions, Image, ImageBackground, Modal, Picker, StyleSheet, Text, TextInput, TouchableHighlight, View, KeyboardAvoidingView } from 'react-native';
+import { Alert, Dimensions, Image, ImageBackground, Modal, Picker, StyleSheet, Text, TextInput, TouchableHighlight, View, KeyboardAvoidingView, BackHandler, NativeEventEmitter, NativeEventSubscription } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { IAdisyonProduct } from '@models';
+import { StackHeaderLeftButtonProps, HeaderBackButton } from 'react-navigation-stack';
 const { width, scale, height } = Dimensions.get("window");
 
 interface AdisyonState {
@@ -24,15 +25,83 @@ interface AdisyonProps {
 type Props = NavigationInjectedProps & AdisyonProps & ApplicationState;
 
 class AdisyonScreen extends Component<Props, AdisyonState> {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: "Kart Oku",
+            headerLeft: (props: StackHeaderLeftButtonProps) => {
+                return <HeaderBackButton {...props}
+                    onPress={() => {
+                        let goBack = false;
+                        Alert.alert("Uyarı",
+                            "Müşteri ve Sipariş bilgisi silinecektir. Emin misiniz?",
+                            [{
+                                text: "Tamam",
+                                style: "default",
+                                onPress: (value) => {
+                                    navigation.goBack();
+                                }
+                            },
+                            {
+                                text: "İptal",
+                                style: "cancel",
+                                onPress: (value) => {
+                                    goBack = false;
+                                }
+                            }],
+                            {
+                                cancelable: false
+                            }
+                        )
+                        return goBack;
+                    }} />
+            },
+        };
+    };
     constructor(props) {
         super(props);
+        this.handleBackPress = this.handleBackPress.bind(this);
         this.state = {
             modalVisible: false,
             selectedStoks: {}
         }
     }
-
+    backHandler: NativeEventSubscription;
     componentDidMount() {
+        console.log("componentDidMount")
+        BackHandler.addEventListener(
+            'hardwareBackPress',
+            this.handleBackPress
+        );
+    }
+    componentWillUnmount() {
+        BackHandler.removeEventListener(
+            'hardwareBackPress',
+            this.handleBackPress
+        );
+    }
+    handleBackPress() {
+        Alert.alert("Uyarı",
+            "Müşteri ve Sipariş bilgisi silinecektir. Emin misiniz?",
+            [{
+                text: "Tamam",
+                style: "default",
+                onPress: (value) => {
+                    this.props.navigation.goBack();
+                    return false;
+                }
+            },
+            {
+                text: "İptal",
+                style: "cancel",
+                onPress: (value) => {
+                    return true;
+                }
+            }],
+            {
+                cancelable: false
+            }
+        )
+        return true;
     }
     render() {
         return (
@@ -94,59 +163,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     }
                                 }}
                             />
-                            // return <View key={index} style={{ flex: 1, flexDirection: 'row', margin: 1, height: 30, marginBottom: 5 }}>
-                            //     <View style={{ flexDirection: "column", marginRight: 5 }}>
-                            //         <TouchableHighlight
-                            //             style={{
-                            //                 alignItems: "center",
-                            //                 alignSelf: "center",
-                            //                 alignContent: "center",
-                            //                 borderRadius: 4,
-                            //                 height: 30,
-                            //                 backgroundColor: 'rgba(255,255,255,0.5)',
-                            //                 width: 30
-                            //             }}
-                            //             onPress={() => {
-                            //                 const { selectedStoks } = this.state;
-                            //                 console.log(selectedStoks)
-                            //                 selectedStoks[stok.STOKID].QUANTITY = selectedStoks[stok.STOKID].QUANTITY - 1;
-                            //                 if (selectedStoks[stok.STOKID].QUANTITY <= 0)
-                            //                     delete selectedStoks[stok.STOKID];
-                            //                 this.setState({ selectedStoks: selectedStoks });
-                            //             }}>
-                            //             <Icon name="minus" size={25} color={colors.inputBackColor} />
-                            //         </TouchableHighlight>
-                            //     </View>
-                            //     <View style={{ flexDirection: "column", marginHorizontal: 3 }}>
-                            //         <Text style={{ color: colors.inputTextColor, fontSize: 18 }}>
-                            //             {this.state.selectedStoks[stok.STOKID].QUANTITY || 0}
-                            //         </Text>
-                            //     </View>
-                            //     <View style={{ flexDirection: "column", marginRight: 5 }}>
-                            //         <TouchableHighlight
-                            //             style={{
-                            //                 alignItems: "center",
-                            //                 alignSelf: "center",
-                            //                 alignContent: "center",
-                            //                 borderRadius: 4,
-                            //                 height: 30,
-                            //                 backgroundColor: 'rgba(255,255,255,0.5)',
-                            //                 width: 30
-                            //             }}
-                            //             onPress={() => {
-                            //                 const { selectedStoks } = this.state;
-                            //                 selectedStoks[stok.STOKID].QUANTITY = selectedStoks[stok.STOKID].QUANTITY + 1;
-                            //                 this.setState({ selectedStoks: selectedStoks });
-                            //             }}>
-                            //             <Icon name="plus" size={25} color={colors.inputBackColor} />
-                            //         </TouchableHighlight>
-                            //     </View>
-                            //     <Text style={{ color: colors.inputTextColor, flexDirection: "column", alignSelf: "center" }}>{stok.ADI} x {this.state.selectedStoks[item].QUANTITY}</Text>
-                            //     <Text style={{ color: colors.inputTextColor, marginLeft: "auto", alignSelf: "center" }}>{Intl.NumberFormat("TR", {
-                            //         style: "currency",
-                            //         currency: "TRL"
-                            //     }).format(stok.SFIYAT1 * this.state.selectedStoks[item].QUANTITY)}</Text>
-                            // </View>
                         }}
                     />
 

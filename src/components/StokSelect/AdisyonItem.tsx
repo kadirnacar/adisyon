@@ -21,14 +21,6 @@ export class AdisyonItem extends Component<Props, any> {
             collapsed: true
         };
     }
-
-    componentDidMount() {
-       
-    }
-
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        
-    }
     
     render() {
         const { item } = this.props;

@@ -9,7 +9,7 @@ import { bindActionCreators } from 'redux';
 import { CustomerActions } from '@reducers';
 const { width, scale, height } = Dimensions.get("window");
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { colors, CustomerInfo } from '@components';
+import { colors, CustomerInfo, LoaderSpinner } from '@components';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 
@@ -66,18 +66,25 @@ class NfcScreen extends Component<Props, any> {
             <React.Fragment>
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount} />
-                <TouchableHighlight underlayColor="#ffffff00" style={{
-                    zIndex: 2,
-                    position: "absolute",
-                    flex: 1,
-                    top: 50,
-                    right: 20,
-                    backgroundColor: colors.transparentBackColor,
-                    borderRadius: 40,
-                    borderColor: colors.borderColor,
-                    borderWidth: 2,
-                    padding: 10
-                }}
+                <LoaderSpinner
+                    showLoader={this.props.Customer.isRequest}
+                    onCloseModal={async () => {
+                       await this.props.CustomerActions.clear();
+                    }} />
+                <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        zIndex: 2,
+                        position: "absolute",
+                        flex: 1,
+                        top: 50,
+                        right: 20,
+                        backgroundColor: colors.transparentBackColor,
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 10
+                    }}
                     onPressIn={() => {
                         NfcManager.goToNfcSetting();
                     }}>

@@ -12,11 +12,14 @@ export const reducer = (currentState: DepartmentState = unloadedState, incomingA
     const action = incomingAction as KnownAction;
     switch (action.type) {
         case Actions.ReceiveDepartmentItems:
+            currentState.isRequest = false;
             currentState.items = action.payload;
             return { ...currentState };
         case Actions.RequestDepartmentItems:
+            currentState.isRequest = true;
             return { ...currentState };
         case Actions.SetCurrent:
+            currentState.isRequest = false;
             currentState.current = action.payload;
             return { ...currentState };
         default:

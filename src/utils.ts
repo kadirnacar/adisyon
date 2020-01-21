@@ -39,3 +39,12 @@ export const arrayToObject = (array, key, value) => {
         return obj
     }, {})
 }
+
+export const performTimeConsumingTask = async () => {
+    return new Promise((resolve) =>
+        setTimeout(
+            () => { resolve('result') },
+            3000
+        )
+    );
+}

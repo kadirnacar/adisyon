@@ -1,4 +1,4 @@
-import { colors } from '@components';
+import { colors, LoaderSpinner } from '@components';
 import { IDepartment } from '@models';
 import { DepartmentActions } from '@reducers';
 import { ApplicationState } from '@store';
@@ -43,36 +43,18 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
     render() {
         const { container } = styles;
         let clrs = this.scheme.colors();
-        // const l = this.props.Department.items.length;
-        // for (var i = 0; i < l; i++) {
-        //     this.props.Department.items.push(this.props.Department.items[i])
 
-        // }
         return (
             <SafeAreaView style={container}>
+              
                 <View style={{ width: width }}>
-                    {/* <FlatList
-                        data={this.props.Department.items}
-                        style={{ height: height - 160 }}
-                        renderItem={({ item }) => (
-                            <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
-                                <TouchableHighlight underlayColor="#ffffff00" style={[styles.imageThumbnail, this.state.selectedItem == item ? { borderColor: "red" } : {}]}
-                                    onPress={() => {
-                                        this.setState({ selectedItem: item })
-                                    }}>
-                                    <Text style={{ color: colors.inputTextColor, fontSize: 14, fontWeight: this.state.selectedItem == item ? "bold" : "normal" }}>{item.ADI}</Text>
-                                </TouchableHighlight>
-                            </View>
-                        )}
-                        numColumns={3}
-                        keyExtractor={(item, index) => index.toString()}
-                    /> */}
+
                     <FlatList
-                        data={this.props.Department.items.filter(itm => this.props.User.current.departments.indexOf(itm.KODU) > -1)}
+                        data={this.props.User.current ? this.props.Department.items.filter(itm => this.props.User.current.departments.indexOf(itm.KODU) > -1) : []}
                         style={{ height: height - 160 }}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableHighlight underlayColor="#ffffff00"  key={index}
+                                <TouchableHighlight underlayColor="#ffffff00" key={index}
                                     style={{
                                         width: width / 3 - 18,
                                         height: 150,
