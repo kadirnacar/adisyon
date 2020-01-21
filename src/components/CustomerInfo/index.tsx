@@ -2,7 +2,7 @@ import { colors } from '@components';
 import { CustomerActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { Dimensions, GestureResponderEvent, StyleProp, Text, TouchableOpacity, View, ViewStyle } from 'react-native';
+import { Dimensions, GestureResponderEvent, StyleProp, Text, TouchableHighlight, View, ViewStyle } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -27,19 +27,20 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
 
     render() {
         return (
-            <TouchableOpacity
+            <TouchableHighlight underlayColor="#ffffff00"
                 disabled={this.props.Customer.current == null}
-                onPress={this.props.onPress ? this.props.onPress.bind(this) : null}
+                onPressIn={this.props.onPress ? this.props.onPress.bind(this) : null}
                 style={[{
                     flex: 0,
-                    width: width,
+                    width: width-10,
                     height: 150,
                     flexDirection: "row",
                     backgroundColor: colors.transparentBackColor,
                     borderRadius: 10,
                     borderColor: colors.borderColor,
                     borderWidth: 2,
-                    padding: 10
+                    padding: 10,
+                    marginHorizontal: 5
                 }, this.props.style]}>
                 <View>
                     <Text style={{ color: colors.borderColor }}>Misafir Adı</Text>
@@ -52,7 +53,7 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                         currency: "TRL"
                     }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0))}</Text>
                 </View>
-            </TouchableOpacity>
+            </TouchableHighlight>
         )
     }
 }

@@ -1,10 +1,12 @@
 export interface IAdisyon {
-    LOGINId?: number;
-    DEPID?: string;
-    PRODUCTS?: IAdisyonProduct[];
+    GUESTNO?: number;
+    DEPCODE?: string;
+    NOTES?: string;
+    GARSONID?: number;
+    ITEMS?: IAdisyonProduct[];
 }
 export interface IAdisyonProduct {
-    STOKID?: number;
+    ID?: number;
     QUANTITY?: number;
-    PRICE?: number;
+    DESC?: string;
 }

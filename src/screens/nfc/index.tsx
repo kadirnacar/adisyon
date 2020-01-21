@@ -1,7 +1,7 @@
 import { ApplicationState } from '@store';
 import LottieView from 'lottie-react-native';
 import React, { Component } from 'react';
-import { Dimensions, ImageBackground, View, TouchableOpacity, Text } from 'react-native';
+import { Dimensions, ImageBackground, View, TouchableHighlight, Text, Alert } from 'react-native';
 import NfcManager, { NfcEvents } from 'react-native-nfc-manager';
 import { withNavigation, NavigationInjectedProps, NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
@@ -38,7 +38,9 @@ class NfcScreen extends Component<Props, any> {
             NfcManager.start().then(() => {
                 if (enabled) {
                     NfcManager.setEventListener(NfcEvents.DiscoverTag, async tag => {
-                        await this.props.CustomerActions.getItem(tag.id);
+                        const isFind = await this.props.CustomerActions.getItem(tag.id);
+                        if (!isFind)
+                            Alert.alert("Kart Bilgisi Bulunamadı.");
                     });
                     NfcManager.registerTagEvent();
                 } else {
@@ -64,7 +66,7 @@ class NfcScreen extends Component<Props, any> {
             <React.Fragment>
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount} />
-                <TouchableOpacity style={{
+                <TouchableHighlight underlayColor="#ffffff00" style={{
                     zIndex: 2,
                     position: "absolute",
                     flex: 1,
@@ -76,11 +78,11 @@ class NfcScreen extends Component<Props, any> {
                     borderWidth: 2,
                     padding: 10
                 }}
-                    onPress={() => {
+                    onPressIn={() => {
                         NfcManager.goToNfcSetting();
                     }}>
                     <Icon name="wrench" size={35} color={colors.inputTextColor} />
-                </TouchableOpacity>
+                </TouchableHighlight>
                 <View style={{ flex: 1, width: width, height: 500, flexDirection: "row" }}>
                     <LottieView source={require('../../../assets/animation.json')} autoPlay loop />
                 </View>

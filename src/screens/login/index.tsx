@@ -1,6 +1,6 @@
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { TouchableOpacity, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Dimensions, ImageBackground } from 'react-native';
+import { TouchableHighlight, KeyboardAvoidingView, Platform, SafeAreaView, ScrollView, StyleSheet, Text, TextInput, View, Dimensions, ImageBackground } from 'react-native';
 import { withNavigation, NavigationInjectedProps } from 'react-navigation';
 import { connect } from 'react-redux';
 import { colors } from '@components';
@@ -83,7 +83,7 @@ class LoginScreen extends Component<Props, LoginState> {
 
                     </View>
                     <View style={{ flex: 1, height: 50 }}>
-                        <TouchableOpacity
+                        <TouchableHighlight underlayColor="#ffffff00"
                             style={{
                                 width: "100%",
                                 alignItems: "center",
@@ -94,10 +94,10 @@ class LoginScreen extends Component<Props, LoginState> {
                                 backgroundColor: colors.buttonBackColor,
                                 borderRadius: 25
                             }}
-                            onPress={async () => await this.handleLogin()}
+                            onPressIn={async () => await this.handleLogin()}
                         >
                             <Text style={{ color: colors.buttonTextColor, fontSize: 18, fontWeight: "bold" }}>Giriş</Text>
-                        </TouchableOpacity>
+                        </TouchableHighlight>
                     </View>
                 </SafeAreaView >
             </React.Fragment>

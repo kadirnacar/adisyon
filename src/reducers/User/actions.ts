@@ -9,7 +9,7 @@ export const actionCreators = {
         const user = result && result.ResultSets
             && result.ResultSets.length > 0
             && result.ResultSets[0].length > 0 ? result.ResultSets[0][0] : null;
-
+        console.log(user)
         await dispatch({
             type: Actions.ReceiveUserItem,
             payload: user

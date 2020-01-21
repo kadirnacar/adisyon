@@ -1,16 +1,18 @@
 import { colors } from '@components';
-import { IStokGrup, IStok } from '@models';
+import { IAdisyonProduct, IStok, IStokGrup } from '@models';
 import { StokActions } from '@reducers';
 import { ApplicationState } from '@store';
 import ColorScheme from 'color-scheme';
+import Fuse, { FuseOptions } from 'fuse.js';
 import colorPalette from 'nice-color-palettes';
 import React, { Component } from 'react';
-import { Dimensions, GestureResponderEvent, KeyboardAvoidingView, StyleProp, StyleSheet, Text, TextInput, TouchableHighlight, View, ViewStyle } from 'react-native';
+import { Dimensions, KeyboardAvoidingView, StyleProp, StyleSheet, Text, TextInput, TouchableHighlight, View, ViewStyle } from 'react-native';
 import RNMaterialLetterIcon from 'react-native-material-letter-icon';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import Fuse, { FuseResultWithMatches, FuseOptions } from 'fuse.js';
+import { StokItem } from './StokItem';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -23,8 +25,8 @@ interface StokSelectState {
 
 interface StokSelectProps {
     style?: StyleProp<ViewStyle>;
-    selectedStoks?: { [key: number]: number };
-    onPress?: (data: { [key: number]: number }) => void;
+    selectedStoks?: { [key: number]: IAdisyonProduct };
+    onPress?: (data: { [key: number]: IAdisyonProduct }) => void;
 }
 
 type Props = NavigationInjectedProps & StokSelectProps & ApplicationState;
@@ -85,7 +87,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                 keyboardVerticalOffset={25}>
                 <View style={{
                     flex: 1,
-                    width: width,
+                    width: width - 5,
                     height: height,
                     flexDirection: "row",
                     marginBottom: 0,
@@ -94,67 +96,126 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                 }}>
                     <View
                         style={{
+                            borderWidth: 1,
                             borderColor: colors.borderColor,
                             flexDirection: "column",
                             width: "65%",
-                            paddingRight: 10
+                            marginRight: 5
                         }}>
                         <FlatList
                             data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : this.props.Stok.items}
                             renderItem={({ item, index }) => {
                                 const stok = this.props.selectedStoks[item.STOKID];
                                 return (
-                                    <TouchableHighlight underlayColor="#ffffff00" key={index}
-                                        style={{
-                                            flex: 1,
-                                            borderColor: colors.borderColor,
-                                            borderWidth: 3,
-                                            margin: 2,
-                                            borderRadius: 10,
-                                            padding: 0,
-                                            backgroundColor: this.state.selectedGrup == item ? colors.buttonBackColor : "#ffffff"
-                                        }}
-                                        onPress={() => {
+                                    <StokItem
+                                        item={item}
+                                        selectedStoks={this.props.selectedStoks}
+                                        onAddPress={(stokId) => {
                                             const { selectedStoks } = this.props;
-                                            selectedStoks[item.STOKID] = selectedStoks[item.STOKID] ? selectedStoks[item.STOKID] + 1 : 1;
+                                            if (!selectedStoks[stokId])
+                                                selectedStoks[stokId] = { ID: stokId, QUANTITY: 0 };
+                                            selectedStoks[stokId].QUANTITY = selectedStoks[stokId].QUANTITY + 1;
                                             if (this.props.onPress)
                                                 this.props.onPress(selectedStoks);
+                                        }}
+                                        onRemovePress={(stokId) => {
+                                            const { selectedStoks } = this.props;
+                                            if (selectedStoks[stokId] && selectedStoks[stokId].QUANTITY > 0) {
+                                                selectedStoks[stokId].QUANTITY = selectedStoks[stokId].QUANTITY - 1;
+                                                if (this.props.onPress)
+                                                    this.props.onPress(selectedStoks);
+                                            }
+                                        }}
+                                    />
+                                    // <View style={{
+                                    //     flex: 1,
+                                    //     borderBottomWidth: 1,
+                                    //     paddingVertical: 5,
+                                    //     paddingHorizontal: 5,
+                                    //     marginVertical: 2,
+                                    //     borderBottomColor: colors.borderColor,
+                                    // }}>
+                                    //     <View style={{ flex: 1, flexDirection: "row" }}>
+                                    //         <View style={{
+                                    //             width: "63%"
+                                    //         }}>
+                                    //             <Text>{item.ADI}    ({item.SFIYAT1.toFixed(2)})</Text>
+                                    //         </View>
+                                    //         <View style={{
+                                    //             width: "37%",
+                                    //             flexDirection: "row"
+                                    //         }}>
+                                    //             <TouchableHighlight
+                                    //                 style={{
+                                    //                     width: 30,
+                                    //                     borderRadius: 10,
+                                    //                     borderWidth: 1,
+                                    //                     borderColor: colors.inputBackColor,
+                                    //                     height: 30,
+                                    //                     alignSelf: "center",
+                                    //                     alignItems: "center"
+                                    //                 }}
+                                    //                 onPress={() => {
+                                    //                     const { selectedStoks } = this.props;
+                                    //                     if (selectedStoks[item.STOKID].QUANTITY > 0)
+                                    //                         selectedStoks[item.STOKID].QUANTITY = selectedStoks[item.STOKID].QUANTITY - 1;
+                                    //                     if (this.props.onPress)
+                                    //                         this.props.onPress(selectedStoks);
+                                    //                 }}
+                                    //             >
+                                    //                 <Icon name="minus" size={25} />
+                                    //             </TouchableHighlight>
+                                    //             <Text style={{
+                                    //                 width: 28,
+                                    //                 alignSelf: "center",
+                                    //                 alignItems: "center",
+                                    //                 textAlign: "center",
+                                    //                 fontSize: 18,
+                                    //                 fontWeight: "bold"
+                                    //             }}>
+                                    //                 {stok ? stok.QUANTITY : 0}
+                                    //             </Text>
+                                    //             <TouchableHighlight
+                                    //                 style={{
+                                    //                     width: 30,
+                                    //                     borderRadius: 10,
+                                    //                     borderColor: colors.inputBackColor,
+                                    //                     borderWidth: 1,
+                                    //                     height: 30,
+                                    //                     alignSelf: "center",
+                                    //                     alignItems: "center"
+                                    //                 }}
+                                    //                 onPress={() => {
+                                    //                     const { selectedStoks } = this.props;
+                                    //                     if (!selectedStoks[item.STOKID])
+                                    //                         selectedStoks[item.STOKID] = { ID: item.STOKID, QUANTITY: 0 };
+                                    //                     selectedStoks[item.STOKID].QUANTITY = selectedStoks[item.STOKID].QUANTITY + 1;
+                                    //                     if (this.props.onPress)
+                                    //                         this.props.onPress(selectedStoks);
+                                    //                 }}>
+                                    //                 <Icon name="plus" size={25} />
+                                    //             </TouchableHighlight>
+                                    //         </View>
+                                    //     </View>
+                                    //     <View style={{
+                                    //     }}>
+                                    //         <TextInput
+                                    //             editable={this.props.selectedStoks[item.STOKID] && this.props.selectedStoks[item.STOKID].QUANTITY > 0 ? true : false}
+                                    //             style={{
+                                    //                 width: "100%",
+                                    //                 borderColor: colors.inputBackColor,
+                                    //                 borderWidth: 1,
+                                    //                 paddingVertical: 1,
+                                    //                 marginTop: 5,
+                                    //                 marginBottom: 0
+                                    //             }}
+                                    //             placeholder="Not" />
+                                    //     </View>
+                                    // </View>
 
-                                        }}>
-                                        <View style={{ width: "100%", overflow: "hidden", alignItems: "center", alignSelf: "center" }}>
-                                            <View style={{ alignItems: "center", marginRight: 3, alignSelf: "center" }}>
-                                                <RNMaterialLetterIcon
-                                                    size={50}
-                                                    border={false}
-                                                    shapeColor={colorPalette[(colorPalette.length - index) % colorPalette.length][0]}
-                                                    letterColor={this.invertColor(colorPalette[index % colorPalette.length][0])}
-                                                    shapeType={"circle"}
-                                                    borderRy={6}
-                                                    borderRx={6}
-                                                    borderSize={2}
-                                                    lettersNumber={4}
-                                                    initialsNumber={4}
-                                                    letterSize={20}
-                                                    letter={(stok ? stok : 0).toString()}
-                                                />
-                                            </View>
-                                            <View style={{ flex: 1, alignContent: "center", alignSelf: "center" }}>
-                                                <Text style={{
-                                                    fontWeight: this.state.selectedGrup == item ? "bold" : "normal",
-                                                    fontSize: 14,
-                                                    color: colors.inputTextColor,
-                                                    flexWrap: "wrap",
-                                                    overflow: "hidden",
-                                                    textAlignVertical: "center",
-                                                    textAlign: "center"
-                                                }}>{item.ADI}</Text>
-
-                                            </View>
-                                        </View>
-                                    </TouchableHighlight>
                                 )
                             }}
-                            numColumns={2}
+                            numColumns={1}
                             keyExtractor={(item, index) => index.toString()}
                         />
                     </View>
@@ -172,18 +233,28 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                     <TouchableHighlight underlayColor="#ffffff00" key={index}
                                         style={{
                                             width: "100%",
-                                            borderColor: colors.borderColor,
-                                            borderWidth: 3,
-                                            margin: 2,
-                                            borderRadius: 10,
-                                            padding: 0,
+                                            borderBottomColor: colors.borderColor,
+                                            borderBottomWidth: 1,
+                                            paddingVertical: 2,
                                             backgroundColor: this.state.selectedGrup == item ? colors.buttonBackColor : "#ffffff"
                                         }}
-                                        onPress={() => {
+                                        onPressIn={() => {
                                             this.setState({ selectedGrup: item })
                                         }}>
-                                        <View style={{ flexDirection: "row", width: "100%", overflow: "hidden", alignItems: "flex-start", alignSelf: "flex-start" }}>
-                                            <View style={{ flexDirection: "column", alignItems: "flex-start", marginRight: 3, alignSelf: "flex-start" }}>
+                                        <View style={{
+                                            flexDirection: "row",
+                                            width: "100%",
+                                            overflow: "hidden",
+                                            alignItems: "flex-start",
+                                            alignSelf: "flex-start"
+                                        }}>
+                                            <View style={{
+                                                flexDirection: "column",
+                                                alignItems: "flex-start",
+                                                marginRight: 3,
+                                                marginLeft: 2,
+                                                alignSelf: "flex-start"
+                                            }}>
                                                 <RNMaterialLetterIcon
                                                     size={35}
                                                     border={false}
@@ -199,11 +270,15 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                                     letter={item.ADI}
                                                 />
                                             </View>
-                                            <View style={{ flexDirection: "column", flex: 1, alignContent: "flex-start", alignSelf: "center" }}>
+                                            <View style={{
+                                                flexDirection: "column",
+                                                flex: 1,
+                                                alignSelf: "center"
+                                            }}>
                                                 <Text style={{
                                                     fontWeight: this.state.selectedGrup == item ? "bold" : "normal",
                                                     fontSize: 12,
-                                                    color: colors.inputTextColor,
+                                                    color: this.state.selectedGrup == item ? "#ffffff" : colors.inputTextColor,
                                                     flexWrap: "wrap",
                                                     overflow: "hidden",
                                                     textAlignVertical: "center",
@@ -222,7 +297,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                 </View>
 
                 <TextInput
-                    placeholder="Ara"
+                    placeholder="Tüm ürünlerde ara"
                     autoFocus={true}
                     clearButtonMode="always"
                     clearTextOnFocus
@@ -235,6 +310,8 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         borderColor: colors.borderColor,
                         borderWidth: 1,
                         paddingVertical: 5,
+                        marginHorizontal: 5,
+                        marginTop: 5,
                         paddingHorizontal: 15,
                         textAlign: "left",
                         fontSize: 20,

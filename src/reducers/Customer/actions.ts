@@ -20,13 +20,12 @@ export const actionCreators = {
         //     payload: demoCustomer
         // });
         var result = await CustomerService.getItem(nfcCode);
-
         const customer = result && result[0] && result[0][0] ? result[0][0] : null;
         await dispatch({
             type: Actions.ReceiveCustomerItem,
             payload: customer
         });
-
+        return customer != null;
     },
     clear: () => async (dispatch, getState) => {
         await dispatch({ type: Actions.ClearItem });

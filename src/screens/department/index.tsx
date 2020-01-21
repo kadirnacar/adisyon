@@ -2,14 +2,14 @@ import { colors } from '@components';
 import { IDepartment } from '@models';
 import { DepartmentActions } from '@reducers';
 import { ApplicationState } from '@store';
+import ColorScheme from 'color-scheme';
 import React, { Component } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableOpacity, View, TouchableHighlight, Image } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import RNMaterialLetterIcon from 'react-native-material-letter-icon';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import ColorScheme from 'color-scheme';
-import RNMaterialLetterIcon from 'react-native-material-letter-icon';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const { height, width } = Dimensions.get("window");
 
@@ -56,12 +56,12 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                         style={{ height: height - 160 }}
                         renderItem={({ item }) => (
                             <View style={{ flex: 1, flexDirection: 'column', margin: 1 }}>
-                                <TouchableOpacity style={[styles.imageThumbnail, this.state.selectedItem == item ? { borderColor: "red" } : {}]}
+                                <TouchableHighlight underlayColor="#ffffff00" style={[styles.imageThumbnail, this.state.selectedItem == item ? { borderColor: "red" } : {}]}
                                     onPress={() => {
                                         this.setState({ selectedItem: item })
                                     }}>
                                     <Text style={{ color: colors.inputTextColor, fontSize: 14, fontWeight: this.state.selectedItem == item ? "bold" : "normal" }}>{item.ADI}</Text>
-                                </TouchableOpacity>
+                                </TouchableHighlight>
                             </View>
                         )}
                         numColumns={3}
@@ -72,7 +72,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                         style={{ height: height - 160 }}
                         renderItem={({ item, index }) => {
                             return (
-                                <TouchableHighlight underlayColor="#ffffff00" key={index}
+                                <TouchableHighlight underlayColor="#ffffff00"  key={index}
                                     style={{
                                         width: width / 3 - 18,
                                         height: 150,
@@ -86,7 +86,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                                         borderRadius: 25,
                                         backgroundColor: this.state.selectedItem == item ? colors.transparentBackColor : "#ffffff"
                                     }}
-                                    onPress={() => {
+                                    onPressIn={() => {
                                         this.setState({ selectedItem: item })
                                     }}>
                                     <View style={{ width: '100%', alignItems: "center" }}>
@@ -132,7 +132,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                     />
                 </View>
                 <View style={{ position: "absolute", bottom: 10, width: width }}>
-                    <TouchableOpacity
+                    <TouchableHighlight underlayColor="#ffffff00"
                         disabled={this.state.selectedItem == null}
                         style={{
                             width: width - 20,
@@ -146,13 +146,13 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                             backgroundColor: this.state.selectedItem == null ? "gray" : "#51bdec",
                             borderRadius: 25
                         }}
-                        onPress={async () => {
+                        onPressIn={async () => {
                             await this.props.DepartmentActions.setCurrent(this.state.selectedItem);
                             this.props.navigation.navigate("Nfc");
                         }}
                     >
                         <Text style={{ color: colors.buttonTextColor, fontSize: 18, fontWeight: "bold" }}>Giriş</Text>
-                    </TouchableOpacity>
+                    </TouchableHighlight>
                 </View>
             </SafeAreaView>
         )
