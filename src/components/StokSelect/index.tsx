@@ -71,7 +71,9 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         }}>
                         {this.props.adisyon ?
                             <FlatList
-                                keyboardDismissMode="on-drag" style={{ flex: 1 }} keyboardShouldPersistTaps="always"
+                                keyboardDismissMode="on-drag"
+                                style={{ flex: 1 }}
+                                keyboardShouldPersistTaps="always"
                                 initialNumToRender={15}
                                 removeClippedSubviews={false}
                                 data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : this.props.Stok.items}
