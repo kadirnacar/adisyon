@@ -2,16 +2,16 @@ import { colors } from '@components';
 import { IAdisyonProduct, IStok } from '@models';
 import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import Collapsible from 'react-native-collapsible';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 
 const { width, scale, height } = Dimensions.get("window");
 
 interface Props {
-    item: IStok;
-    selectedStoks?: { [key: number]: IAdisyonProduct };
-    onAddPress?: (stokId: number) => void;
-    onRemovePress?: (stokId: number) => void;
+    item: IAdisyonProduct;
+    stok: IStok;
+    onAddPress?: (item: IAdisyonProduct) => void;
+    onRemovePress?: (item: IAdisyonProduct) => void;
 }
 
 export class AdisyonItem extends Component<Props, any> {
@@ -21,11 +21,9 @@ export class AdisyonItem extends Component<Props, any> {
             collapsed: true
         };
     }
-    
-    render() {
-        const { item } = this.props;
-        const stok = this.props.selectedStoks[item.STOKID];
 
+    render() {
+        const { item, stok } = this.props;
         return (
             <View style={{
                 flex: 1,
@@ -56,7 +54,7 @@ export class AdisyonItem extends Component<Props, any> {
                                     width: 20
                                 }}
                                     name={this.state.collapsed ? "angle-down" : "angle-up"} size={15} />
-                                <Text>{item.ADI}</Text>
+                                <Text>{stok.ADI}</Text>
                             </React.Fragment>
                         </TouchableHighlight>
                     </View>
@@ -77,7 +75,7 @@ export class AdisyonItem extends Component<Props, any> {
                             }}
                             onPressIn={() => {
                                 if (this.props.onRemovePress)
-                                    this.props.onRemovePress(item.STOKID);
+                                    this.props.onRemovePress(item);
                                 this.setState({});
                             }}
                         >
@@ -91,7 +89,7 @@ export class AdisyonItem extends Component<Props, any> {
                             fontSize: 18,
                             fontWeight: "bold"
                         }}>
-                            {stok ? stok.QUANTITY : 0}
+                            {item ? item.QUANTITY : 0}
                         </Text>
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
@@ -106,14 +104,14 @@ export class AdisyonItem extends Component<Props, any> {
                             }}
                             onPressIn={() => {
                                 if (this.props.onAddPress)
-                                    this.props.onAddPress(item.STOKID);
+                                    this.props.onAddPress(item);
                                 this.setState({});
                             }}>
                             <Icon name="plus" size={25} />
                         </TouchableHighlight>
                     </View>
                     <View style={{ width: "20%" }}>
-                        <Text style={{ textAlign: "right", width: "100%" }}>{(item.SFIYAT1 * stok.QUANTITY).toFixed(2)}</Text>
+                        <Text style={{ textAlign: "right", width: "100%" }}>{(stok.SFIYAT1 * item.QUANTITY).toFixed(2)}</Text>
                     </View>
                 </View>
                 <Collapsible
@@ -121,10 +119,11 @@ export class AdisyonItem extends Component<Props, any> {
                     <View style={{
                     }}>
                         <TextInput
-                            value={this.props.selectedStoks[item.STOKID] ? this.props.selectedStoks[item.STOKID].DESC : ""}
-                            editable={this.props.selectedStoks[item.STOKID] && this.props.selectedStoks[item.STOKID].QUANTITY > 0 ? true : false}
+                            value={item ? item.DESC : ""}
+                            editable={item && item.QUANTITY > 0 ? true : false}
                             onChangeText={(text) => {
-                                this.props.selectedStoks[item.STOKID].DESC = text;
+                                item.DESC = text;
+                                this.setState({});
                             }}
                             style={{
                                 width: "100%",

@@ -1,14 +1,13 @@
-import { Login, Department, Nfc, Adisyon } from "@screens";
-import { createStackNavigator, StackHeaderLeftButtonProps } from "react-navigation-stack";
 import { colors } from "@components";
-import { TouchableHighlight, Text } from "react-native";
-import React, { Component } from 'react';
+import { Adisyon, Department, Login, Nfc, StokSelectScreen } from "@screens";
+import { createStackNavigator } from "react-navigation-stack";
 
 export const AppNavigator = createStackNavigator({
     Login: Login,
     Department: Department,
     Nfc: Nfc,
     Adisyon: Adisyon,
+    StokSelect: StokSelectScreen,
 }, {
     initialRouteName: 'Login',
     mode: "card",
@@ -17,7 +16,7 @@ export const AppNavigator = createStackNavigator({
         cardStyle: { backgroundColor: "white", opacity: 1 },
         // headerTransparent: true,
         // headerTitle: "",
-       
+
         headerTintColor: "#ffffff",
         headerBackTitleStyle: { color: "#ffffff" },
         headerStyle: { backgroundColor: "#266580" },

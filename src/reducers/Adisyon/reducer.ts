@@ -1,11 +1,11 @@
 import { Action } from 'redux';
-import { Actions, AdisyonState, IReceiveAdisyonItemsAction, IRequestAdisyonItemsAction } from './state';
+import { Actions, AdisyonState, IReceiveAdisyonItemsAction, ISetCurrentAction, IRequestAdisyonItemsAction } from './state';
 
 const unloadedState: AdisyonState = {
     current: {}
 };
 
-export type KnownAction = IReceiveAdisyonItemsAction | IRequestAdisyonItemsAction;
+export type KnownAction = IReceiveAdisyonItemsAction | IRequestAdisyonItemsAction | ISetCurrentAction;
 
 export const reducer = (currentState: AdisyonState = unloadedState, incomingAction: Action) => {
     const action = incomingAction as KnownAction;
@@ -15,6 +15,9 @@ export const reducer = (currentState: AdisyonState = unloadedState, incomingActi
             return { ...currentState };
         case Actions.RequestSendAdisyonItems:
             currentState.isRequest = true;
+            return { ...currentState };
+        case Actions.SetCurrent:
+            currentState.current = action.payload;
             return { ...currentState };
         default:
             break;

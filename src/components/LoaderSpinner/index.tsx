@@ -12,7 +12,7 @@ interface ILoaderSpinnerProps {
 export class LoaderSpinner extends Component<ILoaderSpinnerProps, ILaderSpinnerState> {
     render() {
         return (
-            <Modal visible={this.props.showLoader}
+            <Modal visible={this.props.showLoader || false}
                 transparent={true}
                 onRequestClose={() => {
                     if (this.props.onCloseModal) {

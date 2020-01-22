@@ -1,21 +1,18 @@
-import { colors, CustomerInfo, StokSelect, StokItem, AdisyonItem } from '@components';
+import { AdisyonItem, colors, CustomerInfo, LoaderSpinner } from '@components';
 import { AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
-import { Alert, Dimensions, Image, ImageBackground, Modal, Picker, StyleSheet, Text, TextInput, TouchableHighlight, View, KeyboardAvoidingView, BackHandler, NativeEventEmitter, NativeEventSubscription } from 'react-native';
+import { Alert, BackHandler, Dimensions, Text, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { FlatList, NavigationEvents, NavigationInjectedProps, withNavigation, ScrollView } from 'react-navigation';
+import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { IAdisyonProduct } from '@models';
-import { StackHeaderLeftButtonProps, HeaderBackButton } from 'react-navigation-stack';
 const { width, scale, height } = Dimensions.get("window");
 
 interface AdisyonState {
-    modalVisible: boolean;
-    selectedStoks?: { [key: number]: IAdisyonProduct };
 }
 
 interface AdisyonProps {
@@ -27,7 +24,7 @@ type Props = NavigationInjectedProps & AdisyonProps & ApplicationState;
 class AdisyonScreen extends Component<Props, AdisyonState> {
     static navigationOptions = ({ navigation }) => {
         return {
-            title: "Kart Oku",
+            title: "Adisyon",
             headerLeft: (props: StackHeaderLeftButtonProps) => {
                 return <HeaderBackButton {...props}
                     onPress={() => {
@@ -60,25 +57,12 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     constructor(props) {
         super(props);
         this.handleBackPress = this.handleBackPress.bind(this);
+        this.handleComponentMount = this.handleComponentMount.bind(this);
+        this.handleComponentUnmount = this.handleComponentUnmount.bind(this);
         this.state = {
-            modalVisible: false,
-            selectedStoks: {}
         }
     }
-    backHandler: NativeEventSubscription;
-    componentDidMount() {
-        console.log("componentDidMount")
-        BackHandler.addEventListener(
-            'hardwareBackPress',
-            this.handleBackPress
-        );
-    }
-    componentWillUnmount() {
-        BackHandler.removeEventListener(
-            'hardwareBackPress',
-            this.handleBackPress
-        );
-    }
+
     handleBackPress() {
         Alert.alert("Uyarı",
             "Müşteri ve Sipariş bilgisi silinecektir. Emin misiniz?",
@@ -103,34 +87,61 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
         )
         return true;
     }
+
+    async handleComponentMount() {
+        if (!this.props.Adisyon.current) {
+            this.props.AdisyonActions.setCurrent({
+                DEPCODE: this.props.Department.current.KODU,
+                GARSONID: this.props.User.current.ID,
+                GUESTNO: this.props.Customer.current.GUESTNO,
+                ITEMS: [],
+                NOTES: ""
+            });
+        }
+        this.setState({});
+        BackHandler.addEventListener(
+            'hardwareBackPress',
+            this.handleBackPress
+        );
+    }
+
+    async handleComponentUnmount() {
+        BackHandler.removeEventListener(
+            'hardwareBackPress',
+            this.handleBackPress
+        );
+    }
+
     render() {
+        console.log(this.props.Adisyon)
         return (
             <React.Fragment>
-                <Modal
-                    animationType="slide"
-                    transparent={false}
-
-                    visible={this.state.modalVisible}
-                    onRequestClose={() => {
-                        this.setState({ modalVisible: false })
-                    }}>
-                    <View style={{
-                        width: '100%',
-                        flexDirection: "row",
-                    }}>
-                        <StokSelect selectedStoks={this.state.selectedStoks} onPress={(data) => {
-                            this.setState({ selectedStoks: data });
-                        }} />
-                    </View>
-                </Modal>
+                <LoaderSpinner
+                    showLoader={this.props.Adisyon.isRequest}
+                    onCloseModal={async () => {
+                        this.setState({
+                            errorMessage: "",
+                            password: null
+                        });
+                        await this.props.AdisyonActions.setCurrent({
+                            DEPCODE: this.props.Department.current.KODU,
+                            GARSONID: this.props.User.current.ID,
+                            GUESTNO: this.props.Customer.current.GUESTNO,
+                            ITEMS: [],
+                            NOTES: ""
+                        });
+                    }} />
+                <NavigationEvents
+                    onWillFocus={this.handleComponentMount}
+                    onWillBlur={this.handleComponentUnmount} />
                 <CustomerInfo style={{ height: 120, top: 10 }} />
-                <KeyboardAvoidingView
+                <View
                     style={{
                         flex: 1,
+                        flexGrow: 1,
                         width: width - 10,
                         top: 20,
                         marginBottom: 90,
-                        flexDirection: "row",
                         backgroundColor: colors.transparentBackColor,
                         borderRadius: 10,
                         borderColor: colors.borderColor,
@@ -138,35 +149,27 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         padding: 5,
                         marginHorizontal: 5
                     }}>
-                    <FlatList data={this.state.selectedStoks ? Object.keys(this.state.selectedStoks) : []}
-                        keyExtractor={(item, index) => index.toString()}
-                        renderItem={({ item, index }) => {
-                            const stok = this.props.Stok.items.find(itm => itm.STOKID == parseInt(item));
-                            const stokItem = this.state.selectedStoks[stok.STOKID];
-                            return <AdisyonItem
-                                item={stok}
-                                selectedStoks={this.state.selectedStoks}
+                    <ScrollView keyboardDismissMode="on-drag" style={{ flex: 1 }} keyboardShouldPersistTaps="always">
+                        {this.props.Adisyon.current ? this.props.Adisyon.current.ITEMS.map((item, index) => {
+                            const stok = this.props.Stok.items.find(itm => itm.STOKID == item.ID);
+                            return <AdisyonItem key={index}
+                                item={item}
+                                stok={stok}
                                 onAddPress={(stokId) => {
-                                    const { selectedStoks } = this.state;
-                                    if (!selectedStoks[stokId])
-                                        selectedStoks[stokId] = { ID: stokId, QUANTITY: 0 };
-                                    selectedStoks[stokId].QUANTITY = selectedStoks[stokId].QUANTITY + 1;
-
+                                    item.QUANTITY = item.QUANTITY + 1;
                                 }}
                                 onRemovePress={(stokId) => {
-                                    const { selectedStoks } = this.state;
-                                    if (selectedStoks[stokId] && selectedStoks[stokId].QUANTITY > 0) {
-                                        selectedStoks[stokId].QUANTITY = selectedStoks[stokId].QUANTITY - 1;
-                                        if (selectedStoks[stok.STOKID].QUANTITY <= 0)
-                                            delete selectedStoks[stok.STOKID];
-                                        this.setState({ selectedStoks: selectedStoks });
+                                    if (item && item.QUANTITY > 0) {
+                                        item.QUANTITY = item.QUANTITY - 1;
+                                        if (item.QUANTITY <= 0)
+                                            this.props.Adisyon.current.ITEMS.splice(index, 1);
+                                        this.setState({});
                                     }
                                 }}
                             />
-                        }}
-                    />
-
-                </KeyboardAvoidingView>
+                        }) : null}
+                    </ScrollView>
+                </View>
                 <View
                     style={{
                         width: width,
@@ -191,11 +194,17 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         marginHorizontal: 5
                     }}
                         onPressIn={() => {
-                            this.setState({ modalVisible: true })
+                            this.props.navigation.navigate("StokSelect")
                         }}>
                         <React.Fragment>
                             <Icon name="plus" size={25} color={colors.inputTextColor} />
-                            <Text style={{ color: colors.inputTextColor, marginLeft: 5, alignSelf: "center", fontWeight: "bold", fontSize: 16 }}>Ürün Ekle</Text>
+                            <Text style={{
+                                color: colors.inputTextColor,
+                                marginLeft: 5,
+                                alignSelf: "center",
+                                fontWeight: "bold",
+                                fontSize: 16
+                            }}>Ürün Ekle</Text>
                         </React.Fragment>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor="#ffffff00" style={{
@@ -211,15 +220,18 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         marginHorizontal: 5,
                         padding: 10
                     }}
-                        onPressIn={() => {
-                            if (Object.keys(this.state.selectedStoks).length > 0) {
-                                Alert.alert("Adisyon işleme konulmuştur");
-                                this.setState({ selectedStoks: {} })
-                            }
+                        onPressIn={async () => {
+                            await this.props.AdisyonActions.sendItem(this.props.Adisyon.current)
                         }}>
                         <React.Fragment>
                             <Icon name="share-square" size={25} color={"#ffffff"} />
-                            <Text style={{ color: "#ffffff", marginLeft: 5, alignSelf: "center", fontWeight: "bold", fontSize: 16 }}>Adisyon Kes</Text>
+                            <Text style={{
+                                color: "#ffffff",
+                                marginLeft: 5,
+                                alignSelf: "center",
+                                fontWeight: "bold",
+                                fontSize: 16
+                            }}>Adisyon Kes</Text>
                         </React.Fragment>
                     </TouchableHighlight>
                 </View>

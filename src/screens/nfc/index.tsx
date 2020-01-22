@@ -6,7 +6,7 @@ import NfcManager, { NfcEvents } from 'react-native-nfc-manager';
 import { withNavigation, NavigationInjectedProps, NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { CustomerActions } from '@reducers';
+import { CustomerActions, AdisyonActions } from '@reducers';
 const { width, scale, height } = Dimensions.get("window");
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { colors, CustomerInfo, LoaderSpinner } from '@components';
@@ -18,6 +18,7 @@ interface CustomerState {
 
 interface CustomerProps {
     CustomerActions: typeof CustomerActions
+    AdisyonActions: typeof AdisyonActions
 }
 
 type Props = NavigationInjectedProps & CustomerProps & ApplicationState;
@@ -59,6 +60,7 @@ class NfcScreen extends Component<Props, any> {
 
     async handleComponentMount() {
         await this.props.CustomerActions.clear();
+        await this.props.AdisyonActions.setCurrent(null);
     }
 
     render() {
@@ -105,6 +107,7 @@ export const Nfc = withNavigation(connect(
     dispatch => {
         return {
             CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
+            AdisyonActions: bindActionCreators({ ...AdisyonActions }, dispatch),
         };
     }
 )(NfcScreen));

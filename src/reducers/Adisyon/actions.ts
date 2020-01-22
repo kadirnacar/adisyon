@@ -16,5 +16,13 @@ export const actionCreators = {
             isSuccess = true;
         });
         return isSuccess;
+    },
+    setCurrent: (data: IAdisyon) => async (dispatch, getState) => {
+        let isSuccess: boolean = false;
+        await batch(async () => {
+            await dispatch({ type: Actions.SetCurrent, payload: data });
+            isSuccess = true;
+        });
+        return isSuccess;
     }
 }

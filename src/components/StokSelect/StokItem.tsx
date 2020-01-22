@@ -7,10 +7,11 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 const { width, scale, height } = Dimensions.get("window");
 
 interface Props {
-    item: IStok;
-    selectedStoks?: { [key: number]: IAdisyonProduct };
-    onAddPress?: (stokId: number) => void;
-    onRemovePress?: (stokId: number) => void;
+    item: IAdisyonProduct;
+    stok: IStok;
+    onAddPress?: (item: IAdisyonProduct) => void;
+    onRemovePress?: (item: IAdisyonProduct) => void;
+    onTextActive?: (item: IAdisyonProduct) => void;
 }
 
 export class StokItem extends Component<Props, any> {
@@ -21,8 +22,7 @@ export class StokItem extends Component<Props, any> {
     }
 
     render() {
-        const { item } = this.props;
-        const stok = this.props.selectedStoks[item.STOKID];
+        const { item, stok } = this.props;
 
         return (
             <View style={{
@@ -37,7 +37,7 @@ export class StokItem extends Component<Props, any> {
                     <View style={{
                         width: "63%"
                     }}>
-                        <Text>{item.ADI}    ({item.SFIYAT1.toFixed(2)})</Text>
+                        <Text>{stok.ADI}    ({stok.SFIYAT1.toFixed(2)})</Text>
                     </View>
                     <View style={{
                         width: "37%",
@@ -56,7 +56,7 @@ export class StokItem extends Component<Props, any> {
                             }}
                             onPressIn={() => {
                                 if (this.props.onRemovePress)
-                                    this.props.onRemovePress(item.STOKID);
+                                    this.props.onRemovePress(item);
                                 this.setState({})
                             }}
                         >
@@ -70,7 +70,7 @@ export class StokItem extends Component<Props, any> {
                             fontSize: 18,
                             fontWeight: "bold"
                         }}>
-                            {stok ? stok.QUANTITY : 0}
+                            {item ? item.QUANTITY : 0}
                         </Text>
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
@@ -85,7 +85,7 @@ export class StokItem extends Component<Props, any> {
                             }}
                             onPressIn={() => {
                                 if (this.props.onAddPress)
-                                    this.props.onAddPress(item.STOKID);
+                                    this.props.onAddPress(item);
                                 this.setState({})
                             }}>
                             <Icon name="plus" size={25} />
@@ -95,10 +95,15 @@ export class StokItem extends Component<Props, any> {
                 <View style={{
                 }}>
                     <TextInput
-                        value={this.props.selectedStoks[item.STOKID] ? this.props.selectedStoks[item.STOKID].DESC : ""}
-                        editable={this.props.selectedStoks[item.STOKID] && this.props.selectedStoks[item.STOKID].QUANTITY > 0 ? true : false}
+                        value={item ? item.DESC : ""}
+                        editable={item && item.QUANTITY > 0 ? true : false}
                         onChangeText={(text) => {
-                            this.props.selectedStoks[item.STOKID].DESC = text;
+                            item.DESC = text;
+                            this.setState({});
+                        }}
+                        onFocus={() => {
+                            if (this.props.onTextActive)
+                                this.props.onTextActive(item);
                         }}
                         style={{
                             width: "100%",

@@ -3,7 +3,8 @@ import { IBaseReducer } from '../BaseReducer';
 
 export enum Actions {
     RequestSendAdisyonItems = "REQUEST_SEND_ADISYON_ITEMS",
-    ReceiveSendAdisyonItems = "RECEIVE_SEND_ADISYON_ITEMS"
+    ReceiveSendAdisyonItems = "RECEIVE_SEND_ADISYON_ITEMS",
+    SetCurrent = "SET_CURRENT_ADISYON"
 }
 
 export interface AdisyonState extends IBaseReducer {
@@ -16,5 +17,9 @@ export interface IRequestAdisyonItemsAction {
 
 export interface IReceiveAdisyonItemsAction {
     type: Actions.ReceiveSendAdisyonItems;
-    payload: IAdisyon[];
+}
+
+export interface ISetCurrentAction {
+    type: Actions.SetCurrent;
+    payload: IAdisyon;
 }
