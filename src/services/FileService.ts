@@ -10,7 +10,7 @@ class FileServiceHelper {
             if (!RNFS.exists(this.stateFile)) {
                 return {};
             }
-            const content = await RNFS.readFile(this.stateFile)
+            const content = await RNFS.readFile(this.stateFile);
             const result: ApplicationState = JSON.parse(content);
             return result;
         } catch (ex) {

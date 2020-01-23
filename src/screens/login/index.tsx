@@ -60,7 +60,6 @@ class LoginScreen extends Component<Props, LoginState> {
     }
     render() {
         const { container } = styles;
-
         return (
             <React.Fragment>
                 <NavigationEvents
@@ -110,7 +109,7 @@ class LoginScreen extends Component<Props, LoginState> {
                                     color: colors.errorTextColor,
                                     fontSize: 16,
                                     fontWeight: "bold",
-                                }}>{this.state.errorMessage} Hata</Text>
+                                }}>{this.state.errorMessage}</Text>
                             </View>
                         )}
                         <TextInput

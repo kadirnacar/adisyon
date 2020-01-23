@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { template } from '@babel/core';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -81,7 +82,31 @@ export class AdisyonItem extends Component<Props, any> {
                         >
                             <Icon name="minus" size={25} />
                         </TouchableHighlight>
-                        <Text style={{
+                        <TextInput
+                            value={item.QUANTITY.toString()}
+                            keyboardType="numeric"
+                            onChangeText={text => {
+                                try {
+                                    item.QUANTITY = parseInt(text);
+                                } catch{
+                                    item.QUANTITY = 0;
+                                }
+                                this.setState({})
+                            }}
+                            style={{
+                                color: colors.inputTextColor,
+                                backgroundColor: "#fff",
+                                borderColor: colors.borderColor,
+                                borderWidth: 1,
+                                paddingVertical: 2,
+                                marginHorizontal: 2,
+                                marginTop: 2,
+                                paddingHorizontal: 15,
+                                textAlign: "left",
+                                fontSize: 14,
+                                borderRadius: 0
+                            }} />
+                        {/* <Text style={{
                             width: 28,
                             alignSelf: "center",
                             alignItems: "center",
@@ -90,7 +115,7 @@ export class AdisyonItem extends Component<Props, any> {
                             fontWeight: "bold"
                         }}>
                             {item ? item.QUANTITY : 0}
-                        </Text>
+                        </Text> */}
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
                             style={{

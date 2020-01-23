@@ -14,13 +14,13 @@ export class AdisyonService extends ServiceBase {
                     "ITEMS": JSON.stringify(data.ITEMS),
                     "DEPCODE": data.DEPCODE,
                     "PAYTYPE": "ROOM",
-                    "RESID": "44089",
+                    "GUESTID": data.GUESTID,
                     "GUESTNO": data.GUESTNO,
                     "NOTES": data.NOTES,
                     "GARSONID": data.GARSONID
                 },
                 "Action": "Execute",
-                "Object": "SP_EASYPOS_SENDCHECK_V1"
+                "Object": "SP_PARK_MOBILE_SENDCHECK"
             }
         });
         return result.value;

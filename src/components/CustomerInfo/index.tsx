@@ -13,6 +13,7 @@ interface CustomerState {
 
 interface CustomerProps {
     style?: StyleProp<ViewStyle>;
+    total?: number;
     onPress?: (event: GestureResponderEvent) => void;
 }
 
@@ -32,7 +33,7 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                 onPressIn={this.props.onPress ? this.props.onPress.bind(this) : null}
                 style={[{
                     flex: 0,
-                    width: width-10,
+                    width: width - 10,
                     height: 150,
                     flexDirection: "row",
                     backgroundColor: colors.transparentBackColor,
@@ -42,17 +43,31 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                     padding: 10,
                     marginHorizontal: 5
                 }, this.props.style]}>
-                <View>
-                    <Text style={{ color: colors.borderColor }}>Misafir Adı</Text>
-                    <Text style={{ fontWeight: "bold", fontSize: 18, color: colors.inputTextColor }}>
-                        {this.props.Customer.current ? this.props.Customer.current.NAME + " " + this.props.Customer.current.SURNAME : null}
-                    </Text>
-                    <Text style={{ color: colors.borderColor }}>Bakiye</Text>
-                    <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
-                        style: "currency",
-                        currency: "TRL"
-                    }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0))}</Text>
-                </View>
+                <React.Fragment>
+                    <View>
+                        <Text style={{ color: colors.borderColor }}>Misafir Adı</Text>
+                        <Text style={{ fontWeight: "bold", fontSize: 18, color: colors.inputTextColor }}>
+                            {this.props.Customer.current ? this.props.Customer.current.NAME + " " + this.props.Customer.current.SURNAME : null}
+                        </Text>
+                        <Text style={{ color: colors.borderColor }}>Bakiye</Text>
+                        <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
+                            style: "currency",
+                            currency: "TRL"
+                        }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0))}</Text>
+                    </View>
+                    {this.props.total != null ?
+                        <View style={{
+                            alignContent:"flex-end",
+                            alignItems:"flex-end",
+                            alignSelf:"flex-end"
+                        }}>
+                            <Text style={{ color: colors.borderColor }}>Toplam Tutar</Text>
+                            <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
+                                style: "currency",
+                                currency: "TRL"
+                            }).format((this.props.total ? this.props.total : 0))}</Text>
+                        </View> : null}
+                </React.Fragment>
             </TouchableHighlight>
         )
     }

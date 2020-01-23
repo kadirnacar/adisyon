@@ -1,5 +1,6 @@
 export interface IAdisyon {
     GUESTNO?: number;
+    GUESTID?: number;
     DEPCODE?: string;
     NOTES?: string;
     GARSONID?: number;

@@ -113,7 +113,12 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     }
 
     render() {
-        console.log(this.props.Adisyon)
+        let currentTotal = 0;
+
+        this.props.Adisyon.current ? this.props.Adisyon.current.ITEMS.forEach(i => {
+            const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
+            currentTotal += i.QUANTITY * stokItem.SFIYAT1
+        }) : null;
         return (
             <React.Fragment>
                 <LoaderSpinner
@@ -134,7 +139,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
-                <CustomerInfo style={{ height: 120, top: 10 }} />
+                <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} />
                 <View
                     style={{
                         flex: 1,
@@ -156,6 +161,17 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 item={item}
                                 stok={stok}
                                 onAddPress={(stokId) => {
+                                    let currentTotal = 0;
+
+                                    this.props.Adisyon.current.ITEMS.forEach(i => {
+                                        const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
+                                        currentTotal += i.QUANTITY * stokItem.SFIYAT1
+                                    });
+
+                                    if (currentTotal > this.props.Customer.current.BALANCE) {
+                                        Alert.alert("Uyarı", "Yeterli bakiye yok");
+                                        return;
+                                    }
                                     item.QUANTITY = item.QUANTITY + 1;
                                 }}
                                 onRemovePress={(stokId) => {
@@ -222,6 +238,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     }}
                         onPressIn={async () => {
                             await this.props.AdisyonActions.sendItem(this.props.Adisyon.current)
+                            this.props.navigation.navigate("Nfc")
                         }}>
                         <React.Fragment>
                             <Icon name="share-square" size={25} color={"#ffffff"} />
@@ -231,7 +248,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 alignSelf: "center",
                                 fontWeight: "bold",
                                 fontSize: 16
-                            }}>Adisyon Kes</Text>
+                            }}>Tamamla</Text>
                         </React.Fragment>
                     </TouchableHighlight>
                 </View>

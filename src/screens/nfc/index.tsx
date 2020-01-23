@@ -1,17 +1,17 @@
-import { ApplicationState } from '@store';
-import LottieView from 'lottie-react-native';
-import React, { Component } from 'react';
-import { Dimensions, ImageBackground, View, TouchableHighlight, Text, Alert } from 'react-native';
-import NfcManager, { NfcEvents } from 'react-native-nfc-manager';
-import { withNavigation, NavigationInjectedProps, NavigationEvents } from 'react-navigation';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
-import { CustomerActions, AdisyonActions } from '@reducers';
-const { width, scale, height } = Dimensions.get("window");
-import Icon from 'react-native-vector-icons/FontAwesome5';
 import { colors, CustomerInfo, LoaderSpinner } from '@components';
+import { AdisyonActions, CustomerActions } from '@reducers';
+import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
+import LottieView from 'lottie-react-native';
+import React, { Component } from 'react';
+import { Alert, Dimensions, TouchableHighlight, View } from 'react-native';
+import NfcManager, { NfcEvents } from 'react-native-nfc-manager';
+import Icon from 'react-native-vector-icons/FontAwesome5';
+import { NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+const { width, scale, height } = Dimensions.get("window");
 
 interface CustomerState {
 }
@@ -42,6 +42,9 @@ class NfcScreen extends Component<Props, any> {
                         const isFind = await this.props.CustomerActions.getItem(tag.id);
                         if (!isFind)
                             Alert.alert("Kart Bilgisi Bulunamadı.");
+                        else {
+                            this.props.navigation.navigate("Adisyon")
+                        }
                     });
                     NfcManager.registerTagEvent();
                 } else {
@@ -71,7 +74,7 @@ class NfcScreen extends Component<Props, any> {
                 <LoaderSpinner
                     showLoader={this.props.Customer.isRequest}
                     onCloseModal={async () => {
-                       await this.props.CustomerActions.clear();
+                        await this.props.CustomerActions.clear();
                     }} />
                 <TouchableHighlight
                     underlayColor="#ffffff00"

@@ -4,7 +4,7 @@ import { StokActions } from '@reducers';
 import { ApplicationState } from '@store';
 import Fuse, { FuseOptions } from 'fuse.js';
 import React, { Component } from 'react';
-import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle } from 'react-native';
+import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -90,6 +90,19 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                             }}
                                             onAddPress={(itm) => {
                                                 const { adisyon } = this.props;
+
+                                                let currentTotal = 0;
+
+                                                adisyon.ITEMS.forEach(i => {
+                                                    const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
+                                                    currentTotal += i.QUANTITY * stokItem.SFIYAT1
+                                                });
+
+                                                if (currentTotal > this.props.Customer.current.BALANCE) {
+                                                    Alert.alert("Uyarı", "Yeterli bakiye yok");
+                                                    return;
+                                                }
+                                                
                                                 const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID);
                                                 if (adisyonIndex < 0)
                                                     adisyon.ITEMS.push(itm);
