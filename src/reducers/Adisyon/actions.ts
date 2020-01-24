@@ -9,11 +9,12 @@ export const actionCreators = {
         await batch(async () => {
             await dispatch({ type: Actions.RequestSendAdisyonItems });
             var result = await AdisyonService.sendItem(data);
+            const isRequestSuccess = result && result.length > 0 && result[0].length > 0 ? result[0][0].Success : false;
             await dispatch({
                 type: Actions.ReceiveSendAdisyonItems,
-                payload: result && result.ResultSets && result.ResultSets.length > 0 ? result.ResultSets[0] : []
+                payload: []
             });
-            isSuccess = true;
+            isSuccess = isRequestSuccess;
         });
         return isSuccess;
     },

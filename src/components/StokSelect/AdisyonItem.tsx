@@ -11,7 +11,7 @@ const { width, scale, height } = Dimensions.get("window");
 interface Props {
     item: IAdisyonProduct;
     stok: IStok;
-    onAddPress?: (item: IAdisyonProduct) => void;
+    onAddPress?: (item: IAdisyonProduct, change?: boolean) => void;
     onRemovePress?: (item: IAdisyonProduct) => void;
 }
 
@@ -83,14 +83,22 @@ export class AdisyonItem extends Component<Props, any> {
                             <Icon name="minus" size={25} />
                         </TouchableHighlight>
                         <TextInput
-                            value={item.QUANTITY.toString()}
+                            value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
                             keyboardType="numeric"
                             onChangeText={text => {
-                                try {
-                                    item.QUANTITY = parseInt(text);
-                                } catch{
-                                    item.QUANTITY = 0;
+                                const quantity = parseFloat(text);
+                                if (!isNaN(quantity)) {
+                                    item.QUANTITY = quantity;
+                                } else {
+                                    item.QUANTITY = null;
                                 }
+                                if (this.props.onRemovePress)
+                                    this.props.onAddPress(item, true);
+                                this.setState({});
+                            }}
+                            onBlur={() => {
+                                if (!item.QUANTITY && this.props.onRemovePress)
+                                    this.props.onRemovePress(item);
                                 this.setState({})
                             }}
                             style={{
@@ -101,10 +109,10 @@ export class AdisyonItem extends Component<Props, any> {
                                 paddingVertical: 2,
                                 marginHorizontal: 2,
                                 marginTop: 2,
-                                paddingHorizontal: 15,
-                                textAlign: "left",
+                                paddingHorizontal: 10,
+                                textAlign: "center",
                                 fontSize: 14,
-                                borderRadius: 0
+                                borderRadius: 20
                             }} />
                         {/* <Text style={{
                             width: 28,

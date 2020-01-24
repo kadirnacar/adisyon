@@ -16,6 +16,7 @@ const { width, scale, height } = Dimensions.get("window");
 interface StokSelectState {
     selectedGrup?: IStokGrup;
     search?: string;
+    source?: IStok[];
     scrollIndex: number;
     searchOptions?: Fuse.FuseOptions<IStok>;
     data?: Fuse<IStok, FuseOptions<IStok>>;
@@ -34,15 +35,23 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         super(props);
         this.state = {
             search: "",
+            source: [],
             scrollIndex: 0,
             searchOptions: {
                 keys: ['ADI'],
+                shouldSort: true,
+                threshold: 1,
             }
         };
     }
 
     componentDidMount() {
-        this.setState({ data: new Fuse(this.props.Stok.items, this.state.searchOptions) });
+        const source = this.props.Stok.items.filter(t => t.departments ? t.departments.indexOf(this.props.Department.current.KODU) > -1 : false);
+        // const source = this.props.Stok.items.filter(t => t.departments ? t.departments.findIndex(d => this.props.User.current.departments.findIndex(u => u == d) > -1) > -1 : false);
+        this.setState({
+            source,
+            data: new Fuse(source, this.state.searchOptions)
+        });
     }
 
     render() {
@@ -74,9 +83,12 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                 keyboardDismissMode="on-drag"
                                 style={{ flex: 1 }}
                                 keyboardShouldPersistTaps="always"
-                                initialNumToRender={15}
+                                updateCellsBatchingPeriod={10}
+                                windowSize={10}
+                                maxToRenderPerBatch={10}
+                                initialNumToRender={10}
                                 removeClippedSubviews={false}
-                                data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : this.props.Stok.items}
+                                data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : (this.state.source ? this.state.source : [])}
                                 renderItem={({ item, index }) => {
                                     let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID) : null;
                                     if (!adisyonItem)
@@ -102,18 +114,19 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                                     Alert.alert("Uyarı", "Yeterli bakiye yok");
                                                     return;
                                                 }
-                                                
+
                                                 const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID);
                                                 if (adisyonIndex < 0)
                                                     adisyon.ITEMS.push(itm);
                                                 itm.QUANTITY = itm.QUANTITY + 1;
                                                 if (this.props.onPress)
                                                     this.props.onPress(adisyon);
+                                                this.setState({});
                                             }}
                                             onRemovePress={(itm) => {
                                                 const { adisyon } = this.props;
                                                 const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID);
-                                                if (itm.QUANTITY > 0) {
+                                                if (itm.QUANTITY - 1 > 0) {
                                                     itm.QUANTITY = itm.QUANTITY - 1;
                                                 } else if (adisyonIndex >= 0) {
                                                     adisyon.ITEMS.splice(adisyonIndex, 1);
@@ -138,6 +151,10 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         <FlatList
                             keyboardDismissMode="on-drag" style={{ flex: 1 }} keyboardShouldPersistTaps="always"
                             data={this.props.StokGrup.items}
+                            updateCellsBatchingPeriod={10}
+                            windowSize={10}
+                            maxToRenderPerBatch={10}
+                            initialNumToRender={10}
                             renderItem={({ item, index }) => {
                                 return (
                                     <GroupItem key={index} group={item} index={index} onPress={(group) => {

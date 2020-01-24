@@ -12,7 +12,15 @@ export const reducer = (currentState: StokState = unloadedState, incomingAction:
     switch (action.type) {
         case Actions.ReceiveStokItems:
             currentState.isRequest = false;
-            currentState.items = action.payload;
+            if (action.payload) {
+                currentState.items = action.payload;
+                if (currentState.items) {
+                    currentState.items.forEach(i => {
+                        if (i.SDEPART)
+                            i.departments = i.SDEPART.split(',')
+                    });
+                }
+            }
             return { ...currentState };
         case Actions.RequestStokItems:
             currentState.isRequest = true;

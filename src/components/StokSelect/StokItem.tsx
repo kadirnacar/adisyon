@@ -35,12 +35,12 @@ export class StokItem extends Component<Props, any> {
             }}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{
-                        width: "63%"
+                        width: "60%"
                     }}>
                         <Text>{stok.ADI}    ({stok.SFIYAT1.toFixed(2)})</Text>
                     </View>
                     <View style={{
-                        width: "37%",
+                        width: "40%",
                         flexDirection: "row"
                     }}>
                         <TouchableHighlight underlayColor="#ffffff00"
@@ -62,7 +62,40 @@ export class StokItem extends Component<Props, any> {
                         >
                             <Icon name="minus" size={25} />
                         </TouchableHighlight>
-                        <Text style={{
+                        <TextInput
+                            value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
+                            keyboardType="numeric"
+                            onChangeText={text => {
+                                const quantity = parseFloat(text);
+                                if (!isNaN(quantity)) {
+                                    item.QUANTITY = quantity;
+                                } else {
+                                    item.QUANTITY = null;
+                                }
+                                this.setState({})
+                            }}
+                            onBlur={() => {
+                                if (!item.QUANTITY && this.props.onRemovePress)
+                                    this.props.onRemovePress(item)
+                                this.setState({})
+                            }}
+                            style={{
+                                color: colors.inputTextColor,
+                                backgroundColor: "#fff",
+                                borderColor: colors.borderColor,
+                                borderWidth: 1,
+                                paddingVertical: 2,
+                                marginHorizontal: 2,
+                                marginTop: 2,
+                                paddingHorizontal: 5,
+                                height: 35,
+                                textAlign: "center",
+                                alignSelf: "center",
+                                alignItems: "center",
+                                fontSize: 14,
+                                borderRadius: 20
+                            }} />
+                        {/* <Text style={{
                             width: 28,
                             alignSelf: "center",
                             alignItems: "center",
@@ -71,7 +104,7 @@ export class StokItem extends Component<Props, any> {
                             fontWeight: "bold"
                         }}>
                             {item ? item.QUANTITY : 0}
-                        </Text>
+                        </Text> */}
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
                             style={{

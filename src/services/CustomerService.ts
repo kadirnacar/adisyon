@@ -5,6 +5,7 @@ import { ICustomer } from '@models';
 
 export class CustomerService extends ServiceBase {
     public static async getItem(nfcCode: string) {
+
         var result = await this.requestJson<AngusProcedureResponse<ICustomer>>({
             url: `${config.restUrl}`,
             method: "POST",

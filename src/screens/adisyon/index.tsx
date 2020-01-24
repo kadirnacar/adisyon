@@ -94,6 +94,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                 DEPCODE: this.props.Department.current.KODU,
                 GARSONID: this.props.User.current.ID,
                 GUESTNO: this.props.Customer.current.GUESTNO,
+                GUESTID: this.props.Customer.current.GUESTID,
                 ITEMS: [],
                 NOTES: ""
             });
@@ -160,25 +161,32 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             return <AdisyonItem key={index}
                                 item={item}
                                 stok={stok}
-                                onAddPress={(stokId) => {
+                                onAddPress={(stokId, change) => {
                                     let currentTotal = 0;
-
+                                    let itemPrice = 0;
                                     this.props.Adisyon.current.ITEMS.forEach(i => {
                                         const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
-                                        currentTotal += i.QUANTITY * stokItem.SFIYAT1
+                                        currentTotal += i.QUANTITY * stokItem.SFIYAT1;
+                                        if (stokItem.STOKID == stokId.ID)
+                                            itemPrice = stokItem.SFIYAT1;
                                     });
 
-                                    if (currentTotal > this.props.Customer.current.BALANCE) {
+                                    if (currentTotal + itemPrice > this.props.Customer.current.BALANCE) {
                                         Alert.alert("Uyarı", "Yeterli bakiye yok");
                                         return;
                                     }
-                                    item.QUANTITY = item.QUANTITY + 1;
+                                    if (!change)
+                                        item.QUANTITY = item.QUANTITY + 1;
+                                    this.setState({});
                                 }}
                                 onRemovePress={(stokId) => {
-                                    if (item && item.QUANTITY > 0) {
-                                        item.QUANTITY = item.QUANTITY - 1;
-                                        if (item.QUANTITY <= 0)
+                                    if (stokId && stokId.QUANTITY > 0) {
+                                        stokId.QUANTITY = stokId.QUANTITY - 1;
+                                        if (stokId.QUANTITY <= 0)
                                             this.props.Adisyon.current.ITEMS.splice(index, 1);
+                                        this.setState({});
+                                    } else if (index >= 0) {
+                                        this.props.Adisyon.current.ITEMS.splice(index, 1);
                                         this.setState({});
                                     }
                                 }}
@@ -237,8 +245,14 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         padding: 10
                     }}
                         onPressIn={async () => {
-                            await this.props.AdisyonActions.sendItem(this.props.Adisyon.current)
-                            this.props.navigation.navigate("Nfc")
+                            const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
+                            if (isSuccess) {
+                                Alert.alert("Tamam", "Sipariş tamamlandı.");
+                                this.props.navigation.navigate("Nfc");
+                            }
+                            else {
+                                Alert.alert("Hata", "Sipariş başarısız.");
+                            }
                         }}>
                         <React.Fragment>
                             <Icon name="share-square" size={25} color={"#ffffff"} />
