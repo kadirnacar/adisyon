@@ -1,5 +1,5 @@
 import { colors } from '@components';
-import { IAdisyonProduct, IStok } from '@models';
+import { IAdisyonProduct, IStok, ICustomer } from '@models';
 import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
@@ -9,6 +9,7 @@ const { width, scale, height } = Dimensions.get("window");
 interface Props {
     item: IAdisyonProduct;
     stok: IStok;
+    discountRate:number;
     onAddPress?: (item: IAdisyonProduct) => void;
     onRemovePress?: (item: IAdisyonProduct) => void;
     onTextActive?: (item: IAdisyonProduct) => void;
@@ -22,7 +23,7 @@ export class StokItem extends Component<Props, any> {
     }
 
     render() {
-        const { item, stok } = this.props;
+        const { item, stok , discountRate } = this.props;
 
         return (
             <View style={{
@@ -37,7 +38,8 @@ export class StokItem extends Component<Props, any> {
                     <View style={{
                         width: "60%"
                     }}>
-                        <Text>{stok.ADI}    ({stok.SFIYAT1.toFixed(2)})</Text>
+                        <Text>{stok.ADI}    (
+                            {stok.SFIYAT1- parseFloat((stok.SFIYAT1*(+discountRate/100)).toFixed(2))})</Text>
                     </View>
                     <View style={{
                         width: "40%",

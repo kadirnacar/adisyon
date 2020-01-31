@@ -1,6 +1,6 @@
 import { colors } from '@components';
-import { IAdisyon, IStok, IStokGrup } from '@models';
-import { StokActions } from '@reducers';
+import { IAdisyon, IStok, IStokGrup, ICustomer } from '@models';
+import { StokActions, CustomerActions, AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import Fuse, { FuseOptions } from 'fuse.js';
 import React, { Component } from 'react';
@@ -27,7 +27,6 @@ interface StokSelectProps {
     adisyon: IAdisyon;
     onPress?: (adisyon: IAdisyon) => void;
 }
-
 type Props = NavigationInjectedProps & StokSelectProps & ApplicationState;
 
 class StokSelectInfoComp extends Component<Props, StokSelectState> {
@@ -91,10 +90,12 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                 data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : (this.state.source ? this.state.source : [])}
                                 renderItem={({ item, index }) => {
                                     let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID) : null;
+                                    let discountRate = this.props.Customer.current.DISCOUNT_RATE
                                     if (!adisyonItem)
                                         adisyonItem = { ID: item.STOKID, QUANTITY: 0 };
                                     return (
                                         <StokItem
+                                        discountRate={discountRate}
                                             stok={item}
                                             item={adisyonItem}
                                             onTextActive={(item) => {
@@ -199,7 +200,7 @@ export const StokSelect = withNavigation(connect(
     (state: ApplicationState) => state,
     dispatch => {
         return {
-            StokSelectActions: bindActionCreators({ ...StokActions }, dispatch),
+            StokSelectActions: bindActionCreators({ ...StokActions }, dispatch)
         };
     }
 )(StokSelectInfoComp)) as any;

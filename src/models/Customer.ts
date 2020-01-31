@@ -6,5 +6,6 @@ export interface ICustomer {
     NAME: string;
     ODANO: string;
     RESID: string;
-    SURNAME: string
+    SURNAME: string;
+    DISCOUNT_RATE:number;
 }

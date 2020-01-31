@@ -9,13 +9,14 @@ export const actionCreators = {
         await batch(async () => {
             await dispatch({ type: Actions.RequestSendAdisyonItems });
             var result = await AdisyonService.sendItem(data);
-            const isRequestSuccess = result && result.length > 0 && result[0].length > 0 ? result[0][0].Success : false;
+            const isRequestSuccess = result && result.length > 0 && result[0].length > 0 ? result[0][0] : false;
             await dispatch({
                 type: Actions.ReceiveSendAdisyonItems,
                 payload: []
             });
             isSuccess = isRequestSuccess;
         });
+        
         return isSuccess;
     },
     setCurrent: (data: IAdisyon) => async (dispatch, getState) => {

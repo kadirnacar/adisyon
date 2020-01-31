@@ -1,5 +1,5 @@
 import { AdisyonItem, colors, CustomerInfo, LoaderSpinner } from '@components';
-import { AdisyonActions } from '@reducers';
+import { AdisyonActions, CustomerActions,  } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
@@ -18,7 +18,6 @@ interface AdisyonState {
 interface AdisyonProps {
     AdisyonActions: typeof AdisyonActions
 }
-
 type Props = NavigationInjectedProps & AdisyonProps & ApplicationState;
 
 class AdisyonScreen extends Component<Props, AdisyonState> {
@@ -115,10 +114,11 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
     render() {
         let currentTotal = 0;
-
+        let discount = this.props.Customer.current.DISCOUNT_RATE;
         this.props.Adisyon.current ? this.props.Adisyon.current.ITEMS.forEach(i => {
             const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
-            currentTotal += i.QUANTITY * stokItem.SFIYAT1
+            currentTotal += i.QUANTITY * (stokItem.SFIYAT1 -
+                parseFloat((stokItem.SFIYAT1 * (discount/100)).toFixed(2)))
         }) : null;
         return (
             <React.Fragment>
@@ -159,6 +159,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         {this.props.Adisyon.current ? this.props.Adisyon.current.ITEMS.map((item, index) => {
                             const stok = this.props.Stok.items.find(itm => itm.STOKID == item.ID);
                             return <AdisyonItem key={index}
+                                discountRate = {discount}
                                 item={item}
                                 stok={stok}
                                 onAddPress={(stokId, change) => {
@@ -166,15 +167,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     let itemPrice = 0;
                                     this.props.Adisyon.current.ITEMS.forEach(i => {
                                         const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
-                                        currentTotal += i.QUANTITY * stokItem.SFIYAT1;
+                                        currentTotal += i.QUANTITY * +(stokItem.SFIYAT1 - (stokItem.SFIYAT1 * (discount/100))).toFixed(2);
                                         if (stokItem.STOKID == stokId.ID)
                                             itemPrice = stokItem.SFIYAT1;
                                     });
 
-                                    if (currentTotal + itemPrice > this.props.Customer.current.BALANCE) {
-                                        Alert.alert("Uyarı", "Yeterli bakiye yok");
-                                        return;
-                                    }
+                                    // if (currentTotal + itemPrice > this.props.Customer.current.BALANCE) {
+                                    //     Alert.alert("Uyarı", "Yeterli bakiye yok");
+                                    //     return;
+                                    // }
                                     if (!change)
                                         item.QUANTITY = item.QUANTITY + 1;
                                     this.setState({});
@@ -245,14 +246,20 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         padding: 10
                     }}
                         onPressIn={async () => {
+                            console.log(this.props.Adisyon.current.ITEMS )
+                        if(this.props.Adisyon.current.ITEMS.length>0){
                             const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
-                            if (isSuccess) {
+                            if (isSuccess["Success"]) {
                                 Alert.alert("Tamam", "Sipariş tamamlandı.");
                                 this.props.navigation.navigate("Nfc");
                             }
                             else {
-                                Alert.alert("Hata", "Sipariş başarısız.");
+                                Alert.alert("Hata",isSuccess["Message"]);
                             }
+                        }
+                        else{
+                            Alert.alert("Ürün Seçin","Devam etmek için lütfen ürün seçin.")
+                        }
                         }}>
                         <React.Fragment>
                             <Icon name="share-square" size={25} color={"#ffffff"} />
