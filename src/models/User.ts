@@ -1,9 +1,6 @@
 export interface IUser {
-    ID: number;
-    GKODU: string;
-    GADI: string;
-    DEPKODU: string;
-    GGRUPID: number;
-    GGRUPID_GRUPADI: string;
-    departments?: string[];
+    GARSONID: number;
+    STDUSERID: number;
+    PORTALID: number;
+    LoginToken: string;
 }

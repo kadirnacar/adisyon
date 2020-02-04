@@ -1,5 +1,5 @@
 import { colors } from "@components";
-import { Adisyon, Department, Login, Nfc, StokSelectScreen } from "@screens";
+import { Adisyon, Department, Login, Nfc, StokSelectScreen, AppSelector } from "@screens";
 import { createStackNavigator } from "react-navigation-stack";
 
 export const AppNavigator = createStackNavigator({
@@ -8,6 +8,7 @@ export const AppNavigator = createStackNavigator({
     Nfc: Nfc,
     Adisyon: Adisyon,
     StokSelect: StokSelectScreen,
+    AppSelector: AppSelector,
 }, {
     initialRouteName: 'Login',
     mode: "card",

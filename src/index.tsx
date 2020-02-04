@@ -2,14 +2,11 @@ import { AppContainer } from '@navigation';
 import { FileService } from '@services';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { AppState, Dimensions, View, ImageBackground } from 'react-native';
+import { AppState, Dimensions, View } from 'react-native';
 import SafeAreaView, { SafeAreaProvider } from 'react-native-safe-area-view';
 import { Provider } from "react-redux";
-import { bindActionCreators, Store } from 'redux';
-import { DepartmentActions } from './reducers/Department';
+import { Store } from 'redux';
 import { configureStore } from './store/configureStore';
-import { StokActions } from './reducers/Stok';
-import { StokGrupActions } from './reducers/StokGrup';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -25,19 +22,10 @@ export default class App extends Component<any, any> {
 
     async componentDidMount() {
         const initialState = await FileService.readStateFromFile();
-        initialState.User = null;
+         initialState.User = null;
+        initialState.Garson = null;
         this.store = configureStore(initialState);
-        this.loadDataFromServer();
         this.setState({ isLoaded: true });
-    }
-
-    async loadDataFromServer() {
-        const getDepartments = await bindActionCreators(DepartmentActions.getItems, this.store.dispatch);
-        await getDepartments();
-        const getStoks = await bindActionCreators(StokActions.getItems, this.store.dispatch);
-        await getStoks();
-        const getGrups = await bindActionCreators(StokGrupActions.getItems, this.store.dispatch);
-        await getGrups();
     }
 
     render() {

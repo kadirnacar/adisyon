@@ -12,8 +12,12 @@ export const reducer = (currentState: UserState = unloadedState, incomingAction:
     switch (action.type) {
         case Actions.ReceiveUserItem:
             if (action.payload) {
-                currentState.current = action.payload;
-                currentState.current.departments = currentState.current.DEPKODU.split(',');
+                currentState.current = {
+                    GARSONID: action.payload.Tenancy.GARSONID,
+                    PORTALID: action.payload.Tenancy.PORTALID,
+                    STDUSERID: action.payload.Tenancy.STDUSERID,
+                    LoginToken: action.payload.LoginToken
+                };
             }
             currentState.isRequest = false;
             return { ...currentState };

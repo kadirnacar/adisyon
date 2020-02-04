@@ -21,5 +21,5 @@ export interface IRequestUserItemAction {
 
 export interface IReceiveUserItemAction {
     type: Actions.ReceiveUserItem;
-    payload: IUser;
+    payload: any;
 }

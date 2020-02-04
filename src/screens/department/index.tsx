@@ -43,14 +43,13 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
     render() {
         const { container } = styles;
         let clrs = this.scheme.colors();
-
         return (
             <SafeAreaView style={container}>
-              
+
                 <View style={{ width: width }}>
 
                     <FlatList
-                        data={this.props.User.current ? this.props.Department.items.filter(itm => this.props.User.current.departments.indexOf(itm.KODU) > -1) : []}
+                        data={this.props.Garson.current ? this.props.Department.items.filter(itm => this.props.Garson.current.departments.indexOf(itm.KODU) > -1) : []}
                         style={{ height: height - 160 }}
                         renderItem={({ item, index }) => {
                             return (

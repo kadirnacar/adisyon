@@ -1,5 +1,5 @@
 import { colors, LoaderSpinner } from '@components';
-import { CustomerActions, UserActions } from '@reducers';
+import { CustomerActions, UserActions, GarsonActions, DepartmentActions, StokActions, StokGrupActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
@@ -11,12 +11,18 @@ const { width, scale, height } = Dimensions.get("window");
 
 interface LoginState {
     errorMessage?: string;
+    username?: string;
     password?: string;
+    isRequest: boolean;
 }
 
 interface UserProps {
     UserActions: typeof UserActions;
     CustomerActions: typeof CustomerActions;
+    GarsonActions: typeof GarsonActions;
+    DepartmentActions: typeof DepartmentActions;
+    StokActions: typeof StokActions;
+    StokGrupActions: typeof StokGrupActions;
 }
 
 type Props = NavigationInjectedProps & UserProps & ApplicationState;
@@ -34,28 +40,47 @@ class LoginScreen extends Component<Props, LoginState> {
         this.handleComponentUnMount = this.handleComponentUnMount.bind(this);
         this.state = {
             errorMessage: "",
-            password: null
+            password: null,
+            username: null,
+            isRequest: false
         }
     }
 
     async handleLogin() {
-        const isLogin = await this.props.UserActions.getItem(this.state.password);
+        this.setState({ isRequest: true })
+        const isLogin = await this.props.UserActions.getItem(this.state.username, this.state.password);
         if (!isLogin) {
             this.setState({ errorMessage: "Hatalı giriş" })
         } else {
+            await this.loadDataFromServer();
             await this.props.CustomerActions.clear();
-            this.props.navigation.navigate("Department");
+            const getGarson = await this.props.GarsonActions.getItem(this.props.User.current.GARSONID);
+            if (!getGarson) {
+                this.setState({ errorMessage: "Garson Bilgisi Bulunamadı." })
+            } else {
+                this.props.navigation.navigate("AppSelector");
+            }
         }
+        this.setState({ isRequest: false })
+
+    }
+
+    async loadDataFromServer() {
+        await this.props.DepartmentActions.getItems();
+        await this.props.StokActions.getItems();
+        await this.props.StokGrupActions.getItems();
     }
 
     async handleComponentMount(payload: NavigationEventPayload) {
         await this.props.UserActions.clear();
+        await this.props.GarsonActions.clear();
     }
 
     async handleComponentUnMount(payload: NavigationEventPayload) {
         this.setState({
             errorMessage: "",
-            password: null
+            password: null,
+            username: null
         });
     }
     render() {
@@ -68,7 +93,7 @@ class LoginScreen extends Component<Props, LoginState> {
                 />
                 <SafeAreaView style={container}>
                     <LoaderSpinner
-                        showLoader={this.props.User.isRequest}
+                        showLoader={this.state.isRequest}
                         onCloseModal={async () => {
                             this.setState({
                                 errorMessage: "",
@@ -113,8 +138,30 @@ class LoginScreen extends Component<Props, LoginState> {
                             </View>
                         )}
                         <TextInput
-                            placeholder="Şifre"
+                            placeholder="Kullanıcı Adı"
                             autoFocus={true}
+                            // returnKeyType={"send"}
+                            clearButtonMode="while-editing"
+                            onSubmitEditing={async () => await this.handleLogin()}
+                            style={{
+                                color: colors.inputTextColor,
+                                backgroundColor: colors.inputBackColor,
+                                borderColor: colors.borderColor,
+                                borderWidth: 1,
+                                paddingVertical: 10,
+                                paddingHorizontal: 15,
+                                textAlign: "center",
+                                fontSize: 20,
+                                borderRadius: 25,
+                                marginBottom: 5
+                            }}
+                            value={this.state.username}
+                            onChangeText={text => { this.setState({ username: text }) }}
+                            autoCorrect={false}
+                            autoCapitalize="none"
+                        />
+                        <TextInput
+                            placeholder="Şifre"
                             // returnKeyType={"send"}
                             clearButtonMode="while-editing"
                             onSubmitEditing={async () => await this.handleLogin()}
@@ -167,6 +214,10 @@ export const Login = withNavigation(connect(
         return {
             UserActions: bindActionCreators({ ...UserActions }, dispatch),
             CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
+            GarsonActions: bindActionCreators({ ...GarsonActions }, dispatch),
+            DepartmentActions: bindActionCreators({ ...DepartmentActions }, dispatch),
+            StokActions: bindActionCreators({ ...StokActions }, dispatch),
+            StokGrupActions: bindActionCreators({ ...StokGrupActions }, dispatch),
         };
     }
 )(LoginScreen));

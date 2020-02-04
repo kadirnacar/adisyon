@@ -26,7 +26,7 @@ export abstract class ServiceBase {
      * Make request with JSON data.
      * @param opts
      */
-    public static async requestJson<T>(opts: IRequestOptions): Promise<Result<T>> {
+    public static async requestJson<T>(opts: IRequestOptions, setAuthHeader: boolean = true): Promise<Result<T>> {
 
         var axiosResult = null;
         let result: Result<T> = null;
@@ -50,12 +50,22 @@ export abstract class ServiceBase {
                 // }
             }
         }
-
-        axiosRequestConfig = {
-            headers: {
-                Authorization: `Bearer ${config.token}`
+        if (setAuthHeader) {
+            const authInfo = await LocalStorage.getItem("user");
+            let UserInfo;
+            if (authInfo) {
+                UserInfo = JSON.parse(authInfo);
             }
-        };
+            if (!opts.data)
+                opts.data = {};
+            opts.data.LoginToken = UserInfo.LoginToken;
+
+        }
+        // axiosRequestConfig = {
+        //     headers: {
+        //         Authorization: `Bearer ${config.token}`
+        //     }
+        // };
         try {
             switch (opts.method) {
                 case "GET":
@@ -77,7 +87,7 @@ export abstract class ServiceBase {
 
             result = new Result<T>(axiosResult.data, null);
         } catch (error) {
-            console.warn("error",error)
+            console.warn("error", error)
             result = new Result<T>(null, error.response && error.response.data ? error.response.data.message : error.message);
         }
 

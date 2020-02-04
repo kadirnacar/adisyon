@@ -6,6 +6,7 @@ import { Actions } from './state';
 export const actionCreators = {
     getItems: () => async (dispatch, getState) => {
         let isSuccess: boolean = false;
+        console.log("getDepartments")
         await batch(async () => {
             await dispatch({ type: Actions.RequestDepartmentItems });
             var result = await DepartmentService.getItems();

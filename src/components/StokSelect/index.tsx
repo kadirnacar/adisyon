@@ -46,7 +46,6 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
 
     componentDidMount() {
         const source = this.props.Stok.items.filter(t => t.departments ? t.departments.indexOf(this.props.Department.current.KODU) > -1 : false);
-        // const source = this.props.Stok.items.filter(t => t.departments ? t.departments.findIndex(d => this.props.User.current.departments.findIndex(u => u == d) > -1) > -1 : false);
         this.setState({
             source,
             data: new Fuse(source, this.state.searchOptions)

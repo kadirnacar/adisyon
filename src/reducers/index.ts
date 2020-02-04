@@ -4,3 +4,4 @@ export * from './StokGrup';
 export * from './Stok';
 export * from './Customer';
 export * from './Adisyon';
+export * from './Garson';

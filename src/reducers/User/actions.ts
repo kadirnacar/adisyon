@@ -1,16 +1,15 @@
 import { UserService } from "@services";
 import { batch } from "react-redux";
 import { Actions } from './state';
+import * as LocalStorage from '../../store/localStorage';
 
 export const actionCreators = {
-    getItem: (username: string) => async (dispatch, getState) => {
+    getItem: (username: string, password: string) => async (dispatch, getState) => {
         let isSuccess: boolean = false;
         await batch(async () => {
             await dispatch({ type: Actions.RequestUserItem });
-            var result = await UserService.getItem(username);
-            const user = result && result.ResultSets
-                && result.ResultSets.length > 0
-                && result.ResultSets[0].length > 0 ? result.ResultSets[0][0] : null;
+            var result = await UserService.getItem(username, password);
+            const user = result && result.Success ? result : null;
 
             await dispatch({
                 type: Actions.ReceiveUserItem,
@@ -18,6 +17,12 @@ export const actionCreators = {
             });
 
             isSuccess = user != null;
+
+            if (isSuccess) {
+                const state = await getState();
+                if (state.User)
+                    await LocalStorage.setItem("user", JSON.stringify(state.User.current));
+            }
         });
         return isSuccess;
     },
