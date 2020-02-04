@@ -7,3 +7,4 @@ export { StokGrupService } from './StokGrupService';
 export { StokService } from './StokService';
 export { ActivityService } from './ActivityService';
 export { UserService } from './UserService';
+export { ActivityOrderService } from './ActivityOrderService';

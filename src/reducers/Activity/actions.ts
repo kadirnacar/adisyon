@@ -11,7 +11,6 @@ export const actionCreators = {
             var result = await ActivityService.getItems(moment(date).format('YYYY-MM-DD'));
             await dispatch({ type: Actions.ReceiveActivityItems, payload: result  && result.length > 0 ? result[0] : [] });
             await FileService.saveStateToFile(getState());
-            console.log(getState());
             isSuccess = true;
         });
         return isSuccess;

@@ -4,3 +4,6 @@ export { Department } from './department';
 export { Adisyon } from './adisyon';
 export { StokSelectScreen } from './stokSelect';
 export { AppSelector } from './appSelector';
+export { ActiviteTypeSelector } from './activiteTypeSelector';
+export { Aktivite } from './aktivite';
+export { ActivitySelectScreen } from './activitySelect';

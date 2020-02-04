@@ -1,5 +1,5 @@
 import { colors, CustomerInfo, LoaderSpinner } from '@components';
-import { AdisyonActions, CustomerActions, Applications } from '@reducers';
+import { AdisyonActions, CustomerActions, Applications, ActivityOrderActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
@@ -17,8 +17,9 @@ interface CustomerState {
 }
 
 interface CustomerProps {
-    CustomerActions: typeof CustomerActions
-    AdisyonActions: typeof AdisyonActions
+    CustomerActions: typeof CustomerActions;
+    AdisyonActions: typeof AdisyonActions;
+    ActivityOrderActions: typeof ActivityOrderActions;
 }
 
 type Props = NavigationInjectedProps & CustomerProps & ApplicationState;
@@ -45,7 +46,9 @@ class NfcScreen extends Component<Props, any> {
                         else {
                             if (this.props.Application.current == Applications.Siparis)
                                 this.props.navigation.navigate("Adisyon")
-                            else if (this.props.Application.current == Applications.Aktivite)
+                            else if (this.props.Application.current == Applications.AktiviteSatis)
+                                this.props.navigation.navigate("Aktivite")
+                            else if (this.props.Application.current == Applications.AktiviteKontrol)
                                 this.props.navigation.navigate("Aktivite")
                         }
                     });
@@ -67,6 +70,7 @@ class NfcScreen extends Component<Props, any> {
     async handleComponentMount() {
         await this.props.CustomerActions.clear();
         await this.props.AdisyonActions.setCurrent(null);
+        await this.props.ActivityOrderActions.setCurrent(null);
     }
 
     render() {
@@ -101,7 +105,10 @@ class NfcScreen extends Component<Props, any> {
                 <View style={{ flex: 1, width: width, height: 500, flexDirection: "row" }}>
                     <LottieView source={require('../../../assets/animation.json')} autoPlay loop />
                 </View>
-                <CustomerInfo style={{ height: 120, bottom: 20 }} onPress={() => { this.props.navigation.navigate("Adisyon") }} />
+                <CustomerInfo style={{ height: 120, bottom: 20 }} onPress={() => {
+                    console.log(Applications[this.props.Application.current])
+                    // this.props.navigation.navigate("Adisyon")
+                }} />
             </React.Fragment>
         )
     }
@@ -114,6 +121,7 @@ export const Nfc = withNavigation(connect(
         return {
             CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
             AdisyonActions: bindActionCreators({ ...AdisyonActions }, dispatch),
+            ActivityOrderActions: bindActionCreators({ ...ActivityOrderActions }, dispatch),
         };
     }
 )(NfcScreen));

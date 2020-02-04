@@ -7,4 +7,5 @@ export { IStok } from './Stok';
 export { IActivity, ISeance } from './Activity';
 export { ICustomer } from './Customer';
 export { IAdisyon, IAdisyonProduct } from './Adisyon';
+export { IActivityOrder, IActivityProduct } from './ActivityOrder';
 

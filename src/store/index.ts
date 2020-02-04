@@ -1,13 +1,5 @@
 
-import { DepartmentState, DepartmentReducer } from '@reducers';
-import { GarsonState, GarsonReducer } from '@reducers';
-import { StokGrupState, StokGrupReducer } from '@reducers';
-import { StokState, StokReducer } from '@reducers';
-import { CustomerState, CustomerReducer } from '@reducers';
-import { AdisyonState, AdisyonReducer } from '@reducers';
-import { UserState, UserReducer } from '@reducers';
-import { AppState, ApplicationReducer } from '@reducers';
-import { ActivityState, ActivityReducer } from '@reducers';
+import { ActivityOrderReducer, ActivityOrderState, ActivityReducer, ActivityState, AdisyonReducer, AdisyonState, ApplicationReducer, AppState, CustomerReducer, CustomerState, DepartmentReducer, DepartmentState, GarsonReducer, GarsonState, StokGrupReducer, StokGrupState, StokReducer, StokState, UserReducer, UserState } from '@reducers';
 import * as LocalStorage from './localStorage';
 
 export { LocalStorage };
@@ -21,6 +13,7 @@ export interface ApplicationState {
     Garson?: GarsonState;
     Application?: AppState;
     Activity?: ActivityState;
+    ActivityOrder?: ActivityOrderState;
 }
 
 export const reducers = {
@@ -32,6 +25,7 @@ export const reducers = {
     Stok: StokReducer,
     Garson: GarsonReducer,
     Activity: ActivityReducer,
+    ActivityOrder: ActivityOrderReducer,
     Application: ApplicationReducer
 };
 

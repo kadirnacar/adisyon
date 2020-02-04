@@ -2,7 +2,8 @@ import { IBaseReducer } from '../BaseReducer';
 
 export enum Applications {
     Siparis,
-    Aktivite,
+    AktiviteSatis,
+    AktiviteKontrol,
     Turnike
 }
 
