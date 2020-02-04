@@ -1,5 +1,5 @@
 import { colors, CustomerInfo, LoaderSpinner } from '@components';
-import { AdisyonActions, CustomerActions } from '@reducers';
+import { AdisyonActions, CustomerActions, Applications } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
@@ -43,7 +43,10 @@ class NfcScreen extends Component<Props, any> {
                         if (!isFind)
                             Alert.alert("Kart Bilgisi Bulunamadı.");
                         else {
-                            this.props.navigation.navigate("Adisyon")
+                            if (this.props.Application.current == Applications.Siparis)
+                                this.props.navigation.navigate("Adisyon")
+                            else if (this.props.Application.current == Applications.Aktivite)
+                                this.props.navigation.navigate("Aktivite")
                         }
                     });
                     NfcManager.registerTagEvent();
