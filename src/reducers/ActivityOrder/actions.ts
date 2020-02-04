@@ -22,7 +22,6 @@ export const actionCreators = {
     setCurrent: (data: IActivityOrder) => async (dispatch, getState) => {
         let isSuccess: boolean = false;
         await batch(async () => {
-            console.log(data)
             await dispatch({ type: Actions.SetCurrent, payload: data });
             isSuccess = true;
         });
