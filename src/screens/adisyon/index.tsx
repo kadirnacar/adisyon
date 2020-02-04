@@ -1,12 +1,12 @@
 import { AdisyonItem, colors, CustomerInfo, LoaderSpinner } from '@components';
-import { AdisyonActions, CustomerActions, } from '@reducers';
+import { AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
 import { Alert, BackHandler, Dimensions, Text, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { FlatList, NavigationEvents, NavigationInjectedProps, withNavigation, ScrollView } from 'react-navigation';
+import { NavigationEvents, NavigationInjectedProps, ScrollView, withNavigation } from 'react-navigation';
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -114,7 +114,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
     render() {
         let currentTotal = 0;
-        let discount = this.props.Customer.current.DISCOUNT_RATE;
+        let discount = this.props.Customer && this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
         this.props.Adisyon.current ? this.props.Adisyon.current.ITEMS.forEach(i => {
             const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
             currentTotal += i.QUANTITY * (stokItem.SFIYAT1 -

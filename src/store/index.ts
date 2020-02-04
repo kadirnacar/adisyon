@@ -5,8 +5,9 @@ import { StokGrupState, StokGrupReducer } from '@reducers';
 import { StokState, StokReducer } from '@reducers';
 import { CustomerState, CustomerReducer } from '@reducers';
 import { AdisyonState, AdisyonReducer } from '@reducers';
-import { UserState } from '@reducers';
-import { UserReducer } from '@reducers';
+import { UserState, UserReducer } from '@reducers';
+import { AppState, ApplicationReducer } from '@reducers';
+import { ActivityState, ActivityReducer } from '@reducers';
 import * as LocalStorage from './localStorage';
 
 export { LocalStorage };
@@ -18,6 +19,8 @@ export interface ApplicationState {
     Adisyon?: AdisyonState;
     Stok?: StokState;
     Garson?: GarsonState;
+    Application?: AppState;
+    Activity?: ActivityState;
 }
 
 export const reducers = {
@@ -27,7 +30,9 @@ export const reducers = {
     Customer: CustomerReducer,
     Adisyon: AdisyonReducer,
     Stok: StokReducer,
-    Garson: GarsonReducer
+    Garson: GarsonReducer,
+    Activity: ActivityReducer,
+    Application: ApplicationReducer
 };
 
 export interface AppThunkAction<TAction> {

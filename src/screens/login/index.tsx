@@ -1,5 +1,5 @@
 import { colors, LoaderSpinner } from '@components';
-import { CustomerActions, UserActions, GarsonActions, DepartmentActions, StokActions, StokGrupActions } from '@reducers';
+import { CustomerActions, UserActions, GarsonActions, DepartmentActions, StokActions, StokGrupActions, ActivityActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
@@ -23,6 +23,7 @@ interface UserProps {
     DepartmentActions: typeof DepartmentActions;
     StokActions: typeof StokActions;
     StokGrupActions: typeof StokGrupActions;
+    ActivityActions: typeof ActivityActions;
 }
 
 type Props = NavigationInjectedProps & UserProps & ApplicationState;
@@ -69,6 +70,7 @@ class LoginScreen extends Component<Props, LoginState> {
         await this.props.DepartmentActions.getItems();
         await this.props.StokActions.getItems();
         await this.props.StokGrupActions.getItems();
+        await this.props.ActivityActions.getItems(new Date());
     }
 
     async handleComponentMount(payload: NavigationEventPayload) {
@@ -218,6 +220,7 @@ export const Login = withNavigation(connect(
             DepartmentActions: bindActionCreators({ ...DepartmentActions }, dispatch),
             StokActions: bindActionCreators({ ...StokActions }, dispatch),
             StokGrupActions: bindActionCreators({ ...StokGrupActions }, dispatch),
+            ActivityActions: bindActionCreators({ ...ActivityActions }, dispatch),
         };
     }
 )(LoginScreen));

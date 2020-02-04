@@ -20,6 +20,7 @@
     "intl": "^1.2.5",
     "json-to-url": "^1.0.5",
     "lottie-react-native": "^3.3.2",
+    "moment": "^2.24.0",
     "nice-color-palettes": "^3.0.0",
     "path": "^0.12.7",
     "react": "16.9.0",

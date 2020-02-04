@@ -5,4 +5,5 @@ export { FileService } from './FileService';
 export { GarsonService } from './GarsonService';
 export { StokGrupService } from './StokGrupService';
 export { StokService } from './StokService';
+export { ActivityService } from './ActivityService';
 export { UserService } from './UserService';
