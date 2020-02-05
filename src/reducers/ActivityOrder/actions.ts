@@ -16,7 +16,7 @@ export const actionCreators = {
             });
             isSuccess = isRequestSuccess;
         });
-        
+
         return isSuccess;
     },
     setCurrent: (data: IActivityOrder) => async (dispatch, getState) => {

@@ -115,9 +115,9 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
         let currentTotal = 0;
         let discount = this.props.Customer && this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
         this.props.ActivityOrder.current ? this.props.ActivityOrder.current.ITEMS.forEach(i => {
-            const stokItem = this.props.Activity.items.find(t => t.ID == i.ID);
-            currentTotal += i.QUANTITY * (stokItem.ADULTPRICE -
-                parseFloat((stokItem.ADULTPRICE * (discount / 100)).toFixed(2)))
+            const stokItem = this.props.Activity.items.find(t => t.ID == i.ItemID);
+            if (stokItem)
+                currentTotal += i.Quantity * stokItem.ADULTPRICE
         }) : null;
         return (
             <React.Fragment>
@@ -155,7 +155,7 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                     }}>
                     <ScrollView keyboardDismissMode="on-drag" style={{ flex: 1 }} keyboardShouldPersistTaps="always">
                         {this.props.ActivityOrder.current ? this.props.ActivityOrder.current.ITEMS.map((item, index) => {
-                            const stok = this.props.Activity.items.find(itm => itm.ID == item.ID);
+                            const stok = this.props.Activity.items.find(itm => itm.ID == item.ItemID);
                             return <ActivityOrderItem key={index}
                                 discountRate={discount}
                                 item={item}
@@ -164,10 +164,10 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                                     let currentTotal = 0;
                                     let itemPrice = 0;
                                     this.props.ActivityOrder.current.ITEMS.forEach(i => {
-                                        const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
-                                        currentTotal += i.QUANTITY * +(stokItem.SFIYAT1 - (stokItem.SFIYAT1 * (discount / 100))).toFixed(2);
-                                        if (stokItem.STOKID == stokId.ID)
-                                            itemPrice = stokItem.SFIYAT1;
+                                        const stokItem = this.props.Activity.items.find(t => t.ID == i.ItemID);
+                                        currentTotal += i.Quantity * stokItem.ADULTPRICE;
+                                        if (stokItem.ID == stokId.ItemID)
+                                            itemPrice = stokItem.ADULTPRICE;
                                     });
 
                                     if (currentTotal + itemPrice > this.props.Customer.current.BALANCE) {
@@ -175,13 +175,13 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                                         return;
                                     }
                                     if (!change)
-                                        item.QUANTITY = item.QUANTITY + 1;
+                                        item.Quantity = item.Quantity + 1;
                                     this.setState({});
                                 }}
                                 onRemovePress={(stokId) => {
-                                    if (stokId && stokId.QUANTITY > 0) {
-                                        stokId.QUANTITY = stokId.QUANTITY - 1;
-                                        if (stokId.QUANTITY <= 0)
+                                    if (stokId && stokId.Quantity > 0) {
+                                        stokId.Quantity = stokId.Quantity - 1;
+                                        if (stokId.Quantity <= 0)
                                             this.props.ActivityOrder.current.ITEMS.splice(index, 1);
                                         this.setState({});
                                     } else if (index >= 0) {
@@ -246,7 +246,7 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                         onPressIn={async () => {
                             if (this.props.ActivityOrder.current.ITEMS.length > 0) {
                                 const isSuccess = await this.props.ActivityOrderActions.sendItem(this.props.ActivityOrder.current);
-                                if (isSuccess["Success"]) {
+                                if (isSuccess["SUCCESS"]) {
                                     Alert.alert("Tamam", "Sipariş tamamlandı.");
                                     this.props.navigation.navigate("Nfc");
                                 }

@@ -5,34 +5,18 @@ import { AngusProcedureResponse } from './AngusResponse';
 
 export class ActivityOrderService extends ServiceBase {
     public static async sendItem(data: IActivityOrder) {
-        // console.log({
-        //     "Parameters": {
-        //         "ITEMS": JSON.stringify(data.ITEMS),
-        //         "DEPCODE": data.DEPCODE,
-        //         "PAYTYPE": "ROOM",
-        //         "GUESTID": data.GUESTID,
-        //         "GUESTNO": data.GUESTNO,
-        //         "NOTES": data.NOTES,
-        //         "GARSONID": data.GARSONID
-        //     },
-        //     "Action": "Execute",
-        //     "Object": "SP_PARK_MOBILE_SENDCHECK"
-        // })
+     
         var result = await this.requestJson<any>({
             url: `${config.restUrl}`,
             method: "POST",
             data: {
-                // "Parameters": {
-                //     "ITEMS": JSON.stringify(data.ITEMS),
-                //     "DEPCODE": data.DEPCODE,
-                //     "PAYTYPE": "ROOM",
-                //     "GUESTID": data.GUESTID,
-                //     "GUESTNO": data.GUESTNO,
-                //     "NOTES": data.NOTES,
-                //     "GARSONID": data.GARSONID
-                // },
-                // "Action": "Execute",
-                // "Object": "SP_PARK_MOBILE_SENDCHECK"
+                "Parameters": {
+                    "ITEMS": JSON.stringify(data.ITEMS),
+                    "GUESTID": data.GUESTID,
+                    "PORTALID": config.tenant
+                },
+                "Action": "Execute",
+                "Object": "SP_PARK_EXTRASCOMPLETERES"
             }
         });
         return result.value;

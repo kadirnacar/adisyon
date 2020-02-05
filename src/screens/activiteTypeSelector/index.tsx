@@ -60,7 +60,7 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                             alignSelf: "center"
                         }}>
                             <Text style={{
-                                fontSize: 34,
+                                fontSize: 24,
                                 height: 180,
                                 color: "#fff",
                                 marginTop: 0,
@@ -93,7 +93,7 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                             alignSelf: "center"
                         }}>
                             <Text style={{
-                                fontSize: 34,
+                                fontSize: 24,
                                 height: 180,
                                 color: "#fff",
                                 marginTop: 0,

@@ -1,10 +1,9 @@
 import { colors } from '@components';
-import { IActivityProduct, IActivity } from '@models';
+import { IActivity, IActivityProduct } from '@models';
+import moment from 'moment';
 import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
-import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { template, parse } from '@babel/core';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -13,7 +12,7 @@ interface Props {
     activity: IActivity;
     onAddPress?: (item: IActivityProduct, change?: boolean) => void;
     onRemovePress?: (item: IActivityProduct) => void;
-    discountRate:number;
+    discountRate: number;
 }
 
 export class ActivityOrderItem extends Component<Props, any> {
@@ -25,7 +24,8 @@ export class ActivityOrderItem extends Component<Props, any> {
     }
 
     render() {
-        const { item, activity , discountRate } = this.props;
+        const { item, activity, discountRate } = this.props;
+        const seance = activity.Seances ? activity.Seances.find(a => a.SEANCEID == item.SeanceID) : null;
         return (
             <View style={{
                 flex: 1,
@@ -40,10 +40,10 @@ export class ActivityOrderItem extends Component<Props, any> {
                         width: "50%"
                     }}>
                         <TouchableHighlight underlayColor="#ffffff00"
-                            style={{ flexDirection: "row" }}
+                            style={{  }}
                             onPressIn={() => this.setState({ collapsed: !this.state.collapsed })}>
                             <React.Fragment>
-                                <Icon style={{
+                                {/* <Icon style={{
                                     borderWidth: 1,
                                     alignContent: "center",
                                     alignSelf: "center",
@@ -55,8 +55,9 @@ export class ActivityOrderItem extends Component<Props, any> {
                                     borderRadius: 20,
                                     width: 20
                                 }}
-                                    name={this.state.collapsed ? "angle-down" : "angle-up"} size={15} />
+                                    name={this.state.collapsed ? "angle-down" : "angle-up"} size={15} /> */}
                                 <Text>{activity.NAME}</Text>
+                                <Text>{seance ? moment(seance.SEANCESTART).format("HH:mm") : ""}</Text>
                             </React.Fragment>
                         </TouchableHighlight>
                     </View>
@@ -84,21 +85,21 @@ export class ActivityOrderItem extends Component<Props, any> {
                             <Icon name="minus" size={25} />
                         </TouchableHighlight>
                         <TextInput
-                            value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
+                            value={item.Quantity != null ? item.Quantity.toString() : ""}
                             keyboardType="numeric"
                             onChangeText={text => {
                                 const quantity = parseFloat(text);
                                 if (!isNaN(quantity)) {
-                                    item.QUANTITY = quantity;
+                                    item.Quantity = quantity;
                                 } else {
-                                    item.QUANTITY = null;
+                                    item.Quantity = null;
                                 }
                                 if (this.props.onRemovePress)
                                     this.props.onAddPress(item, true);
                                 this.setState({});
                             }}
                             onBlur={() => {
-                                if (!item.QUANTITY && this.props.onRemovePress)
+                                if (!item.Quantity && this.props.onRemovePress)
                                     this.props.onRemovePress(item);
                                 this.setState({})
                             }}
@@ -142,14 +143,14 @@ export class ActivityOrderItem extends Component<Props, any> {
                                 this.setState({});
                             }}>
                             <Icon name="plus" size={25} />
-                        </TouchableHighlight> 
+                        </TouchableHighlight>
                     </View>
                     <View style={{ width: "20%" }}>
                         <Text style={{ textAlign: "right", width: "100%" }}>
-                            { (parseFloat((activity.ADULTPRICE - (activity.ADULTPRICE * (discountRate/100))).toFixed(2)) * item.QUANTITY) }</Text>
+                            {((activity.ADULTPRICE ? activity.ADULTPRICE : 0) * item.Quantity).toFixed(2)}</Text>
                     </View>
                 </View>
-                <Collapsible
+                {/* <Collapsible
                     collapsed={this.state.collapsed}>
                     <View style={{
                     }}>
@@ -170,7 +171,7 @@ export class ActivityOrderItem extends Component<Props, any> {
                             }}
                             placeholder="Not" />
                     </View>
-                </Collapsible>
+                </Collapsible> */}
             </View>
         )
     }

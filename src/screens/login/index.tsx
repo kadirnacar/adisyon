@@ -41,8 +41,8 @@ class LoginScreen extends Component<Props, LoginState> {
         this.handleComponentUnMount = this.handleComponentUnMount.bind(this);
         this.state = {
             errorMessage: "",
-            password: null,
-            username: null,
+            password: "123",
+            username: "posmobil",
             isRequest: false
         }
     }

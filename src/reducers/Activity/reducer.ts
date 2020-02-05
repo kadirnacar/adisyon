@@ -22,7 +22,7 @@ export const reducer = (currentState: ActivityState = unloadedState, incomingAct
                         activityObject[act.ID] = {
                             ID: act.ID,
                             NAME: act.NAME,
-                            ADULTPRICE: act.NAME,
+                            ADULTPRICE: act.ADULTPRICE,
                             Seances: []
                         }
                     }

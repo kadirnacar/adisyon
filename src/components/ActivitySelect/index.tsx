@@ -86,10 +86,10 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                                 removeClippedSubviews={false}
                                 data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IActivity[] : (this.state.source ? this.state.source : [])}
                                 renderItem={({ item, index }) => {
-                                    let adisyonItem = this.props.order.ITEMS ? this.props.order.ITEMS.find(itm => itm.ID == item.ID) : null;
+                                    let adisyonItem = this.props.order.ITEMS ? this.props.order.ITEMS.find(itm => itm.ItemID == item.ID) : null;
                                     let discountRate = this.props.Customer.current.DISCOUNT_RATE
                                     if (!adisyonItem)
-                                        adisyonItem = { ID: item.ID, QUANTITY: 0 };
+                                        adisyonItem = { ItemID: item.ID, Quantity: 0 };
                                     return (
                                         <OrderItem
                                             discountRate={discountRate}
@@ -104,28 +104,28 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                                                 let currentTotal = 0;
 
                                                 order.ITEMS.forEach(i => {
-                                                    const stokItem = this.props.Activity.items.find(t => t.ID == i.ID);
-                                                    currentTotal += i.QUANTITY * stokItem.ADULTPRICE
+                                                    const stokItem = this.props.Activity.items.find(t => t.ID == i.ItemID);
+                                                    currentTotal += i.Quantity * stokItem.ADULTPRICE
                                                 });
-
-                                                if (currentTotal > this.props.Customer.current.BALANCE) {
+                                                const activityItem = this.props.Activity.items.find(t => t.ID == itm.ItemID);
+                                                if ((currentTotal + activityItem.ADULTPRICE) > this.props.Customer.current.BALANCE) {
                                                     Alert.alert("Uyarı", "Yeterli bakiye yok");
                                                     return;
                                                 }
 
-                                                const adisyonIndex = order.ITEMS.findIndex(i => i.ID == itm.ID);
+                                                const adisyonIndex = order.ITEMS.findIndex(i => i.ItemID == itm.ItemID);
                                                 if (adisyonIndex < 0)
                                                     order.ITEMS.push(itm);
-                                                itm.QUANTITY = itm.QUANTITY + 1;
+                                                itm.Quantity = itm.Quantity + 1;
                                                 if (this.props.onPress)
                                                     this.props.onPress(order);
                                                 this.setState({});
                                             }}
                                             onRemovePress={(itm) => {
                                                 const { order } = this.props;
-                                                const adisyonIndex = order.ITEMS.findIndex(i => i.ID == itm.ID);
-                                                if (itm.QUANTITY - 1 > 0) {
-                                                    itm.QUANTITY = itm.QUANTITY - 1;
+                                                const adisyonIndex = order.ITEMS.findIndex(i => i.ItemID == itm.ItemID);
+                                                if (itm.Quantity - 1 > 0) {
+                                                    itm.Quantity = itm.Quantity - 1;
                                                 } else if (adisyonIndex >= 0) {
                                                     order.ITEMS.splice(adisyonIndex, 1);
                                                 }
@@ -139,7 +139,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                                 keyExtractor={(item, index) => index.toString()}
                             /> : null}
                     </View>
-                   
+
                 </View>
 
                 <TextInput

@@ -1,9 +1,9 @@
 import { colors } from '@components';
-import { IActivityProduct, IActivity, ICustomer } from '@models';
+import { IActivity, IActivityProduct } from '@models';
+import moment from 'moment';
 import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import moment from 'moment';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -20,6 +20,7 @@ export class OrderItem extends Component<Props, any> {
     constructor(props) {
         super(props);
         this.state = {
+            selectedSeance: null
         };
     }
 
@@ -40,14 +41,16 @@ export class OrderItem extends Component<Props, any> {
                         width: "60%"
                     }}>
                         <Text>{activity.NAME}    (
-                            {activity.ADULTPRICE - parseFloat((activity.ADULTPRICE * (+discountRate / 100)).toFixed(2))})</Text>
+                            {(activity.ADULTPRICE ? activity.ADULTPRICE : 0).toFixed(2)})</Text>
                     </View>
                     <View style={{
                         width: "40%",
-                        flexDirection: "row"
+                        flexDirection: "row",
+
                     }}>
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
+                            disabled={item.SeanceID == null}
                             style={{
                                 width: 30,
                                 borderRadius: 10,
@@ -66,19 +69,20 @@ export class OrderItem extends Component<Props, any> {
                             <Icon name="minus" size={25} />
                         </TouchableHighlight>
                         <TextInput
-                            value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
+                            value={item.Quantity != null ? item.Quantity.toString() : ""}
                             keyboardType="numeric"
+                            editable={item.SeanceID != null}
                             onChangeText={text => {
                                 const quantity = parseFloat(text);
                                 if (!isNaN(quantity)) {
-                                    item.QUANTITY = quantity;
+                                    item.Quantity = quantity;
                                 } else {
-                                    item.QUANTITY = null;
+                                    item.Quantity = null;
                                 }
                                 this.setState({})
                             }}
                             onBlur={() => {
-                                if (!item.QUANTITY && this.props.onRemovePress)
+                                if (!item.Quantity && this.props.onRemovePress)
                                     this.props.onRemovePress(item)
                                 this.setState({})
                             }}
@@ -110,6 +114,7 @@ export class OrderItem extends Component<Props, any> {
                         </Text> */}
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
+                            disabled={item.SeanceID == null}
                             style={{
                                 width: 30,
                                 borderRadius: 10,
@@ -129,10 +134,38 @@ export class OrderItem extends Component<Props, any> {
                     </View>
                 </View>
                 <View style={{
+                    flex: 1,
+                    flexDirection: "row",
+                    width: "100%",
+                    flexWrap: "wrap"
                 }}>
 
-                    {activity.Seances.map((act, index) => {
-                        return <Text key={index}>{moment(act.SEANCESTART).format("HH:mm")}</Text>
+                    {activity.Seances.sort((a, b) => {
+                        if (a.SEANCESTART > b.SEANCESTART)
+                            return 1;
+                        else if (a.SEANCESTART < b.SEANCESTART)
+                            return -1
+                        else
+                            return 0;
+                    }).map((act, index) => {
+                        return <TouchableHighlight key={index}
+                            onPress={() => {
+                                item.SeanceID = act.SEANCEID;
+                                this.setState({})
+                            }}
+                            style={{
+                                backgroundColor: item.SeanceID == act.SEANCEID ? colors.inputBackColor : "transparent",
+                                margin: 3,
+                                width: 70,
+                                alignContent: "center",
+                                alignItems: "center",
+                                paddingHorizontal: 5,
+                                paddingVertical: 3,
+                                borderWidth: 1,
+                                borderRadius: 6
+                            }}>
+                            <Text>{moment(act.SEANCESTART).format("HH:mm")}</Text>
+                        </TouchableHighlight>
                     })}
                 </View>
             </View>

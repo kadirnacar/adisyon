@@ -94,7 +94,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                         adisyonItem = { ID: item.STOKID, QUANTITY: 0 };
                                     return (
                                         <StokItem
-                                        discountRate={discountRate}
+                                            discountRate={discountRate}
                                             stok={item}
                                             item={adisyonItem}
                                             onTextActive={(item) => {
@@ -110,7 +110,8 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                                     currentTotal += i.QUANTITY * stokItem.SFIYAT1
                                                 });
 
-                                                if (currentTotal > this.props.Customer.current.BALANCE) {
+                                                const stokItem = this.props.Stok.items.find(t => t.STOKID == itm.ID);
+                                                if ((currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
                                                     Alert.alert("Uyarı", "Yeterli bakiye yok");
                                                     return;
                                                 }

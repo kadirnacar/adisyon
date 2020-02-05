@@ -5,5 +5,5 @@ export { Adisyon } from './adisyon';
 export { StokSelectScreen } from './stokSelect';
 export { AppSelector } from './appSelector';
 export { ActiviteTypeSelector } from './activiteTypeSelector';
-export { Aktivite } from './aktivite';
+export { Aktivite } from './activity';
 export { ActivitySelectScreen } from './activitySelect';

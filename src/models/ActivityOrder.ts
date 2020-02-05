@@ -6,8 +6,8 @@ export interface IActivityOrder {
     ITEMS?: IActivityProduct[];
 }
 export interface IActivityProduct {
-    ID?: number;
-    QUANTITY?: number;
-    SEANCEID?: number;
-    DESC?: string;
+    ItemID?: number;
+    Quantity?: number;
+    SeanceID?: number;
+    TicketTypeID?: string;
 }
