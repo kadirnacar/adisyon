@@ -1,18 +1,19 @@
 import { colors } from '@components';
-import { IActivityOrder, IActivity, ICustomer } from '@models';
-import { ActivityActions, CustomerActions, AdisyonActions } from '@reducers';
+import { IActivity, IActivityOrder, ISeance } from '@models';
+import { ActivityActions } from '@reducers';
 import { ApplicationState } from '@store';
 import Fuse, { FuseOptions } from 'fuse.js';
 import React, { Component } from 'react';
-import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert } from 'react-native';
+import { Alert, Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { OrderItem } from './OrderItem';
+import { CheckSelectItem } from './CheckSelectItem';
 
 const { width, scale, height } = Dimensions.get("window");
 
-interface ActivitySelectState {
+interface ActivityCheckSelectState {
     search?: string;
     source?: IActivity[];
     scrollIndex: number;
@@ -20,14 +21,13 @@ interface ActivitySelectState {
     data?: Fuse<IActivity, FuseOptions<IActivity>>;
 }
 
-interface ActivitySelectProps {
+interface ActivityCheckSelectProps {
     style?: StyleProp<ViewStyle>;
-    order: IActivityOrder;
-    onPress?: (adisyon: IActivityOrder) => void;
+    onPress?: (adisyon: IActivity, seance: ISeance) => void;
 }
-type Props = NavigationInjectedProps & ActivitySelectProps & ApplicationState;
+type Props = NavigationInjectedProps & ActivityCheckSelectProps & ApplicationState;
 
-class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
+class ActivityCheckSelectInfoComp extends Component<Props, ActivityCheckSelectState> {
     constructor(props) {
         super(props);
         this.state = {
@@ -74,7 +74,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                             width: "100%",
                             marginRight: 5
                         }}>
-                        {this.props.order ?
+                      
                             <FlatList
                                 keyboardDismissMode="on-drag"
                                 style={{ flex: 1 }}
@@ -86,56 +86,19 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                                 removeClippedSubviews={false}
                                 data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IActivity[] : (this.state.source ? this.state.source : [])}
                                 renderItem={({ item, index }) => {
-                                    let adisyonItem = this.props.order.ITEMS ? this.props.order.ITEMS.find(itm => itm.ItemID == item.ID) : null;
-                                    if (!adisyonItem)
-                                        adisyonItem = { ItemID: item.ID, Quantity: 0 };
                                     return (
-                                        <OrderItem
+                                        <CheckSelectItem
                                             activity={item}
-                                            item={adisyonItem}
-                                            onTextActive={(item) => {
-                                                this.setState({ scrollIndex: index });
-                                            }}
-                                            onAddPress={(itm) => {
-                                                const { order } = this.props;
-
-                                                let currentTotal = 0;
-
-                                                order.ITEMS.forEach(i => {
-                                                    const stokItem = this.props.Activity.items.find(t => t.ID == i.ItemID);
-                                                    currentTotal += i.Quantity * stokItem.ADULTPRICE
-                                                });
-                                                const activityItem = this.props.Activity.items.find(t => t.ID == itm.ItemID);
-                                                if ((currentTotal + activityItem.ADULTPRICE) > this.props.Customer.current.BALANCE) {
-                                                    Alert.alert("Uyarı", "Yeterli bakiye yok");
-                                                    return;
-                                                }
-
-                                                const adisyonIndex = order.ITEMS.findIndex(i => i.ItemID == itm.ItemID);
-                                                if (adisyonIndex < 0)
-                                                    order.ITEMS.push(itm);
-                                                itm.Quantity = itm.Quantity + 1;
+                                            onSelect={(itm, seance) => {
                                                 if (this.props.onPress)
-                                                    this.props.onPress(order);
-                                                this.setState({});
-                                            }}
-                                            onRemovePress={(itm) => {
-                                                const { order } = this.props;
-                                                const adisyonIndex = order.ITEMS.findIndex(i => i.ItemID == itm.ItemID);
-                                                if (itm.Quantity - 1 > 0) {
-                                                    itm.Quantity = itm.Quantity - 1;
-                                                } else if (adisyonIndex >= 0) {
-                                                    order.ITEMS.splice(adisyonIndex, 1);
-                                                }
-                                                if (this.props.onPress)
-                                                    this.props.onPress(order);
+                                                    this.props.onPress(item, seance);
                                             }}
                                         />
                                     )
                                 }}
                                 numColumns={1}
                                 keyExtractor={(item, index) => index.toString()}
-                            /> : null}
+                            /> 
                     </View>
 
                 </View>
@@ -167,11 +130,11 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
     }
 }
 
-export const ActivitySelect = withNavigation(connect(
+export const ActivityCheckSelect = withNavigation(connect(
     (state: ApplicationState) => state,
     dispatch => {
         return {
-            ActivitySelectActions: bindActionCreators({ ...ActivityActions }, dispatch)
+            ActivityCheckSelectActions: bindActionCreators({ ...ActivityActions }, dispatch)
         };
     }
-)(ActivitySelectInfoComp)) as any;
+)(ActivityCheckSelectInfoComp)) as any;

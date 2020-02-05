@@ -15,6 +15,7 @@ export class ActivityService extends ServiceBase {
                 "Object": "SP_PARK_MOBILE_GETACTIVITIES"
             }
         });
-        return result.value;
+        
+        return result;
     }
 }

@@ -86,7 +86,7 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                         }}
                         onPressIn={async () => {
                             await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol);
-                            this.props.navigation.navigate("Nfc");
+                            this.props.navigation.navigate("ActivityCheck");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",

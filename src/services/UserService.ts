@@ -15,6 +15,7 @@ export class UserService extends ServiceBase {
                 "Tenant": config.tenant
             }
         }, false);
-        return result.value;
+       
+        return result;
     }
 }

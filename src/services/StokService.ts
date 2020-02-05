@@ -37,6 +37,7 @@ export class StokService extends ServiceBase {
                 }
             }
         });
-        return result.value;
+       
+        return result;
     }
 }

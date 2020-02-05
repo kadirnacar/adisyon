@@ -48,8 +48,13 @@ class NfcScreen extends Component<Props, any> {
                                 this.props.navigation.navigate("Adisyon")
                             else if (this.props.Application.current == Applications.AktiviteSatis)
                                 this.props.navigation.navigate("Aktivite")
-                            else if (this.props.Application.current == Applications.AktiviteKontrol)
-                                this.props.navigation.navigate("Aktivite")
+                            else if (this.props.Application.current == Applications.AktiviteKontrol) {
+                                const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, this.props.ActivityOrder.checkItemSeance, tag.id);
+                                console.log(result);
+                                if (result) {
+                                    Alert.alert(result["MESSAGE"]);
+                                }
+                            }
                         }
                     });
                     NfcManager.registerTagEvent();
@@ -106,7 +111,6 @@ class NfcScreen extends Component<Props, any> {
                     <LottieView source={require('../../../assets/animation.json')} autoPlay loop />
                 </View>
                 <CustomerInfo style={{ height: 120, bottom: 20 }} onPress={() => {
-                    console.log(Applications[this.props.Application.current])
                     // this.props.navigation.navigate("Adisyon")
                 }} />
             </React.Fragment>

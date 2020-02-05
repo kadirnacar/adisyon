@@ -113,7 +113,6 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
 
     render() {
         let currentTotal = 0;
-        let discount = this.props.Customer && this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
         this.props.ActivityOrder.current ? this.props.ActivityOrder.current.ITEMS.forEach(i => {
             const stokItem = this.props.Activity.items.find(t => t.ID == i.ItemID);
             if (stokItem)
@@ -157,7 +156,6 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                         {this.props.ActivityOrder.current ? this.props.ActivityOrder.current.ITEMS.map((item, index) => {
                             const stok = this.props.Activity.items.find(itm => itm.ID == item.ItemID);
                             return <ActivityOrderItem key={index}
-                                discountRate={discount}
                                 item={item}
                                 activity={stok}
                                 onAddPress={(stokId, change) => {
@@ -249,9 +247,6 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                                 if (isSuccess["SUCCESS"]) {
                                     Alert.alert("Tamam", "Sipariş tamamlandı.");
                                     this.props.navigation.navigate("Nfc");
-                                }
-                                else {
-                                    Alert.alert("Hata", isSuccess["Message"]);
                                 }
                             }
                             else {

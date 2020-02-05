@@ -61,6 +61,7 @@ export abstract class ServiceBase {
             opts.data.LoginToken = UserInfo.LoginToken;
 
         }
+        console.log(JSON.stringify(opts.data))
         // axiosRequestConfig = {
         //     headers: {
         //         Authorization: `Bearer ${config.token}`
@@ -87,8 +88,7 @@ export abstract class ServiceBase {
 
             result = new Result<T>(axiosResult.data, null);
         } catch (error) {
-            console.warn("error", error)
-            result = new Result<T>(null, error.response && error.response.data ? error.response.data.message : error.message);
+            result = new Result<T>(null, error.response && error.response.data ? error.response.data : error.message);
         }
 
         if (result.hasErrors) {

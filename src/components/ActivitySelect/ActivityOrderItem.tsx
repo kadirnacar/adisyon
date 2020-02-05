@@ -12,7 +12,6 @@ interface Props {
     activity: IActivity;
     onAddPress?: (item: IActivityProduct, change?: boolean) => void;
     onRemovePress?: (item: IActivityProduct) => void;
-    discountRate: number;
 }
 
 export class ActivityOrderItem extends Component<Props, any> {
@@ -24,7 +23,7 @@ export class ActivityOrderItem extends Component<Props, any> {
     }
 
     render() {
-        const { item, activity, discountRate } = this.props;
+        const { item, activity } = this.props;
         const seance = activity.Seances ? activity.Seances.find(a => a.SEANCEID == item.SeanceID) : null;
         return (
             <View style={{

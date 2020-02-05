@@ -2,6 +2,7 @@ import { IAdisyon } from "@models";
 import { AdisyonService } from "@services";
 import { batch } from "react-redux";
 import { Actions } from './state';
+import { Alert } from "react-native";
 
 export const actionCreators = {
     sendItem: (data: IAdisyon) => async (dispatch, getState) => {
@@ -9,11 +10,19 @@ export const actionCreators = {
         await batch(async () => {
             await dispatch({ type: Actions.RequestSendAdisyonItems });
             var result = await AdisyonService.sendItem(data);
-            const isRequestSuccess = result && result.length > 0 && result[0].length > 0 ? result[0][0] : false;
+
+            const isRequestSuccess = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0][0] : false;
             await dispatch({
                 type: Actions.ReceiveSendAdisyonItems,
                 payload: []
             });
+
+            if (result.hasErrors()) {
+                Alert.alert(result.errors[0]);
+                isSuccess = false;
+                return;
+            }
+            
             isSuccess = isRequestSuccess;
         });
         

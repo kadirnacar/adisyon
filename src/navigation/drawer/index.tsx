@@ -1,5 +1,5 @@
 import { colors } from "@components";
-import { Adisyon, Department, Login, Nfc, StokSelectScreen, ActivitySelectScreen, AppSelector, ActiviteTypeSelector, Aktivite } from "@screens";
+import { Adisyon, Department, Login, Nfc, StokSelectScreen, ActivityCheckScreen, ActivitySelectScreen, AppSelector, ActiviteTypeSelector, Aktivite } from "@screens";
 import { createStackNavigator } from "react-navigation-stack";
 
 export const AppNavigator = createStackNavigator({
@@ -9,6 +9,7 @@ export const AppNavigator = createStackNavigator({
     Adisyon: Adisyon,
     StokSelect: StokSelectScreen,
     ActivitySelect: ActivitySelectScreen,
+    ActivityCheck: ActivityCheckScreen,
     AppSelector: AppSelector,
     ActiviteTypeSelector: ActiviteTypeSelector,
     Aktivite: Aktivite,

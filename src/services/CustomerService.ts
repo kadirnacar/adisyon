@@ -17,6 +17,7 @@ export class CustomerService extends ServiceBase {
                 }
             }
         });
-        return result.value;
+     
+        return result;
     }
 }

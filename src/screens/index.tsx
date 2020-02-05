@@ -7,3 +7,4 @@ export { AppSelector } from './appSelector';
 export { ActiviteTypeSelector } from './activiteTypeSelector';
 export { Aktivite } from './activity';
 export { ActivitySelectScreen } from './activitySelect';
+export { ActivityCheckScreen } from './activityCheck';

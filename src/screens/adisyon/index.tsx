@@ -252,9 +252,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     Alert.alert("Tamam", "Sipariş tamamlandı.");
                                     this.props.navigation.navigate("Nfc");
                                 }
-                                else {
-                                    Alert.alert("Hata", isSuccess["Message"]);
-                                }
                             }
                             else {
                                 Alert.alert("Ürün Seçin", "Devam etmek için lütfen ürün seçin.")

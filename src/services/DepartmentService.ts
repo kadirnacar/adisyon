@@ -29,6 +29,7 @@ export class DepartmentService extends ServiceBase {
                 }
             }
         });
-        return result.value;
+      
+        return result;
     }
 }

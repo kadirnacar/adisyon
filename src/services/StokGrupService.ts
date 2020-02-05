@@ -34,6 +34,7 @@ export class StokGrupService extends ServiceBase {
                 }
             }
         });
-        return result.value;
+       
+        return result;
     }
 }

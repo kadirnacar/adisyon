@@ -10,7 +10,6 @@ const { width, scale, height } = Dimensions.get("window");
 interface Props {
     item: IActivityProduct;
     activity: IActivity;
-    discountRate: number;
     onAddPress?: (item: IActivityProduct) => void;
     onRemovePress?: (item: IActivityProduct) => void;
     onTextActive?: (item: IActivityProduct) => void;
@@ -25,7 +24,7 @@ export class OrderItem extends Component<Props, any> {
     }
 
     render() {
-        const { item, activity, discountRate } = this.props;
+        const { item, activity } = this.props;
 
         return (
             <View style={{
