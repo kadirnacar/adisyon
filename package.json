@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.7.1",
     "@react-native-community/cli-platform-android": "3.0.0-alpha.2",
+    "@react-native-community/datetimepicker": "^2.2.1",
     "@react-native-community/masked-view": "^0.1.6",
     "axios": "^0.19.1",
     "babel-plugin-module-resolver": "^4.0.0",

@@ -1,14 +1,13 @@
-import { colors, LoaderSpinner } from '@components';
+import { colors } from '@components';
+import { ApplicationActions, Applications } from '@reducers';
 import { ApplicationState } from '@store';
-import ColorScheme from 'color-scheme';
 import React, { Component } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import RNMaterialLetterIcon from 'react-native-material-letter-icon';
-import Icon from 'react-native-vector-icons/FontAwesome5';
-import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { Dimensions, Image, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { ApplicationActions, Applications } from '@reducers';
+const turnikeLogo = require('../../../assets/turnike.png');
+const saleLogo = require('../../../assets/sale.png');
 
 const { height, width } = Dimensions.get("window");
 
@@ -53,15 +52,25 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                         }}
                         onPressIn={async () => {
                             await this.props.ApplicationActions.setCurrent(Applications.AktiviteSatis);
+                            await this.props.ApplicationActions.setNfcTitle("Aktivite Satış");
+
                             this.props.navigation.navigate("Nfc");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",
                             alignSelf: "center"
                         }}>
+                            <Image source={saleLogo}
+                                resizeMethod={"resize"}
+                                style={{
+                                    marginTop: 5,
+                                    width: 90,
+                                    height: 90,
+                                }}
+                            ></Image>
                             <Text style={{
                                 fontSize: 24,
-                                height: 180,
+                                height: 50,
                                 color: "#fff",
                                 marginTop: 0,
                                 flexWrap: "nowrap",
@@ -86,15 +95,24 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                         }}
                         onPressIn={async () => {
                             await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol);
+                            await this.props.ApplicationActions.setNfcTitle("Aktivite Geçiş Kontrol");
                             this.props.navigation.navigate("ActivityCheck");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",
                             alignSelf: "center"
                         }}>
+                            <Image source={turnikeLogo}
+                                resizeMethod={"resize"}
+                                style={{
+                                    marginTop: 5,
+                                    width: 70,
+                                    height: 70,
+                                }}
+                            ></Image>
                             <Text style={{
                                 fontSize: 24,
-                                height: 180,
+                                height: 70,
                                 color: "#fff",
                                 marginTop: 0,
                                 flexWrap: "nowrap",

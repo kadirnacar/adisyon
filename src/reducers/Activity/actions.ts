@@ -11,14 +11,14 @@ export const actionCreators = {
             await dispatch({ type: Actions.RequestActivityItems });
             var result = await ActivityService.getItems(moment(date).format('YYYY-MM-DD'));
 
-            await dispatch({ type: Actions.ReceiveActivityItems, payload: result.value && result.value.length > 0 ? result.value[0] : [] });
+            await dispatch({ type: Actions.ReceiveActivityItems, date: new Date(moment(date).format('YYYY-MM-DD')), payload: result.value && result.value.length > 0 ? result.value[0] : [] });
 
             if (result.hasErrors()) {
                 Alert.alert(result.errors[0]);
                 isSuccess = false;
                 return;
             }
-            
+
             await FileService.saveStateToFile(getState());
             isSuccess = true;
         });

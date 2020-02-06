@@ -28,7 +28,7 @@ type Props = NavigationInjectedProps & StokSelectProps & ApplicationState;
 class StokSelectComp extends Component<Props, StokSelectState> {
     static navigationOptions = ({ navigation }) => {
         return {
-            title: "Sipariş",
+            title: "F&B",
             headerLeft: (props: StackHeaderLeftButtonProps) => {
                 return <HeaderBackButton {...props} label="Tamam" labelVisible={true} />
             }

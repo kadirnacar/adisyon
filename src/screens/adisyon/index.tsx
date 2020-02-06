@@ -147,8 +147,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     }}>
                     <BarcodeReader
                         onBarcodePress={(barcode) => {
-                            let currentTotal = 0;
-                            let itemPrice = 0;
                             const stokItem = this.props.Stok.items.find(i => i.BARKOD == barcode);
                             if (stokItem) {
                                 const adisyon = this.props.Adisyon.current;
@@ -173,6 +171,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             } else {
                                 Alert.alert("Bu barkoda ait ürün bulunamadı.")
                             }
+                            this.setState({ showBarcode: false })
                         }}
                         onClose={() => {
                             this.setState({ showBarcode: false })

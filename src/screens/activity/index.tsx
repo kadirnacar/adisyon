@@ -121,7 +121,7 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
         return (
             <React.Fragment>
                 <LoaderSpinner
-                    showLoader={this.props.ActivityOrder.isRequest}
+                    showLoader={this.props.ActivityOrder.isRequest || this.props.Activity.isRequest}
                     onCloseModal={async () => {
                         this.setState({
                             errorMessage: "",

@@ -2,6 +2,7 @@ export interface IActivity {
     ID: number;
     NAME?: string;
     ADULTPRICE?: number;
+    Date?: Date;
     Seances?: ISeance[];
 }
 

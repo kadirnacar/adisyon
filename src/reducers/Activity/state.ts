@@ -8,6 +8,7 @@ export enum Actions {
 
 export interface ActivityState extends IBaseReducer {
     items?: IActivity[];
+    date?: Date;
 }
 
 export interface IRequestActivityItemsAction {
@@ -17,4 +18,5 @@ export interface IRequestActivityItemsAction {
 export interface IReceiveActivityItemsAction {
     type: Actions.ReceiveActivityItems;
     payload: any[];
+    date: Date;
 }

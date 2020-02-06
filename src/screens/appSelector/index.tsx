@@ -2,12 +2,14 @@ import { colors } from '@components';
 import { ApplicationActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableHighlight, View, Image } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { Applications } from '@reducers';
-
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+const activityLogo = require('../../../assets/dolphin.png');
+const turnikeLogo = require('../../../assets/turnike.png');
 const { height, width } = Dimensions.get("window");
 
 interface AppSelectorState {
@@ -52,21 +54,23 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                         }}
                         onPressIn={async () => {
                             await this.props.ApplicationActions.setCurrent(Applications.Siparis);
+                            await this.props.ApplicationActions.setNfcTitle("F&B");
                             this.props.navigation.navigate("Department");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",
                             alignSelf: "center"
                         }}>
+                            <MaterialIcon name="food" size={85} color={"#fff"} />
                             <Text style={{
                                 fontSize: 34,
-                                height: 180,
+                                height: 50,
                                 color: "#fff",
                                 marginTop: 0,
                                 flexWrap: "nowrap",
                                 textAlignVertical: "center",
                                 textAlign: "center"
-                            }}>Sipariş</Text>
+                            }}>F&B</Text>
                         </View>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor="#ffffff00"
@@ -84,15 +88,23 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             backgroundColor: '#d584e4'
                         }}
                         onPressIn={async () => {
+                            await this.props.ApplicationActions.setNfcTitle("Aktivite");
                             this.props.navigation.navigate("ActiviteTypeSelector");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",
                             alignSelf: "center"
                         }}>
+                            <Image source={activityLogo}
+                                resizeMethod={"resize"}
+                                style={{
+                                    width: 100,
+                                    height: 100,
+                                }}
+                            ></Image>
                             <Text style={{
                                 fontSize: 34,
-                                height: 180,
+                                height: 50,
                                 color: "#fff",
                                 marginTop: 0,
                                 flexWrap: "nowrap",
@@ -119,15 +131,24 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             // await this.props.ApplicationActions.setCurrent(Applications.Turnike);
                             // this.props.navigation.navigate("Turnike");
                             await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol);
+                            await this.props.ApplicationActions.setNfcTitle("Turnike");
                             this.props.navigation.navigate("ActivityCheck");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",
                             alignSelf: "center"
                         }}>
+                            <Image source={turnikeLogo}
+                                resizeMethod={"resize"}
+                                style={{
+                                    marginTop: 5,
+                                    width: 100,
+                                    height: 100,
+                                }}
+                            ></Image>
                             <Text style={{
                                 fontSize: 34,
-                                height: 180,
+                                height: 50,
                                 color: "#fff",
                                 marginTop: 0,
                                 flexWrap: "nowrap",

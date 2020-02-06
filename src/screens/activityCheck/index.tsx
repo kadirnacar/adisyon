@@ -10,6 +10,7 @@ import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import moment from 'moment';
 const { width, scale, height } = Dimensions.get("window");
 
 interface ActivityCheckState {
@@ -44,7 +45,8 @@ class ActivityCheckComp extends Component<Props, ActivityCheckState> {
             <View style={{ flex: 1 }} >
                 <ActivityCheckSelect order={this.props.ActivityOrder.current} onPress={async (adisyon: IActivity, seance: ISeance) => {
                     await this.props.ActivityOrderActions.setCheckItem(adisyon, seance);
-                    await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol)
+                    await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol);
+                    await this.props.ApplicationActions.setNfcTitle("Aktivite Geçiş Kontrol - " + adisyon.NAME + " - " + moment(seance.SEANCESTART).format("HH:mm"));
                     this.props.navigation.navigate("Nfc");
                 }} />
             </View>

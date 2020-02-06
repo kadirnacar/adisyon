@@ -4,11 +4,13 @@ import { ActivityActions, CustomerActions, AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import fuzzysort from 'fuzzysort';
 import React, { Component } from 'react';
-import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert } from 'react-native';
+import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert, Text, TouchableHighlight } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { OrderItem } from './OrderItem';
+import moment from 'moment';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -16,12 +18,15 @@ interface ActivitySelectState {
     search?: string;
     source?: IActivity[];
     scrollIndex: number;
+    date?: Date;
 }
 
 interface ActivitySelectProps {
     style?: StyleProp<ViewStyle>;
     order: IActivityOrder;
     onPress?: (adisyon: IActivityOrder) => void;
+    ActivityActions: typeof ActivityActions
+
 }
 type Props = NavigationInjectedProps & ActivitySelectProps & ApplicationState;
 
@@ -32,6 +37,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
             search: "",
             source: [],
             scrollIndex: 0,
+            date: new Date()
         };
     }
 
@@ -39,6 +45,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
         const source = this.props.Activity.items;
         this.setState({
             source,
+            date: this.props.Activity.date
         });
     }
     searchData(search: string) {
@@ -65,6 +72,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                     padding: 5,
                     paddingBottom: 0
                 }}>
+
                     <View
                         style={{
                             borderWidth: 1,
@@ -73,6 +81,65 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                             width: "100%",
                             marginRight: 5
                         }}>
+                        <View style={{
+                            borderColor: colors.borderColor,
+                            borderBottomWidth: 1,
+                            flexDirection: "row",
+                            width: "100%",
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center"
+                        }}>
+                            <TouchableHighlight
+                                disabled={this.state.date <= new Date()}
+                                onPress={() => {
+                                    this.setState({ date: moment(this.state.date).add(-1, "day").toDate() }, () => {
+                                        this.props.ActivityActions.getItems(this.state.date);
+                                        this.setState({ source: this.props.Activity.items });
+                                    })
+                                }}
+                                style={{
+                                    backgroundColor: colors.buttonBackColor,
+                                    width: 35,
+                                    height: 35,
+                                    borderRadius: 18,
+                                    borderWidth: 2,
+                                    margin: 5,
+                                    borderColor: colors.borderColor,
+                                    padding: 3,
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    alignSelf: "center"
+                                }}>
+                                <FontAwesome5Icon name="chevron-left" size={25} color="#fff" />
+                            </TouchableHighlight>
+                            <Text style={{
+                                flex: 1,
+                                textAlign: "center"
+                            }}>{moment(this.state.date).format("DD.MM.YYYY")}</Text>
+                            <TouchableHighlight
+                                onPress={() => {
+                                    this.setState({ date: moment(this.state.date).add(1, "day").toDate() }, () => {
+                                        this.props.ActivityActions.getItems(this.state.date);
+                                        this.setState({ source: this.props.Activity.items });
+                                    })
+                                }}
+                                style={{
+                                    backgroundColor: colors.buttonBackColor,
+                                    width: 35,
+                                    height: 35,
+                                    borderRadius: 18,
+                                    borderWidth: 2,
+                                    margin: 5,
+                                    borderColor: colors.borderColor,
+                                    padding: 3,
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    alignSelf: "center"
+                                }}>
+                                <FontAwesome5Icon name="chevron-right" size={25} color="#fff" />
+                            </TouchableHighlight>
+                        </View>
                         {this.props.order ?
                             <FlatList
                                 keyboardDismissMode="on-drag"
@@ -136,7 +203,6 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                                 keyExtractor={(item, index) => index.toString()}
                             /> : null}
                     </View>
-
                 </View>
 
                 <TextInput
@@ -170,7 +236,8 @@ export const ActivitySelect = withNavigation(connect(
     (state: ApplicationState) => state,
     dispatch => {
         return {
-            ActivitySelectActions: bindActionCreators({ ...ActivityActions }, dispatch)
+            ActivitySelectActions: bindActionCreators({ ...ActivityActions }, dispatch),
+            ActivityActions: bindActionCreators({ ...ActivityActions }, dispatch)
         };
     }
 )(ActivitySelectInfoComp)) as any;

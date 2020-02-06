@@ -5,7 +5,7 @@ import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import LottieView from 'lottie-react-native';
 import React, { Component } from 'react';
-import { Alert, Dimensions, TouchableHighlight, View } from 'react-native';
+import { Alert, Dimensions, TouchableHighlight, View, Text } from 'react-native';
 import NfcManager, { NfcEvents } from 'react-native-nfc-manager';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -79,8 +79,8 @@ class NfcScreen extends Component<Props, any> {
         await this.props.ActivityOrderActions.setCurrent(null);
     }
     async handleComponentUnMount() {
-        NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-        NfcManager.unregisterTagEvent().catch(() => 0);
+        // NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+        // NfcManager.unregisterTagEvent().catch(() => 0);
     }
     render() {
         return (
@@ -112,6 +112,13 @@ class NfcScreen extends Component<Props, any> {
                     }}>
                     <Icon name="wrench" size={35} color={colors.inputTextColor} />
                 </TouchableHighlight>
+                <View style={{
+                    alignContent: "center",
+                    alignItems: "center",
+                    padding: 10
+                }}>
+                    <Text>{this.props.Application.nfcScreenTitle}</Text>
+                </View>
                 <View style={{ flex: 1, width: width, height: 500, flexDirection: "row" }}>
                     <LottieView source={require('../../../assets/animation.json')} autoPlay loop />
                 </View>

@@ -22,6 +22,7 @@ export const reducer = (currentState: ActivityState = unloadedState, incomingAct
                         activityObject[act.ID] = {
                             ID: act.ID,
                             NAME: act.NAME,
+                            Date: action.date,
                             ADULTPRICE: act.ADULTPRICE,
                             Seances: []
                         }
@@ -41,6 +42,7 @@ export const reducer = (currentState: ActivityState = unloadedState, incomingAct
                 const activities = Object.keys(activityObject).map(a => {
                     return activityObject[a];
                 })
+                currentState.date = action.date;
                 currentState.items = activities;
             }
             return { ...currentState };
