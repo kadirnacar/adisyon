@@ -34,7 +34,7 @@ export const actionCreators = {
             await dispatch({ type: Actions.RequestCheckItem });
             var result = await ActivityOrderService.checkkItem(activity, seance, guestId);
 
-            const isRequestSuccess = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0][0].SUCCESS : false;
+            const isRequestSuccess = result.value && result.value.length > 0 && result.value[0].length > 0 ? true : false;
             await dispatch({
                 type: Actions.ReceiveCheckItem
             });

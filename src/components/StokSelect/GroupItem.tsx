@@ -75,7 +75,8 @@ export class GroupItem extends Component<Props, GroupItemState> {
                     backgroundColor: this.props.selected ? colors.buttonBackColor : "#ffffff"
                 }}
                 onPressIn={() => {
-
+                    if (this.props.onPress)
+                        this.props.onPress(this.props.group)
                 }}>
                 <View style={{
                     flexDirection: "row",
@@ -94,8 +95,8 @@ export class GroupItem extends Component<Props, GroupItemState> {
                         <RNMaterialLetterIcon
                             size={35}
                             border={false}
-                            shapeColor={colorPalette[this.props.index % colorPalette.length][0]}
-                            letterColor={this.invertColor(colorPalette[this.props.index % colorPalette.length][0])}
+                            shapeColor={colorPalette[(this.props.index != null ? this.props.index : 9999) % colorPalette.length][0]}
+                            letterColor={this.invertColor(colorPalette[(this.props.index != null ? this.props.index : 9999) % colorPalette.length][0])}
                             shapeType={"round"}
                             borderRy={6}
                             borderRx={6}

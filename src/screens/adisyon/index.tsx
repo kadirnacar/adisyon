@@ -1,10 +1,10 @@
-import { AdisyonItem, colors, CustomerInfo, LoaderSpinner } from '@components';
+import { AdisyonItem, colors, CustomerInfo, LoaderSpinner, BarcodeReader } from '@components';
 import { AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
-import { Alert, BackHandler, Dimensions, Text, TouchableHighlight, View } from 'react-native';
+import { Alert, BackHandler, Dimensions, Text, TouchableHighlight, View, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { NavigationEvents, NavigationInjectedProps, ScrollView, withNavigation } from 'react-navigation';
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
@@ -13,6 +13,9 @@ import { bindActionCreators } from 'redux';
 const { width, scale, height } = Dimensions.get("window");
 
 interface AdisyonState {
+    showBarcode?: boolean;
+    errorMessage?: string;
+    password?: any;
 }
 
 interface AdisyonProps {
@@ -137,6 +140,44 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             NOTES: ""
                         });
                     }} />
+                <Modal visible={this.state.showBarcode || false}
+                    transparent={false}
+                    onRequestClose={() => {
+
+                    }}>
+                    <BarcodeReader
+                        onBarcodePress={(barcode) => {
+                            let currentTotal = 0;
+                            let itemPrice = 0;
+                            const stokItem = this.props.Stok.items.find(i => i.BARKOD == barcode);
+                            if (stokItem) {
+                                const adisyon = this.props.Adisyon.current;
+
+                                let currentTotal = 0;
+
+                                adisyon.ITEMS.forEach(i => {
+                                    const stokItem1 = this.props.Stok.items.find(t => t.STOKID == i.ID);
+                                    currentTotal += i.QUANTITY * stokItem1.SFIYAT1
+                                });
+
+                                if ((currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
+                                    Alert.alert("Uyarı", "Yeterli bakiye yok");
+                                    return;
+                                }
+
+                                const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == stokItem.STOKID);
+                                if (adisyonIndex < 0)
+                                    adisyon.ITEMS.push({ ID: stokItem.STOKID, QUANTITY: 1 });
+                                adisyon.ITEMS[adisyonIndex].QUANTITY = adisyon.ITEMS[adisyonIndex].QUANTITY + 1;
+                                this.setState({});
+                            } else {
+                                Alert.alert("Bu barkoda ait ürün bulunamadı.")
+                            }
+                        }}
+                        onClose={() => {
+                            this.setState({ showBarcode: false })
+                        }} />
+                </Modal>
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
@@ -228,8 +269,35 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 marginLeft: 5,
                                 alignSelf: "center",
                                 fontWeight: "bold",
-                                fontSize: 16
+                                fontSize: 14
                             }}>Ürün Ekle</Text>
+                        </React.Fragment>
+                    </TouchableHighlight>
+                    <TouchableHighlight underlayColor="#ffffff00" style={{
+                        flex: 1,
+                        backgroundColor: "#292fde",
+                        borderRadius: 50,
+                        height: 50,
+                        justifyContent: "center",
+                        flexDirection: "row",
+                        borderColor: "#292fde",
+                        borderWidth: 2,
+                        paddingVertical: 10,
+                        marginHorizontal: 5,
+                        padding: 10
+                    }}
+                        onPressIn={async () => {
+                            this.setState({ showBarcode: true })
+                        }}>
+                        <React.Fragment>
+                            <Icon name="barcode" size={25} color={"#ffffff"} />
+                            <Text style={{
+                                color: "#ffffff",
+                                marginLeft: 5,
+                                alignSelf: "center",
+                                fontWeight: "bold",
+                                fontSize: 14
+                            }}>Barkod</Text>
                         </React.Fragment>
                     </TouchableHighlight>
                     <TouchableHighlight underlayColor="#ffffff00" style={{
@@ -264,7 +332,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 marginLeft: 5,
                                 alignSelf: "center",
                                 fontWeight: "bold",
-                                fontSize: 16
+                                fontSize: 14
                             }}>Tamamla</Text>
                         </React.Fragment>
                     </TouchableHighlight>

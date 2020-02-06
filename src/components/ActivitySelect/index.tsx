@@ -2,7 +2,7 @@ import { colors } from '@components';
 import { IActivityOrder, IActivity, ICustomer } from '@models';
 import { ActivityActions, CustomerActions, AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
-import Fuse, { FuseOptions } from 'fuse.js';
+import fuzzysort from 'fuzzysort';
 import React, { Component } from 'react';
 import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -16,8 +16,6 @@ interface ActivitySelectState {
     search?: string;
     source?: IActivity[];
     scrollIndex: number;
-    searchOptions?: Fuse.FuseOptions<IActivity>;
-    data?: Fuse<IActivity, FuseOptions<IActivity>>;
 }
 
 interface ActivitySelectProps {
@@ -34,11 +32,6 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
             search: "",
             source: [],
             scrollIndex: 0,
-            searchOptions: {
-                keys: ['NAME'],
-                shouldSort: true,
-                threshold: 1,
-            }
         };
     }
 
@@ -46,10 +39,16 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
         const source = this.props.Activity.items;
         this.setState({
             source,
-            data: new Fuse(source, this.state.searchOptions)
         });
     }
-
+    searchData(search: string) {
+        return fuzzysort.go(search, this.state.source, {
+            limit: 20,
+            allowTypo: true,
+            threshold: -50000,
+            key: 'NAME'
+        }).map(i => i.obj)
+    }
     render() {
         return (
             <View style={{
@@ -84,7 +83,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                                 maxToRenderPerBatch={10}
                                 initialNumToRender={10}
                                 removeClippedSubviews={false}
-                                data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IActivity[] : (this.state.source ? this.state.source : [])}
+                                data={this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])}
                                 renderItem={({ item, index }) => {
                                     let adisyonItem = this.props.order.ITEMS ? this.props.order.ITEMS.find(itm => itm.ItemID == item.ID) : null;
                                     if (!adisyonItem)

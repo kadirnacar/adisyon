@@ -33,6 +33,7 @@ class NfcScreen extends Component<Props, any> {
     constructor(props) {
         super(props);
         this.handleComponentMount = this.handleComponentMount.bind(this);
+        this.handleComponentUnMount = this.handleComponentUnMount.bind(this);
     }
 
     async componentDidMount() {
@@ -77,11 +78,15 @@ class NfcScreen extends Component<Props, any> {
         await this.props.AdisyonActions.setCurrent(null);
         await this.props.ActivityOrderActions.setCurrent(null);
     }
-
+    async handleComponentUnMount() {
+        NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+        NfcManager.unregisterTagEvent().catch(() => 0);
+    }
     render() {
         return (
             <React.Fragment>
                 <NavigationEvents
+                    onWillBlur={this.handleComponentUnMount}
                     onWillFocus={this.handleComponentMount} />
                 <LoaderSpinner
                     showLoader={this.props.Customer.isRequest}

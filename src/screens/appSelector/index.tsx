@@ -116,8 +116,10 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             backgroundColor: '#84c9e4'
                         }}
                         onPressIn={async () => {
-                            await this.props.ApplicationActions.setCurrent(Applications.Turnike);
+                            // await this.props.ApplicationActions.setCurrent(Applications.Turnike);
                             // this.props.navigation.navigate("Turnike");
+                            await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol);
+                            this.props.navigation.navigate("ActivityCheck");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",

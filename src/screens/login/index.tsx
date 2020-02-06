@@ -53,7 +53,7 @@ class LoginScreen extends Component<Props, LoginState> {
         if (!isLogin) {
             this.setState({ errorMessage: "Hatalı giriş" })
         } else {
-            await this.loadDataFromServer();
+            // await this.loadDataFromServer();
             await this.props.CustomerActions.clear();
             const getGarson = await this.props.GarsonActions.getItem(this.props.User.current.GARSONID);
             if (!getGarson) {

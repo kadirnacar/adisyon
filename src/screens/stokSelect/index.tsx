@@ -1,19 +1,22 @@
-import { StokSelect } from '@components';
+import { StokSelect, colors, BarcodeReader } from '@components';
 import { IAdisyonProduct } from '@models';
 import { AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
-import { Dimensions, View } from 'react-native';
+import { Dimensions, View, Text, Button, Modal } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 const { width, scale, height } = Dimensions.get("window");
 
 interface StokSelectState {
     selectedStoks?: { [key: number]: IAdisyonProduct };
+    showBarcode?: boolean;
 }
 
 interface StokSelectProps {
@@ -37,10 +40,15 @@ class StokSelectComp extends Component<Props, StokSelectState> {
             selectedStoks: {}
         }
     }
-
+    showBarcode() {
+        this.setState({ showBarcode: true })
+    }
+    componentDidMount() {
+    }
     render() {
         return (
             <View style={{ flex: 1 }} >
+               
                 <StokSelect adisyon={this.props.Adisyon.current} onPress={(data) => {
                     this.setState({ selectedStoks: data });
                 }} />

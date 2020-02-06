@@ -2,7 +2,7 @@ import { colors } from '@components';
 import { IActivity, IActivityOrder, ISeance } from '@models';
 import { ActivityActions } from '@reducers';
 import { ApplicationState } from '@store';
-import Fuse, { FuseOptions } from 'fuse.js';
+import fuzzysort from 'fuzzysort';
 import React, { Component } from 'react';
 import { Alert, Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -17,8 +17,6 @@ interface ActivityCheckSelectState {
     search?: string;
     source?: IActivity[];
     scrollIndex: number;
-    searchOptions?: Fuse.FuseOptions<IActivity>;
-    data?: Fuse<IActivity, FuseOptions<IActivity>>;
 }
 
 interface ActivityCheckSelectProps {
@@ -34,11 +32,6 @@ class ActivityCheckSelectInfoComp extends Component<Props, ActivityCheckSelectSt
             search: "",
             source: [],
             scrollIndex: 0,
-            searchOptions: {
-                keys: ['NAME'],
-                shouldSort: true,
-                threshold: 1,
-            }
         };
     }
 
@@ -46,10 +39,17 @@ class ActivityCheckSelectInfoComp extends Component<Props, ActivityCheckSelectSt
         const source = this.props.Activity.items;
         this.setState({
             source,
-            data: new Fuse(source, this.state.searchOptions)
         });
     }
 
+    searchData(search: string) {
+        return fuzzysort.go(search, this.state.source, {
+            limit: 20,
+            allowTypo: true,
+            threshold: -50000,
+            key: 'NAME'
+        }).map(i => i.obj)
+    }
     render() {
         return (
             <View style={{
@@ -74,31 +74,31 @@ class ActivityCheckSelectInfoComp extends Component<Props, ActivityCheckSelectSt
                             width: "100%",
                             marginRight: 5
                         }}>
-                      
-                            <FlatList
-                                keyboardDismissMode="on-drag"
-                                style={{ flex: 1 }}
-                                keyboardShouldPersistTaps="always"
-                                updateCellsBatchingPeriod={10}
-                                windowSize={10}
-                                maxToRenderPerBatch={10}
-                                initialNumToRender={10}
-                                removeClippedSubviews={false}
-                                data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IActivity[] : (this.state.source ? this.state.source : [])}
-                                renderItem={({ item, index }) => {
-                                    return (
-                                        <CheckSelectItem
-                                            activity={item}
-                                            onSelect={(itm, seance) => {
-                                                if (this.props.onPress)
-                                                    this.props.onPress(item, seance);
-                                            }}
-                                        />
-                                    )
-                                }}
-                                numColumns={1}
-                                keyExtractor={(item, index) => index.toString()}
-                            /> 
+
+                        <FlatList
+                            keyboardDismissMode="on-drag"
+                            style={{ flex: 1 }}
+                            keyboardShouldPersistTaps="always"
+                            updateCellsBatchingPeriod={10}
+                            windowSize={10}
+                            maxToRenderPerBatch={10}
+                            initialNumToRender={10}
+                            removeClippedSubviews={false}
+                            data={this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])}
+                            renderItem={({ item, index }) => {
+                                return (
+                                    <CheckSelectItem
+                                        activity={item}
+                                        onSelect={(itm, seance) => {
+                                            if (this.props.onPress)
+                                                this.props.onPress(item, seance);
+                                        }}
+                                    />
+                                )
+                            }}
+                            numColumns={1}
+                            keyExtractor={(item, index) => index.toString()}
+                        />
                     </View>
 
                 </View>

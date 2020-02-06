@@ -7,5 +7,6 @@ export interface IStok {
     STOKGRUPID: number;
     FOTO: string;
     PORSIYONLUSATIS: boolean;
+    BARKOD?: string;
     departments?: string[];
 }

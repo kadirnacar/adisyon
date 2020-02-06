@@ -2,7 +2,7 @@ import { colors } from '@components';
 import { IAdisyon, IStok, IStokGrup, ICustomer } from '@models';
 import { StokActions, CustomerActions, AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
-import Fuse, { FuseOptions } from 'fuse.js';
+import fuzzysort from 'fuzzysort';
 import React, { Component } from 'react';
 import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
@@ -18,13 +18,12 @@ interface StokSelectState {
     search?: string;
     source?: IStok[];
     scrollIndex: number;
-    searchOptions?: Fuse.FuseOptions<IStok>;
-    data?: Fuse<IStok, FuseOptions<IStok>>;
 }
 
 interface StokSelectProps {
     style?: StyleProp<ViewStyle>;
     adisyon: IAdisyon;
+    isSelected?: boolean;
     onPress?: (adisyon: IAdisyon) => void;
 }
 type Props = NavigationInjectedProps & StokSelectProps & ApplicationState;
@@ -36,11 +35,6 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
             search: "",
             source: [],
             scrollIndex: 0,
-            searchOptions: {
-                keys: ['ADI'],
-                shouldSort: true,
-                threshold: 1,
-            }
         };
     }
 
@@ -48,10 +42,16 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         const source = this.props.Stok.items.filter(t => t.departments ? t.departments.indexOf(this.props.Department.current.KODU) > -1 : false);
         this.setState({
             source,
-            data: new Fuse(source, this.state.searchOptions)
         });
     }
-
+    searchData(search: string) {
+        return fuzzysort.go(search, this.state.source, {
+            limit: 20,
+            allowTypo: true,
+            threshold: -50000,
+            key: 'ADI'
+        }).map(i => i.obj)
+    }
     render() {
         return (
             <View style={{
@@ -86,7 +86,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                 maxToRenderPerBatch={10}
                                 initialNumToRender={10}
                                 removeClippedSubviews={false}
-                                data={this.state.data && this.state.search ? this.state.data.search(this.state.search) as IStok[] : (this.state.source ? this.state.source : [])}
+                                data={(this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])).filter(stk => (this.state.selectedGrup && this.state.selectedGrup.STOKGRUPID ? stk.STOKGRUPID == this.state.selectedGrup.STOKGRUPID : true))}
                                 renderItem={({ item, index }) => {
                                     let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID) : null;
                                     let discountRate = this.props.Customer.current.DISCOUNT_RATE
@@ -150,6 +150,11 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                             width: "35%",
                         }}>
                         <FlatList
+                            ListHeaderComponent={<GroupItem selected={!this.state.selectedGrup || this.state.selectedGrup.STOKGRUPID == 0} 
+                            group={{ ADI: "Hepsi", KODU: null, STOKGRUPID: 0 }}
+                                onPress={(group) => {
+                                    this.setState({ selectedGrup: group });
+                                }} />}
                             keyboardDismissMode="on-drag" style={{ flex: 1 }} keyboardShouldPersistTaps="always"
                             data={this.props.StokGrup.items}
                             updateCellsBatchingPeriod={10}
@@ -158,7 +163,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                             initialNumToRender={10}
                             renderItem={({ item, index }) => {
                                 return (
-                                    <GroupItem key={index} group={item} index={index} onPress={(group) => {
+                                    <GroupItem key={index} group={item} selected={this.state.selectedGrup == item} index={index} onPress={(group) => {
                                         this.setState({ selectedGrup: group });
                                     }} />
                                 )
