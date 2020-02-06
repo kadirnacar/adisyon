@@ -38,7 +38,6 @@ export const actionCreators = {
             await dispatch({
                 type: Actions.ReceiveCheckItem
             });
-            console.log(JSON.stringify(result));
             if (result.hasErrors()) {
                 Alert.alert(result.errors[0]);
                 resultSet = null;

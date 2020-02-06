@@ -51,7 +51,6 @@ class NfcScreen extends Component<Props, any> {
                                 this.props.navigation.navigate("Aktivite")
                             else if (this.props.Application.current == Applications.AktiviteKontrol) {
                                 const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, this.props.ActivityOrder.checkItemSeance, tag.id);
-                                console.log(result);
                                 if (result) {
                                     Alert.alert(result["MESSAGE"]);
                                 }
