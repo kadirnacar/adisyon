@@ -13,6 +13,7 @@ export class StokService extends ServiceBase {
                     "STOKID",
                     "ADI",
                     "SFIYAT1",
+                    "BARKOD",
                     "FOTO",
                     "SDEPART",
                     "STOKGRUPID",

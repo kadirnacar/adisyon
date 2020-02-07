@@ -131,8 +131,8 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             // await this.props.ApplicationActions.setCurrent(Applications.Turnike);
                             // this.props.navigation.navigate("Turnike");
                             await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol);
-                            await this.props.ApplicationActions.setNfcTitle("Turnike");
-                            this.props.navigation.navigate("ActivityCheck");
+                            await this.props.ApplicationActions.setNfcTitle("Turnike Geçiş");
+                            this.props.navigation.navigate("TurnikeCheck");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",

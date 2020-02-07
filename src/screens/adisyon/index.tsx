@@ -147,7 +147,9 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     }}>
                     <BarcodeReader
                         onBarcodePress={(barcode) => {
-                            const stokItem = this.props.Stok.items.find(i => i.BARKOD == barcode);
+                            const stokItem = this.props.Stok.items.find(i => {
+                                return i.BARKOD == barcode
+                            });
                             if (stokItem) {
                                 const adisyon = this.props.Adisyon.current;
 
@@ -166,7 +168,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == stokItem.STOKID);
                                 if (adisyonIndex < 0)
                                     adisyon.ITEMS.push({ ID: stokItem.STOKID, QUANTITY: 1 });
-                                adisyon.ITEMS[adisyonIndex].QUANTITY = adisyon.ITEMS[adisyonIndex].QUANTITY + 1;
+                                else
+                                    adisyon.ITEMS[adisyonIndex].QUANTITY = adisyon.ITEMS[adisyonIndex].QUANTITY + 1;
                                 this.setState({});
                             } else {
                                 Alert.alert("Bu barkoda ait ürün bulunamadı.")

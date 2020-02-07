@@ -1,5 +1,5 @@
 import { Action } from 'redux';
-import { Actions, ActivityState, IReceiveActivityItemsAction, IRequestActivityItemsAction } from './state';
+import { Actions, ActivityState, IReceiveActivityItemsAction, IRequestActivityItemsAction, IReceiveTurnikeItemsAction, IRequestTurnikeItemsAction } from './state';
 import { IActivity } from '@models';
 import moment from 'moment';
 
@@ -7,7 +7,7 @@ const unloadedState: ActivityState = {
     items: []
 };
 
-export type KnownAction = IReceiveActivityItemsAction | IRequestActivityItemsAction;
+export type KnownAction = IReceiveActivityItemsAction | IRequestActivityItemsAction | IReceiveTurnikeItemsAction | IRequestTurnikeItemsAction;
 
 export const reducer = (currentState: ActivityState = unloadedState, incomingAction: Action) => {
     const action = incomingAction as KnownAction;
@@ -46,7 +46,18 @@ export const reducer = (currentState: ActivityState = unloadedState, incomingAct
                 currentState.items = activities;
             }
             return { ...currentState };
-        case Actions.RequestActivityItems:
+        case Actions.RequestTurnikeItems:
+            currentState.isRequest = true;
+            return { ...currentState };
+        case Actions.ReceiveTurnikeItems:
+            currentState.isRequest = false;
+            if (action.payload) {
+               
+                currentState.date = action.date;
+                currentState.turnike = action.payload;
+            }
+            return { ...currentState };
+        case Actions.RequestTurnikeItems:
             currentState.isRequest = true;
             return { ...currentState };
         default:

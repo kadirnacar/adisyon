@@ -54,6 +54,11 @@ class NfcScreen extends Component<Props, any> {
                                 if (result) {
                                     Alert.alert(result["MESSAGE"]);
                                 }
+                            } else if (this.props.Application.current == Applications.Turnike) {
+                                const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, null, tag.id);
+                                if (result) {
+                                    Alert.alert(result["MESSAGE"]);
+                                }
                             }
                         }
                     });

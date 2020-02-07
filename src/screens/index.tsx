@@ -8,3 +8,4 @@ export { ActiviteTypeSelector } from './activiteTypeSelector';
 export { Aktivite } from './activity';
 export { ActivitySelectScreen } from './activitySelect';
 export { ActivityCheckScreen } from './activityCheck';
+export { TurnikeCheckScreen } from './turnikeCheck';

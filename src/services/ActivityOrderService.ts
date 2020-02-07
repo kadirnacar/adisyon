@@ -18,8 +18,8 @@ export class ActivityOrderService extends ServiceBase {
                 "Action": "Execute",
                 "Object": "SP_PARK_EXTRASCOMPLETERES"
             }
-        }); 
-      
+        });
+
         return result;
     }
     public static async checkkItem(activity: IActivity, seance: ISeance, guestId: string) {
@@ -30,7 +30,7 @@ export class ActivityOrderService extends ServiceBase {
             data: {
                 "Parameters": {
                     "TOURID": activity.ID,
-                    "SEANCEID": seance.SEANCEID,
+                    "SEANCEID": seance ? seance.SEANCEID : null,
                     "CARDID": guestId,
                     "PORTALID": config.tenant
                 },
@@ -38,7 +38,7 @@ export class ActivityOrderService extends ServiceBase {
                 "Object": "SP_PARK_TOUR_READPASS_VIRTUAL"
             }
         });
-        
+       
         return result;
     }
 }
