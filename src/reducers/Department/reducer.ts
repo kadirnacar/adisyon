@@ -14,6 +14,10 @@ export const reducer = (currentState: DepartmentState = unloadedState, incomingA
         case Actions.ReceiveDepartmentItems:
             currentState.isRequest = false;
             currentState.items = action.payload;
+            currentState.items.forEach(i => {
+                if (i.MOBILPOSCONFIG)
+                    i.MOBILPOSCONFIG = JSON.parse(i.MOBILPOSCONFIG);
+            })
             return { ...currentState };
         case Actions.RequestDepartmentItems:
             currentState.isRequest = true;

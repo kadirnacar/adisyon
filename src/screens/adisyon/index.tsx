@@ -10,12 +10,15 @@ import { NavigationEvents, NavigationInjectedProps, ScrollView, withNavigation }
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { TextInput } from 'react-native-gesture-handler';
 const { width, scale, height } = Dimensions.get("window");
 
 interface AdisyonState {
     showBarcode?: boolean;
     errorMessage?: string;
     password?: any;
+    showTaleNo?: boolean;
+    tableNo?: string;
 }
 
 interface AdisyonProps {
@@ -140,6 +143,74 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             NOTES: ""
                         });
                     }} />
+                <Modal visible={this.state.showTaleNo || false}
+                    transparent={true}
+                    onRequestClose={() => {
+
+                    }}>
+                    <View style={{
+                        flex: 1,
+                        width: "100%",
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        backgroundColor: "rgba(255,255,255,0.7)"
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            width: "80%",
+                            marginHorizontal: 20,
+
+                            borderRadius: 10,
+                            backgroundColor: "#fff",
+                            borderColor: colors.borderColor,
+                            borderWidth: 2,
+                        }}>
+                            <TextInput placeholder="Masa No"
+                                style={{
+                                    backgroundColor: colors.inputBackColor,
+                                    color: colors.inputTextColor,
+                                    width: "100%",
+                                    marginVertical: 10,
+                                    marginHorizontal: 10,
+                                    textAlign: "center"
+                                }}
+                                onChangeText={text => {
+                                    this.setState({ tableNo: text });
+                                }} />
+                            <TouchableHighlight
+                                underlayColor="#ffffff00" style={{
+                                    backgroundColor: "#b329de",
+                                    marginVertical: 10,
+                                    borderRadius: 50,
+                                    height: 50,
+                                    justifyContent: "center",
+                                    flexDirection: "row",
+                                    borderColor: "#b329de",
+                                    borderWidth: 2,
+                                    paddingVertical: 10,
+                                    marginHorizontal: 5,
+                                    padding: 10
+                                }}
+                                onPress={async () => {
+                                    this.props.Adisyon.current.TABLENO = this.state.tableNo;
+                                    const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
+                                    if (isSuccess["Success"]) {
+                                        Alert.alert("Tamam", "Sipariş tamamlandı.");
+                                        this.setState({ showTaleNo: false, tableNo: null })
+                                        this.props.navigation.navigate("Nfc");
+                                    }
+
+                                }}>
+                                <Text style={{ color: "#ffffff", fontWeight: "bold" }}>Tamam</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </Modal>
                 <Modal visible={this.state.showBarcode || false}
                     transparent={false}
                     onRequestClose={() => {
@@ -316,12 +387,11 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         padding: 10
                     }}
                         onPressIn={async () => {
+
                             if (this.props.Adisyon.current.ITEMS.length > 0) {
-                                const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
-                                if (isSuccess["Success"]) {
-                                    Alert.alert("Tamam", "Sipariş tamamlandı.");
-                                    this.props.navigation.navigate("Nfc");
-                                }
+
+                                this.setState({ showTaleNo: true })
+
                             }
                             else {
                                 Alert.alert("Ürün Seçin", "Devam etmek için lütfen ürün seçin.")

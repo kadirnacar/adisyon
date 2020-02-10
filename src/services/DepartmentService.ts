@@ -15,12 +15,18 @@ export class DepartmentService extends ServiceBase {
                     "KODU",
                     "ADI",
                     "ID",
+                    "MOBILPOSCONFIG"
                 ],
                 "Where": [
                     {
                         "Column": "ISLEMTURU",
                         "Operator": "=",
-                        "Value": "1"//4:activity
+                        "Value": "1"
+                    },
+                    {
+                        "Column": "MOBILPOSACTIVE",
+                        "Operator": "=",
+                        "Value": "1"
                     }
                 ],
                 "Paging": {
@@ -29,7 +35,7 @@ export class DepartmentService extends ServiceBase {
                 }
             }
         });
-      
+
         return result;
     }
 }

@@ -13,6 +13,7 @@ export class AdisyonService extends ServiceBase {
                 "Parameters": {
                     "ITEMS": JSON.stringify(data.ITEMS),
                     "DEPCODE": data.DEPCODE,
+                    "TABLENO": data.TABLENO,
                     "PAYTYPE": "ROOM",
                     "GUESTID": data.GUESTID,
                     "GUESTNO": data.GUESTNO,

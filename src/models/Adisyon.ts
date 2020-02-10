@@ -2,6 +2,7 @@ export interface IAdisyon {
     GUESTNO?: number;
     GUESTID?: number;
     DEPCODE?: string;
+    TABLENO?: string;
     NOTES?: string;
     GARSONID?: number;
     ITEMS?: IAdisyonProduct[];
