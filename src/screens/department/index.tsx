@@ -1,6 +1,6 @@
 import { colors, LoaderSpinner } from '@components';
 import { IDepartment } from '@models';
-import { DepartmentActions } from '@reducers';
+import { DepartmentActions, TableActions } from '@reducers';
 import { ApplicationState } from '@store';
 import ColorScheme from 'color-scheme';
 import React, { Component } from 'react';
@@ -19,6 +19,7 @@ interface DepartmentState {
 
 interface DepartmentProps {
     DepartmentActions: typeof DepartmentActions
+    TableActions: typeof TableActions
 }
 
 type Props = NavigationInjectedProps & DepartmentProps & ApplicationState;
@@ -45,9 +46,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
         let clrs = this.scheme.colors();
         return (
             <SafeAreaView style={container}>
-
                 <View style={{ width: width }}>
-
                     <FlatList
                         data={this.props.Garson.current ? this.props.Department.items.filter(itm => this.props.Garson.current.departments.indexOf(itm.KODU) > -1) : []}
                         style={{ height: height - 160 }}
@@ -129,6 +128,9 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                         }}
                         onPressIn={async () => {
                             await this.props.DepartmentActions.setCurrent(this.state.selectedItem);
+                            if (this.props.Department.useTable) {
+                                this.props.TableActions.getItems(this.props.Department.current.KODU)
+                            }
                             this.props.navigation.navigate("Nfc");
                         }}
                     >
@@ -145,6 +147,7 @@ export const Department = withNavigation(connect(
     dispatch => {
         return {
             DepartmentActions: bindActionCreators({ ...DepartmentActions }, dispatch),
+            TableActions: bindActionCreators({ ...TableActions }, dispatch),
         };
     }
 )(DepartmentScreen));

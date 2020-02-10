@@ -1,5 +1,5 @@
 const config = {
-    restUrl: 'https://4005.hoteladvisor.net/',
+    restUrl: 'https://5004.hoteladvisor.net/',
     tenant: 341,
     token: 'posdevice#341$d83dd7b8a0a9e5f0f78a90cce6e9d4836665f94eff96849b20501202f7f122a0f2b56c0d7499b47f090bbfaea71eb08b05dacd707fbc03fec3657f3ccd2d68fb'
     // restUrl: 'https://4001.hoteladvisor.net/',

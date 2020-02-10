@@ -4,8 +4,8 @@ import { IAdisyon } from '@models';
 import { AngusProcedureResponse } from './AngusResponse';
 
 export class AdisyonService extends ServiceBase {
-    public static async sendItem(data: IAdisyon) {
-      
+    public static async sendItem(data: IAdisyon, type: string) {
+
         var result = await this.requestJson<any>({
             url: `${config.restUrl}`,
             method: "POST",
@@ -14,7 +14,7 @@ export class AdisyonService extends ServiceBase {
                     "ITEMS": JSON.stringify(data.ITEMS),
                     "DEPCODE": data.DEPCODE,
                     "TABLENO": data.TABLENO,
-                    "PAYTYPE": "ROOM",
+                    "PAYTYPE": type,
                     "GUESTID": data.GUESTID,
                     "GUESTNO": data.GUESTNO,
                     "NOTES": data.NOTES,
@@ -24,7 +24,7 @@ export class AdisyonService extends ServiceBase {
                 "Object": "SP_PARK_MOBILE_SENDCHECK"
             }
         });
-        
+
         return result;
     }
 }

@@ -43,9 +43,9 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                             alignContent: "center",
                             alignSelf: "center",
                             alignItems: "center",
-                            width: 180,
-                            height: 180,
-                            borderRadius: 180 / 2,
+                            width: 160,
+                            height: 160,
+                            borderRadius: 160 / 2,
                             borderColor: colors.borderColor,
                             borderWidth: 2,
                             backgroundColor: '#8487e4'
@@ -64,12 +64,12 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                                 resizeMethod={"resize"}
                                 style={{
                                     marginTop: 5,
-                                    width: 90,
-                                    height: 90,
+                                    width: 70,
+                                    height: 70,
                                 }}
                             ></Image>
                             <Text style={{
-                                fontSize: 24,
+                                fontSize: 20,
                                 height: 50,
                                 color: "#fff",
                                 marginTop: 0,
@@ -86,9 +86,9 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                             alignContent: "center",
                             alignSelf: "center",
                             alignItems: "center",
-                            width: 180,
-                            height: 180,
-                            borderRadius: 180 / 2,
+                            width: 160,
+                            height: 160,
+                            borderRadius: 160 / 2,
                             borderColor: colors.borderColor,
                             borderWidth: 2,
                             backgroundColor: '#d584e4'
@@ -111,7 +111,7 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                                 }}
                             ></Image>
                             <Text style={{
-                                fontSize: 24,
+                                fontSize: 20,
                                 height: 70,
                                 color: "#fff",
                                 marginTop: 0,

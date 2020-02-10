@@ -10,6 +10,7 @@ export enum Actions {
 export interface DepartmentState extends IBaseReducer {
     items?: IDepartment[];
     current: IDepartment;
+    useTable?: boolean;
 }
 
 export interface IRequestDepartmentItemsAction {

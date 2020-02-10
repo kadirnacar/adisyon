@@ -3,7 +3,8 @@ import { Actions, DepartmentState, IReceiveDepartmentItemsAction, ISetCurrentAct
 
 const unloadedState: DepartmentState = {
     items: [],
-    current: null
+    current: null,
+    useTable: false
 };
 
 export type KnownAction = IReceiveDepartmentItemsAction | IRequestDepartmentItemsAction | ISetCurrentAction;
@@ -25,6 +26,7 @@ export const reducer = (currentState: DepartmentState = unloadedState, incomingA
         case Actions.SetCurrent:
             currentState.isRequest = false;
             currentState.current = action.payload;
+            currentState.useTable = action.payload.MOBILPOSCONFIG && action.payload.MOBILPOSCONFIG.masaNoKullan != null ? action.payload.MOBILPOSCONFIG.masaNoKullan : false;
             return { ...currentState };
         default:
             break;

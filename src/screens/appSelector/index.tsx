@@ -45,9 +45,9 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             alignContent: "center",
                             alignSelf: "center",
                             alignItems: "center",
-                            width: 180,
-                            height: 180,
-                            borderRadius: 180 / 2,
+                            width: 160,
+                            height: 160,
+                            borderRadius: 160 / 2,
                             borderColor: colors.borderColor,
                             borderWidth: 2,
                             backgroundColor: '#8487e4'
@@ -61,7 +61,7 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             alignItems: "center", alignContent: "center",
                             alignSelf: "center"
                         }}>
-                            <MaterialIcon name="food" size={85} color={"#fff"} />
+                            <MaterialIcon name="food" size={60} color={"#fff"} />
                             <Text style={{
                                 fontSize: 34,
                                 height: 50,
@@ -80,9 +80,9 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             alignContent: "center",
                             alignSelf: "center",
                             alignItems: "center",
-                            width: 180,
-                            height: 180,
-                            borderRadius: 180 / 2,
+                            width: 160,
+                            height: 160,
+                            borderRadius: 160 / 2,
                             borderColor: colors.borderColor,
                             borderWidth: 2,
                             backgroundColor: '#d584e4'
@@ -98,8 +98,8 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             <Image source={activityLogo}
                                 resizeMethod={"resize"}
                                 style={{
-                                    width: 100,
-                                    height: 100,
+                                    width: 70,
+                                    height: 70,
                                 }}
                             ></Image>
                             <Text style={{
@@ -120,9 +120,9 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                             alignContent: "center",
                             alignSelf: "center",
                             alignItems: "center",
-                            width: 180,
-                            height: 180,
-                            borderRadius: 180 / 2,
+                            width: 160,
+                            height: 160,
+                            borderRadius: 160 / 2,
                             borderColor: colors.borderColor,
                             borderWidth: 2,
                             backgroundColor: '#84c9e4'
@@ -142,8 +142,8 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                                 resizeMethod={"resize"}
                                 style={{
                                     marginTop: 5,
-                                    width: 100,
-                                    height: 100,
+                                    width: 70,
+                                    height: 70,
                                 }}
                             ></Image>
                             <Text style={{

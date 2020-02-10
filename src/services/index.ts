@@ -1,6 +1,7 @@
 export { AdisyonService } from './AdisyonService';
 export { CustomerService } from './CustomerService';
 export { DepartmentService } from './DepartmentService';
+export { TableService } from './TableService';
 export { FileService } from './FileService';
 export { GarsonService } from './GarsonService';
 export { StokGrupService } from './StokGrupService';

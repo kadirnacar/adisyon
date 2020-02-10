@@ -4,6 +4,7 @@ export * from './Adisyon';
 export * from './Application';
 export * from './Customer';
 export * from './Department';
+export * from './Table';
 export * from './Garson';
 export * from './Stok';
 export * from './StokGrup';

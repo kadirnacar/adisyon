@@ -17,7 +17,7 @@ interface AdisyonState {
     showBarcode?: boolean;
     errorMessage?: string;
     password?: any;
-    showTaleNo?: boolean;
+    showTableNo?: boolean;
     tableNo?: string;
 }
 
@@ -143,7 +143,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             NOTES: ""
                         });
                     }} />
-                <Modal visible={this.state.showTaleNo || false}
+                <Modal visible={this.state.showTableNo || false}
                     transparent={true}
                     onRequestClose={() => {
 
@@ -170,18 +170,13 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             borderColor: colors.borderColor,
                             borderWidth: 2,
                         }}>
-                            <TextInput placeholder="Masa No"
-                                style={{
-                                    backgroundColor: colors.inputBackColor,
-                                    color: colors.inputTextColor,
-                                    width: "100%",
-                                    marginVertical: 10,
-                                    marginHorizontal: 10,
-                                    textAlign: "center"
-                                }}
-                                onChangeText={text => {
-                                    this.setState({ tableNo: text });
-                                }} />
+                            <View>
+                                {this.props.Table.items.map((table, index) => {
+                                    return <View>
+                                        <Text>{table.MASANO}</Text>
+                                    </View>;
+                                })}
+                            </View>
                             <TouchableHighlight
                                 underlayColor="#ffffff00" style={{
                                     backgroundColor: "#b329de",
@@ -197,14 +192,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     padding: 10
                                 }}
                                 onPress={async () => {
-                                    this.props.Adisyon.current.TABLENO = this.state.tableNo;
-                                    const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
-                                    if (isSuccess["Success"]) {
-                                        Alert.alert("Tamam", "Sipariş tamamlandı.");
-                                        this.setState({ showTaleNo: false, tableNo: null })
-                                        this.props.navigation.navigate("Nfc");
-                                    }
-
+                                    this.setState({ showTableNo: false })
                                 }}>
                                 <Text style={{ color: "#ffffff", fontWeight: "bold" }}>Tamam</Text>
                             </TouchableHighlight>
@@ -255,13 +243,45 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
                 <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} />
+                {this.props.Department.useTable ?
+                    <View style={{
+                        marginTop: 12,
+                        height: 50
+                    }}>
+                        <TouchableHighlight underlayColor="#ffffff00" style={{
+                            flex: 1,
+                            backgroundColor: colors.buttonBackColor,
+                            borderRadius: 50,
+                            height: 50,
+                            justifyContent: "center",
+                            flexDirection: "row",
+                            borderWidth: 0,
+                            paddingVertical: 10,
+                            marginHorizontal: 5,
+                        }}
+                            onPressIn={async () => {
+                                this.setState({ showTableNo: true })
+                            }}>
+                            <React.Fragment>
+                                <Icon name="chair" size={25} color={"#ffffff"} />
+                                <Text style={{
+                                    color: "#ffffff",
+                                    marginLeft: 5,
+                                    alignSelf: "center",
+                                    fontWeight: "bold",
+                                    fontSize: 16
+                                }}>{this.props.Adisyon.current && this.props.Adisyon.current.TABLENO ? "Masa No : " + this.props.Adisyon.current.TABLENO : "Masa Seçiniz"}</Text>
+                            </React.Fragment>
+                        </TouchableHighlight>
+                    </View>
+                    : null}
                 <View
                     style={{
                         flex: 1,
                         flexGrow: 1,
                         width: width - 10,
-                        top: 20,
-                        marginBottom: 90,
+                        top: this.props.Department.useTable ? 3 : 12,
+                        marginBottom: 70,
                         backgroundColor: colors.transparentBackColor,
                         borderRadius: 10,
                         borderColor: colors.borderColor,
@@ -312,32 +332,47 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                 <View
                     style={{
                         width: width,
+                        flex: 1,
                         position: "absolute",
-                        height: 70,
+                        height: 60,
                         flexDirection: "row",
                         bottom: 0,
                         left: 0,
-                        padding: 5,
+                        padding: 0,
                     }}>
 
                     <TouchableHighlight underlayColor="#ffffff00" style={{
                         flex: 1,
                         backgroundColor: colors.buttonBackColor,
-                        borderRadius: 50,
-                        height: 50,
+                        borderRadius: 0,
+                        height: "100%",
                         justifyContent: "center",
-                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
                         borderColor: colors.borderColor,
                         borderWidth: 2,
-                        paddingVertical: 10,
-                        marginHorizontal: 5
+                        paddingVertical: 0,
+                        marginHorizontal: 0
                     }}
                         onPressIn={() => {
                             this.props.navigation.navigate("StokSelect")
                         }}>
                         <React.Fragment>
-                            <Icon name="plus" size={25} color={colors.inputTextColor} />
+                            <Icon name="plus"
+                                style={{
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    textAlign: "center",
+                                    width: "100%"
+                                }}
+                                size={25}
+                                color={colors.inputTextColor} />
                             <Text style={{
+                                flex: 1,
+                                flexDirection: "row",
+                                textAlign: "center",
+                                width: "100%",
                                 color: colors.inputTextColor,
                                 marginLeft: 5,
                                 alignSelf: "center",
@@ -349,22 +384,34 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     <TouchableHighlight underlayColor="#ffffff00" style={{
                         flex: 1,
                         backgroundColor: "#292fde",
-                        borderRadius: 50,
-                        height: 50,
+                        borderRadius: 0,
+                        height: "100%",
                         justifyContent: "center",
-                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
                         borderColor: "#292fde",
                         borderWidth: 2,
-                        paddingVertical: 10,
-                        marginHorizontal: 5,
-                        padding: 10
+                        paddingVertical: 0,
+                        marginHorizontal: 0,
+                        padding: 0
                     }}
                         onPressIn={async () => {
                             this.setState({ showBarcode: true })
                         }}>
                         <React.Fragment>
-                            <Icon name="barcode" size={25} color={"#ffffff"} />
+                            <Icon name="barcode" size={25} color={"#ffffff"}
+                                style={{
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    textAlign: "center",
+                                    width: "100%"
+                                }} />
                             <Text style={{
+                                flex: 1,
+                                flexDirection: "row",
+                                textAlign: "center",
+                                width: "100%",
                                 color: "#ffffff",
                                 marginLeft: 5,
                                 alignSelf: "center",
@@ -376,38 +423,102 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     <TouchableHighlight underlayColor="#ffffff00" style={{
                         flex: 1,
                         backgroundColor: "#b329de",
-                        borderRadius: 50,
-                        height: 50,
+                        borderRadius: 0,
+                        height: "100%",
                         justifyContent: "center",
-                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
                         borderColor: "#b329de",
                         borderWidth: 2,
-                        paddingVertical: 10,
-                        marginHorizontal: 5,
-                        padding: 10
+                        paddingVertical: 0,
+                        marginHorizontal: 0,
+                        padding: 0
                     }}
                         onPressIn={async () => {
-
                             if (this.props.Adisyon.current.ITEMS.length > 0) {
-
-                                this.setState({ showTaleNo: true })
-
+                                this.props.Adisyon.current.TABLENO = this.state.tableNo;
+                                const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
+                                if (isSuccess["Success"]) {
+                                    Alert.alert("Tamam", "Sipariş tamamlandı.");
+                                    this.props.navigation.navigate("Nfc");
+                                }
                             }
                             else {
                                 Alert.alert("Ürün Seçin", "Devam etmek için lütfen ürün seçin.")
                             }
                         }}>
                         <React.Fragment>
-                            <Icon name="share-square" size={25} color={"#ffffff"} />
+                            <Icon name="money-bill" size={25} color={"#ffffff"}
+                                style={{
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    textAlign: "center",
+                                    width: "100%"
+                                }} />
                             <Text style={{
+                                flex: 1,
+                                flexDirection: "row",
+                                textAlign: "center",
+                                width: "100%",
                                 color: "#ffffff",
                                 marginLeft: 5,
                                 alignSelf: "center",
                                 fontWeight: "bold",
                                 fontSize: 14
-                            }}>Tamamla</Text>
+                            }}>Öde</Text>
                         </React.Fragment>
                     </TouchableHighlight>
+                    {this.props.Department.useTable ?
+                        <TouchableHighlight underlayColor="#ffffff00" style={{
+                            flex: 1,
+                            backgroundColor: "#de2974",
+                            borderRadius: 0,
+                            height: "100%",
+                            justifyContent: "center",
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            borderColor: "#de2974",
+                            borderWidth: 2,
+                            paddingVertical: 0,
+                            marginHorizontal: 0,
+                        }}
+                            onPressIn={async () => {
+                                if (this.props.Adisyon.current.ITEMS.length > 0) {
+                                    this.props.Adisyon.current.TABLENO = this.state.tableNo;
+                                    const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
+                                    if (isSuccess["Success"]) {
+                                        Alert.alert("Tamam", "Sipariş tamamlandı.");
+                                        this.props.navigation.navigate("Nfc");
+                                    }
+                                }
+                                else {
+                                    Alert.alert("Ürün Seçin", "Devam etmek için lütfen ürün seçin.")
+                                }
+                            }}>
+                            <React.Fragment>
+                                <Icon name="share-square" size={25} color={"#ffffff"}
+                                    style={{
+                                        flex: 1,
+                                        flexDirection: "row",
+                                        textAlign: "center",
+                                        width: "100%"
+                                    }} />
+                                <Text style={{
+                                    flex: 1,
+                                    flexDirection: "row",
+                                    textAlign: "center",
+                                    width: "100%",
+                                    color: "#ffffff",
+                                    marginLeft: 5,
+                                    alignSelf: "center",
+                                    fontWeight: "bold",
+                                    fontSize: 14
+                                }}>Sipariş</Text>
+                            </React.Fragment>
+                        </TouchableHighlight> : null
+                    }
                 </View>
 
             </React.Fragment>
