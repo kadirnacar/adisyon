@@ -1,5 +1,5 @@
-import { AdisyonItem, colors, CustomerInfo, LoaderSpinner, BarcodeReader } from '@components';
-import { AdisyonActions } from '@reducers';
+import { AdisyonItem, colors, CustomerInfo, LoaderSpinner, BarcodeReader, TableInfo, NfcReader } from '@components';
+import { AdisyonActions, CustomerActions, ActivityOrderActions, Applications, TableActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
@@ -15,12 +15,16 @@ const { width, scale, height } = Dimensions.get("window");
 
 interface AdisyonState {
     showBarcode?: boolean;
+    showNfc?: boolean;
     errorMessage?: string;
     password?: any;
 }
 
 interface AdisyonProps {
-    AdisyonActions: typeof AdisyonActions
+    AdisyonActions: typeof AdisyonActions;
+    TableActions: typeof TableActions;
+    CustomerActions: typeof CustomerActions;
+    ActivityOrderActions: typeof ActivityOrderActions;
 }
 type Props = NavigationInjectedProps & AdisyonProps & ApplicationState;
 
@@ -93,12 +97,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
     async handleComponentMount() {
         if (!this.props.Adisyon.current) {
+            if (this.props.Table.current) {
+                await this.props.TableActions.getTableItems(this.props.Department.current.KODU, this.props.Table.current.MASANO);
+            }
             this.props.AdisyonActions.setCurrent({
                 DEPCODE: this.props.Department.current.KODU,
                 GARSONID: this.props.Garson.current.ID,
                 GUESTNO: this.props.Customer.current ? this.props.Customer.current.GUESTNO : null,
                 GUESTID: this.props.Customer.current ? this.props.Customer.current.GUESTID : null,
-                ITEMS: [],
+                ITEMS: this.props.Table.current && this.props.Table.tableAdisyon ? this.props.Table.tableAdisyon : [],
                 NOTES: ""
             });
         }
@@ -181,11 +188,39 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             this.setState({ showBarcode: false })
                         }} />
                 </Modal>
+                <Modal visible={this.state.showNfc || false}
+                    transparent={false}
+                    onRequestClose={() => {
+
+                    }}>
+                    <NfcReader onReadTag={async (tag) => {
+                        const isFind = await this.props.CustomerActions.getItem(tag);
+                        if (!isFind)
+                            Alert.alert("Kart Bilgisi Bulunamadı.");
+                        else {
+                            this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
+                            this.props.Adisyon.current.GUESTID = this.props.Customer.current ? this.props.Customer.current.GUESTID : null;
+                            this.props.Adisyon.current.GUESTNO = this.props.Customer.current ? this.props.Customer.current.GUESTNO : null;
+
+                            const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
+                            if (isSuccess["Success"]) {
+                                Alert.alert("Tamam", "Sipariş tamamlandı.");
+                                this.props.navigation.navigate("TableSelect");
+                            }
+                        }
+                        this.setState({ showNfc: false })
+                    }} />
+                    <CustomerInfo style={{ height: 120, top: -10 }} total={currentTotal} />
+                </Modal>
+
+
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
-                {this.props.Customer.current ?
+                {!this.props.Table.current ?
                     <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
+                {this.props.Table.current ?
+                    <TableInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
                 <View
                     style={{
                         flex: 1,
@@ -348,11 +383,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     }}
                         onPressIn={async () => {
                             if (this.props.Adisyon.current.ITEMS.length > 0) {
-                                this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
-                                const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
-                                if (isSuccess["Success"]) {
-                                    Alert.alert("Tamam", "Sipariş tamamlandı.");
-                                    this.props.navigation.navigate("Nfc");
+                                if (this.props.Customer.current) {
+                                    this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
+                                    const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
+                                    if (isSuccess["Success"]) {
+                                        Alert.alert("Tamam", "Sipariş tamamlandı.");
+                                        this.props.navigation.navigate("Nfc");
+                                    }
+                                } else {
+                                    this.setState({ showNfc: true })
                                 }
                             }
                             else {
@@ -401,7 +440,10 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
                                     if (isSuccess["Success"]) {
                                         Alert.alert("Tamam", "Sipariş tamamlandı.");
-                                        this.props.navigation.navigate("Nfc");
+                                        if (this.props.Department.useTable)
+                                            this.props.navigation.navigate("TableSelect");
+                                        else
+                                            this.props.navigation.navigate("Nfc");
                                     }
                                 }
                                 else {
@@ -443,6 +485,8 @@ export const Adisyon = withNavigation(connect(
     dispatch => {
         return {
             AdisyonActions: bindActionCreators({ ...AdisyonActions }, dispatch),
+            CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
+            ActivityOrderActions: bindActionCreators({ ...ActivityOrderActions }, dispatch),
         };
     }
 )(AdisyonScreen));

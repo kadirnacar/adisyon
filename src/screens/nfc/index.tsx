@@ -1,16 +1,12 @@
-import { colors, CustomerInfo, LoaderSpinner } from '@components';
-import { AdisyonActions, CustomerActions, Applications, ActivityOrderActions } from '@reducers';
+import { CustomerInfo, NfcReader } from '@components';
+import { ActivityOrderActions, AdisyonActions, Applications, CustomerActions } from '@reducers';
 import { ApplicationState } from '@store';
-import 'intl';
-import 'intl/locale-data/jsonp/tr';
-import LottieView from 'lottie-react-native';
 import React, { Component } from 'react';
-import { Alert, Dimensions, TouchableHighlight, View, Text } from 'react-native';
-import NfcManager, { NfcEvents } from 'react-native-nfc-manager';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Alert, Dimensions } from 'react-native';
 import { NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+
 const { width, scale, height } = Dimensions.get("window");
 
 interface CustomerState {
@@ -36,45 +32,7 @@ class NfcScreen extends Component<Props, any> {
         this.handleComponentUnMount = this.handleComponentUnMount.bind(this);
     }
 
-    async componentDidMount() {
-        NfcManager.isEnabled().then(enabled => {
-            NfcManager.start().then(() => {
-                if (enabled) {
-                    NfcManager.setEventListener(NfcEvents.DiscoverTag, async tag => {
-                        const isFind = await this.props.CustomerActions.getItem(tag.id);
-                        if (!isFind)
-                            Alert.alert("Kart Bilgisi Bulunamadı.");
-                        else {
-                            if (this.props.Application.current == Applications.Siparis)
-                                this.props.navigation.navigate("Adisyon")
-                            else if (this.props.Application.current == Applications.AktiviteSatis)
-                                this.props.navigation.navigate("Aktivite")
-                            else if (this.props.Application.current == Applications.AktiviteKontrol) {
-                                const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, this.props.ActivityOrder.checkItemSeance, tag.id);
-                                if (result) {
-                                    Alert.alert(result["MESSAGE"]);
-                                }
-                            } else if (this.props.Application.current == Applications.Turnike) {
-                                const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, null, tag.id);
-                                if (result) {
-                                    Alert.alert(result["MESSAGE"]);
-                                }
-                            }
-                        }
-                    });
-                    NfcManager.registerTagEvent();
-                } else {
-                    console.log("disabled");
-                }
-            }).catch(ex => {
-                console.log("ex", ex)
-            })
-        })
-    }
-
     componentWillUnmount() {
-        NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
-        NfcManager.unregisterTagEvent().catch(() => 0);
     }
 
     async handleComponentMount() {
@@ -92,40 +50,28 @@ class NfcScreen extends Component<Props, any> {
                 <NavigationEvents
                     onWillBlur={this.handleComponentUnMount}
                     onWillFocus={this.handleComponentMount} />
-                <LoaderSpinner
-                    showLoader={this.props.Customer.isRequest}
-                    onCloseModal={async () => {
-                        await this.props.CustomerActions.clear();
-                    }} />
-                <TouchableHighlight
-                    underlayColor="#ffffff00"
-                    style={{
-                        zIndex: 2,
-                        position: "absolute",
-                        flex: 1,
-                        top: 50,
-                        right: 20,
-                        backgroundColor: colors.transparentBackColor,
-                        borderRadius: 40,
-                        borderColor: colors.borderColor,
-                        borderWidth: 2,
-                        padding: 10
-                    }}
-                    onPressIn={() => {
-                        NfcManager.goToNfcSetting();
-                    }}>
-                    <Icon name="wrench" size={35} color={colors.inputTextColor} />
-                </TouchableHighlight>
-                <View style={{
-                    alignContent: "center",
-                    alignItems: "center",
-                    padding: 10
-                }}>
-                    <Text>{this.props.Application.nfcScreenTitle}</Text>
-                </View>
-                <View style={{ flex: 1, width: width, height: 500, flexDirection: "row" }}>
-                    <LottieView source={require('../../../assets/animation.json')} autoPlay loop />
-                </View>
+                <NfcReader onReadTag={async (tag) => {
+                    const isFind = await this.props.CustomerActions.getItem(tag);
+                    if (!isFind)
+                        Alert.alert("Kart Bilgisi Bulunamadı.");
+                    else {
+                        if (this.props.Application.current == Applications.Siparis)
+                            this.props.navigation.navigate("Adisyon")
+                        else if (this.props.Application.current == Applications.AktiviteSatis)
+                            this.props.navigation.navigate("Aktivite")
+                        else if (this.props.Application.current == Applications.AktiviteKontrol) {
+                            const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, this.props.ActivityOrder.checkItemSeance, tag);
+                            if (result) {
+                                Alert.alert(result["MESSAGE"]);
+                            }
+                        } else if (this.props.Application.current == Applications.Turnike) {
+                            const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, null, tag);
+                            if (result) {
+                                Alert.alert(result["MESSAGE"]);
+                            }
+                        }
+                    }
+                }} />
                 <CustomerInfo style={{ height: 120, bottom: 20 }} onPress={() => {
                     // this.props.navigation.navigate("Adisyon")
                 }} />

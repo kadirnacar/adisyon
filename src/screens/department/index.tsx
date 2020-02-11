@@ -127,6 +127,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                             borderRadius: 25
                         }}
                         onPressIn={async () => {
+                            await this.props.TableActions.clear();
                             await this.props.DepartmentActions.setCurrent(this.state.selectedItem);
                             if (this.props.Department.useTable) {
                                 this.props.navigation.navigate("TableSelect");

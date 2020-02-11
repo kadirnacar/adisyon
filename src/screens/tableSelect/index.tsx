@@ -1,6 +1,6 @@
 import { colors, LoaderSpinner } from '@components';
 import { ITable } from '@models';
-import { TableActions, CustomerActions, AdisyonActions, ActivityOrderActions } from '@reducers';
+import { TableActions, CustomerActions, AdisyonActions, ActivityOrderActions, ApplicationActions } from '@reducers';
 import { ApplicationState } from '@store';
 import ColorScheme from 'color-scheme';
 import React, { Component } from 'react';
@@ -22,6 +22,7 @@ interface TableProps {
     CustomerActions: typeof CustomerActions;
     AdisyonActions: typeof AdisyonActions;
     ActivityOrderActions: typeof ActivityOrderActions;
+    ApplicationActions: typeof ApplicationActions;
 }
 
 type Props = NavigationInjectedProps & TableProps & ApplicationState;
@@ -43,8 +44,10 @@ class TableScreen extends Component<Props, TableState> {
     async componentDidMount() {
     }
     async handleComponentMount() {
-        await this.props.TableActions.getItems(this.props.Department.current.KODU);
         await this.props.TableActions.setCurrent(null);
+        if (!this.props.Table.items || this.props.Table.items.length == 0)
+            await this.props.TableActions.getItems(this.props.Department.current.KODU);
+        await this.props.TableActions.getOpenedItems(this.props.Department.current.KODU);
         await this.props.CustomerActions.clear();
         await this.props.AdisyonActions.setCurrent(null);
         await this.props.ActivityOrderActions.setCurrent(null);
@@ -60,6 +63,37 @@ class TableScreen extends Component<Props, TableState> {
                 <NavigationEvents
                     onWillBlur={this.handleComponentUnMount}
                     onWillFocus={this.handleComponentMount} />
+                <View style={{
+                    marginTop: 0,
+                    height: 50
+                }}>
+                    <TouchableHighlight underlayColor="#ffffff00" style={{
+                        flex: 1,
+                        backgroundColor: colors.buttonBackColor,
+                        borderRadius: 50,
+                        height: 50,
+                        justifyContent: "center",
+                        flexDirection: "row",
+                        borderWidth: 0,
+                        paddingVertical: 10,
+                        marginHorizontal: 5,
+                    }}
+                        onPressIn={async () => {
+                            await this.props.ApplicationActions.setNfcTitle("F&B");
+                            this.props.navigation.navigate("Nfc");
+                        }}>
+                        <React.Fragment>
+                            <Icon name="money-bill" size={25} color={"#ffffff"} />
+                            <Text style={{
+                                color: "#ffffff",
+                                marginLeft: 5,
+                                alignSelf: "center",
+                                fontWeight: "bold",
+                                fontSize: 16
+                            }}>Doğrudan Satış</Text>
+                        </React.Fragment>
+                    </TouchableHighlight>
+                </View>
                 <View style={{ width: width }}>
                     <FlatList
                         data={this.props.Table.items ? this.props.Table.items : []}
@@ -78,7 +112,7 @@ class TableScreen extends Component<Props, TableState> {
                                         borderWidth: 4,
                                         margin: 5,
                                         borderRadius: (width / 3 - 18) / 2,
-                                        backgroundColor: this.state.selectedItem == item ? "#7097c2" : "#70a4db"
+                                        backgroundColor: this.state.selectedItem == item ? "#7097c2" : (this.props.Table.openedItems && this.props.Table.openedItems.findIndex(tbl => tbl.MASANO == item.MASANO) ? "#eddf72" : "#70a4db")
                                     }}
                                     onPressIn={() => {
                                         this.setState({ selectedItem: item })
@@ -150,6 +184,7 @@ export const TableSelect = withNavigation(connect(
             CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
             AdisyonActions: bindActionCreators({ ...AdisyonActions }, dispatch),
             ActivityOrderActions: bindActionCreators({ ...ActivityOrderActions }, dispatch),
+            ApplicationActions: bindActionCreators({ ...ApplicationActions }, dispatch),
         };
     }
 )(TableScreen));
