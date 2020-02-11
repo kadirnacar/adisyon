@@ -17,8 +17,6 @@ interface AdisyonState {
     showBarcode?: boolean;
     errorMessage?: string;
     password?: any;
-    showTableNo?: boolean;
-    tableNo?: string;
 }
 
 interface AdisyonProps {
@@ -98,8 +96,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
             this.props.AdisyonActions.setCurrent({
                 DEPCODE: this.props.Department.current.KODU,
                 GARSONID: this.props.Garson.current.ID,
-                GUESTNO: this.props.Customer.current.GUESTNO,
-                GUESTID: this.props.Customer.current.GUESTID,
+                GUESTNO: this.props.Customer.current ? this.props.Customer.current.GUESTNO : null,
+                GUESTID: this.props.Customer.current ? this.props.Customer.current.GUESTID : null,
                 ITEMS: [],
                 NOTES: ""
             });
@@ -138,67 +136,11 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         await this.props.AdisyonActions.setCurrent({
                             DEPCODE: this.props.Department.current.KODU,
                             GARSONID: this.props.Garson.current.ID,
-                            GUESTNO: this.props.Customer.current.GUESTNO,
+                            GUESTNO: this.props.Customer.current ? this.props.Customer.current.GUESTNO : null,
                             ITEMS: [],
                             NOTES: ""
                         });
                     }} />
-                <Modal visible={this.state.showTableNo || false}
-                    transparent={true}
-                    onRequestClose={() => {
-
-                    }}>
-                    <View style={{
-                        flex: 1,
-                        width: "100%",
-                        flexDirection: "row",
-                        alignContent: "center",
-                        alignItems: "center",
-                        alignSelf: "center",
-                        backgroundColor: "rgba(255,255,255,0.7)"
-                    }}>
-                        <View style={{
-                            flex: 1,
-                            alignContent: "center",
-                            alignItems: "center",
-                            alignSelf: "center",
-                            width: "80%",
-                            marginHorizontal: 20,
-
-                            borderRadius: 10,
-                            backgroundColor: "#fff",
-                            borderColor: colors.borderColor,
-                            borderWidth: 2,
-                        }}>
-                            <View>
-                                {this.props.Table.items.map((table, index) => {
-                                    return <View>
-                                        <Text>{table.MASANO}</Text>
-                                    </View>;
-                                })}
-                            </View>
-                            <TouchableHighlight
-                                underlayColor="#ffffff00" style={{
-                                    backgroundColor: "#b329de",
-                                    marginVertical: 10,
-                                    borderRadius: 50,
-                                    height: 50,
-                                    justifyContent: "center",
-                                    flexDirection: "row",
-                                    borderColor: "#b329de",
-                                    borderWidth: 2,
-                                    paddingVertical: 10,
-                                    marginHorizontal: 5,
-                                    padding: 10
-                                }}
-                                onPress={async () => {
-                                    this.setState({ showTableNo: false })
-                                }}>
-                                <Text style={{ color: "#ffffff", fontWeight: "bold" }}>Tamam</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </Modal>
                 <Modal visible={this.state.showBarcode || false}
                     transparent={false}
                     onRequestClose={() => {
@@ -219,7 +161,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     currentTotal += i.QUANTITY * stokItem1.SFIYAT1
                                 });
 
-                                if ((currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
+                                if (this.props.Customer.current && (currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
                                     Alert.alert("Uyarı", "Yeterli bakiye yok");
                                     return;
                                 }
@@ -242,45 +184,14 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
-                <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} />
-                {this.props.Department.useTable ?
-                    <View style={{
-                        marginTop: 12,
-                        height: 50
-                    }}>
-                        <TouchableHighlight underlayColor="#ffffff00" style={{
-                            flex: 1,
-                            backgroundColor: colors.buttonBackColor,
-                            borderRadius: 50,
-                            height: 50,
-                            justifyContent: "center",
-                            flexDirection: "row",
-                            borderWidth: 0,
-                            paddingVertical: 10,
-                            marginHorizontal: 5,
-                        }}
-                            onPressIn={async () => {
-                                this.setState({ showTableNo: true })
-                            }}>
-                            <React.Fragment>
-                                <Icon name="chair" size={25} color={"#ffffff"} />
-                                <Text style={{
-                                    color: "#ffffff",
-                                    marginLeft: 5,
-                                    alignSelf: "center",
-                                    fontWeight: "bold",
-                                    fontSize: 16
-                                }}>{this.props.Adisyon.current && this.props.Adisyon.current.TABLENO ? "Masa No : " + this.props.Adisyon.current.TABLENO : "Masa Seçiniz"}</Text>
-                            </React.Fragment>
-                        </TouchableHighlight>
-                    </View>
-                    : null}
+                {this.props.Customer.current ?
+                    <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
                 <View
                     style={{
                         flex: 1,
                         flexGrow: 1,
                         width: width - 10,
-                        top: this.props.Department.useTable ? 3 : 12,
+                        top: 12,
                         marginBottom: 70,
                         backgroundColor: colors.transparentBackColor,
                         borderRadius: 10,
@@ -306,7 +217,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                             itemPrice = stokItem.SFIYAT1;
                                     });
 
-                                    if (currentTotal + itemPrice > this.props.Customer.current.BALANCE) {
+                                    if (this.props.Customer.current && currentTotal + itemPrice > this.props.Customer.current.BALANCE) {
                                         Alert.alert("Uyarı", "Yeterli bakiye yok");
                                         return;
                                     }
@@ -437,7 +348,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     }}
                         onPressIn={async () => {
                             if (this.props.Adisyon.current.ITEMS.length > 0) {
-                                this.props.Adisyon.current.TABLENO = this.state.tableNo;
+                                this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                                 const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
                                 if (isSuccess["Success"]) {
                                     Alert.alert("Tamam", "Sipariş tamamlandı.");
@@ -469,7 +380,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             }}>Öde</Text>
                         </React.Fragment>
                     </TouchableHighlight>
-                    {this.props.Department.useTable ?
+                    {this.props.Table.current ?
                         <TouchableHighlight underlayColor="#ffffff00" style={{
                             flex: 1,
                             backgroundColor: "#de2974",
@@ -486,7 +397,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         }}
                             onPressIn={async () => {
                                 if (this.props.Adisyon.current.ITEMS.length > 0) {
-                                    this.props.Adisyon.current.TABLENO = this.state.tableNo;
+                                    this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                                     const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
                                     if (isSuccess["Success"]) {
                                         Alert.alert("Tamam", "Sipariş tamamlandı.");

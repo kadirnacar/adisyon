@@ -1,10 +1,10 @@
 import { colors } from '@components';
-import { IAdisyon, IStok, IStokGrup, ICustomer } from '@models';
-import { StokActions, CustomerActions, AdisyonActions } from '@reducers';
+import { IAdisyon, IStok, IStokGrup } from '@models';
+import { StokActions } from '@reducers';
 import { ApplicationState } from '@store';
 import fuzzysort from 'fuzzysort';
 import React, { Component } from 'react';
-import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert } from 'react-native';
+import { Alert, Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle } from 'react-native';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -89,7 +89,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                 data={(this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])).filter(stk => (this.state.selectedGrup && this.state.selectedGrup.STOKGRUPID ? stk.STOKGRUPID == this.state.selectedGrup.STOKGRUPID : true))}
                                 renderItem={({ item, index }) => {
                                     let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID) : null;
-                                    let discountRate = this.props.Customer.current.DISCOUNT_RATE
+                                    let discountRate = this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
                                     if (!adisyonItem)
                                         adisyonItem = { ID: item.STOKID, QUANTITY: 0 };
                                     return (
@@ -111,7 +111,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                                 });
 
                                                 const stokItem = this.props.Stok.items.find(t => t.STOKID == itm.ID);
-                                                if ((currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
+                                                if (this.props.Customer.current && (currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
                                                     Alert.alert("Uyarı", "Yeterli bakiye yok");
                                                     return;
                                                 }
@@ -150,8 +150,8 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                             width: "35%",
                         }}>
                         <FlatList
-                            ListHeaderComponent={<GroupItem selected={!this.state.selectedGrup || this.state.selectedGrup.STOKGRUPID == 0} 
-                            group={{ ADI: "Hepsi", KODU: null, STOKGRUPID: 0 }}
+                            ListHeaderComponent={<GroupItem selected={!this.state.selectedGrup || this.state.selectedGrup.STOKGRUPID == 0}
+                                group={{ ADI: "Hepsi", KODU: null, STOKGRUPID: 0 }}
                                 onPress={(group) => {
                                     this.setState({ selectedGrup: group });
                                 }} />}

@@ -1,88 +1,91 @@
 import { colors, LoaderSpinner } from '@components';
-import { IDepartment } from '@models';
-import { DepartmentActions, TableActions } from '@reducers';
+import { ITable } from '@models';
+import { TableActions, CustomerActions, AdisyonActions, ActivityOrderActions } from '@reducers';
 import { ApplicationState } from '@store';
 import ColorScheme from 'color-scheme';
 import React, { Component } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import RNMaterialLetterIcon from 'react-native-material-letter-icon';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
+import { FlatList, NavigationInjectedProps, withNavigation, NavigationEvents } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 const { height, width } = Dimensions.get("window");
 
-interface DepartmentState {
-    selectedItem: IDepartment;
+interface TableState {
+    selectedItem: ITable;
 }
 
-interface DepartmentProps {
-    DepartmentActions: typeof DepartmentActions
-    TableActions: typeof TableActions
+interface TableProps {
+    TableActions: typeof TableActions;
+    CustomerActions: typeof CustomerActions;
+    AdisyonActions: typeof AdisyonActions;
+    ActivityOrderActions: typeof ActivityOrderActions;
 }
 
-type Props = NavigationInjectedProps & DepartmentProps & ApplicationState;
+type Props = NavigationInjectedProps & TableProps & ApplicationState;
 
-class DepartmentScreen extends Component<Props, DepartmentState> {
+class TableScreen extends Component<Props, TableState> {
     static navigationOptions = ({ navigation }) => {
         return {
-            title: "Departman Seçimi",
+            title: "Masa Seçimi",
         };
     };
     constructor(props) {
         super(props);
+        this.handleComponentMount = this.handleComponentMount.bind(this);
+        this.handleComponentUnMount = this.handleComponentUnMount.bind(this);
         this.state = {
             selectedItem: null
         }
-        this.scheme = new ColorScheme();
-        this.scheme.from_hue(10)
-            .scheme('triade')
-            .variation('pastel');
     }
-    scheme;
+    async componentDidMount() {
+    }
+    async handleComponentMount() {
+        await this.props.TableActions.getItems(this.props.Department.current.KODU);
+        await this.props.TableActions.setCurrent(null);
+        await this.props.CustomerActions.clear();
+        await this.props.AdisyonActions.setCurrent(null);
+        await this.props.ActivityOrderActions.setCurrent(null);
+    }
+    async handleComponentUnMount() {
+        // NfcManager.setEventListener(NfcEvents.DiscoverTag, null);
+        // NfcManager.unregisterTagEvent().catch(() => 0);
+    }
     render() {
         const { container } = styles;
-        let clrs = this.scheme.colors();
         return (
             <SafeAreaView style={container}>
+                <NavigationEvents
+                    onWillBlur={this.handleComponentUnMount}
+                    onWillFocus={this.handleComponentMount} />
                 <View style={{ width: width }}>
                     <FlatList
-                        data={this.props.Garson.current ? this.props.Department.items.filter(itm => this.props.Garson.current.departments.indexOf(itm.KODU) > -1) : []}
+                        data={this.props.Table.items ? this.props.Table.items : []}
                         style={{ height: height - 160 }}
                         renderItem={({ item, index }) => {
                             return (
                                 <TouchableHighlight underlayColor="#ffffff00" key={index}
                                     style={{
                                         width: width / 3 - 18,
-                                        height: 150,
+                                        height: width / 3 - 18,
                                         alignContent: "center",
                                         alignItems: "center",
                                         alignSelf: "center",
                                         justifyContent: "center",
-                                        borderColor: this.state.selectedItem == item ? "red" : "transparent",//colors.borderColor,
+                                        borderColor: this.state.selectedItem == item ? "red" : "#7097c2",//colors.borderColor,
                                         borderWidth: 4,
                                         margin: 5,
-                                        borderRadius: 25,
-                                        backgroundColor: this.state.selectedItem == item ? colors.transparentBackColor : "#ffffff"
+                                        borderRadius: (width / 3 - 18) / 2,
+                                        backgroundColor: this.state.selectedItem == item ? "#7097c2" : "#70a4db"
                                     }}
                                     onPressIn={() => {
                                         this.setState({ selectedItem: item })
                                     }}>
-                                    <View style={{ width: '100%', alignItems: "center" }}>
-                                        <RNMaterialLetterIcon
-                                            size={80}
-                                            border={true}
-                                            shapeColor={'#' + clrs[index % clrs.length]}
-                                            letterColor={"#ffffff"}
-                                            borderColor={this.state.selectedItem == item ? "red" : "#ffffff"}
-                                            borderSize={2}
-                                            lettersNumber={3}
-                                            initialsNumber={3}
-                                            letterSize={36}
-                                            bold
-                                            letter={item.ADI}
-                                        />
+                                    <View style={{
+                                    }}>
+                                        <Icon name={"chair"} size={35} color={"#fff"} />
                                         <Text style={{
                                             fontSize: 14,
                                             color: colors.inputTextColor,
@@ -90,13 +93,13 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                                             flexWrap: "nowrap",
                                             textAlignVertical: "center",
                                             textAlign: "center"
-                                        }}>{item.ADI}</Text>
+                                        }}>{item.MASANO}</Text>
                                         {this.state.selectedItem == item ?
                                             <View style={{
                                                 position: "absolute",
                                                 borderWidth: 2,
                                                 borderColor: "#ff5555",
-                                                marginTop: 22,
+                                                marginTop: 10,
                                                 borderRadius: 20,
                                                 padding: 2
                                             }}>
@@ -127,15 +130,11 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                             borderRadius: 25
                         }}
                         onPressIn={async () => {
-                            await this.props.DepartmentActions.setCurrent(this.state.selectedItem);
-                            if (this.props.Department.useTable) {
-                                this.props.navigation.navigate("TableSelect");
-                            } else {
-                                this.props.navigation.navigate("Nfc");
-                            }
+                            await this.props.TableActions.setCurrent(this.state.selectedItem);
+                            this.props.navigation.navigate("Adisyon");
                         }}
                     >
-                        <Text style={{ color: colors.buttonTextColor, fontSize: 18, fontWeight: "bold" }}>Giriş</Text>
+                        <Text style={{ color: colors.buttonTextColor, fontSize: 18, fontWeight: "bold" }}>Devam</Text>
                     </TouchableHighlight>
                 </View>
             </SafeAreaView>
@@ -143,15 +142,17 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
     }
 }
 
-export const Department = withNavigation(connect(
+export const TableSelect = withNavigation(connect(
     (state: ApplicationState) => state,
     dispatch => {
         return {
-            DepartmentActions: bindActionCreators({ ...DepartmentActions }, dispatch),
             TableActions: bindActionCreators({ ...TableActions }, dispatch),
+            CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
+            AdisyonActions: bindActionCreators({ ...AdisyonActions }, dispatch),
+            ActivityOrderActions: bindActionCreators({ ...ActivityOrderActions }, dispatch),
         };
     }
-)(DepartmentScreen));
+)(TableScreen));
 
 const styles = StyleSheet.create({
     container: {

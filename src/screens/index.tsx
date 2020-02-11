@@ -9,3 +9,4 @@ export { Aktivite } from './activity';
 export { ActivitySelectScreen } from './activitySelect';
 export { ActivityCheckScreen } from './activityCheck';
 export { TurnikeCheckScreen } from './turnikeCheck';
+export { TableSelect } from './tableSelect';
