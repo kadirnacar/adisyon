@@ -67,6 +67,18 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                 currency: "TRL"
                             }).format((this.props.total ? this.props.total : 0))}</Text>
                         </View> : null}
+                        {this.props.total != null ?
+                        <View style={{
+                            alignContent:"flex-end",
+                            alignItems:"flex-end",
+                            alignSelf:"flex-end"
+                        }}>
+                            <Text style={{ color: colors.borderColor }}>Kalan</Text>
+                            <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
+                                style: "currency",
+                                currency: "TRL"
+                            }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0)-(this.props.total ? this.props.total : 0))}</Text>
+                        </View> : null}
                 </React.Fragment>
             </TouchableHighlight>
         )

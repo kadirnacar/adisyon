@@ -247,6 +247,8 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                                 if (isSuccess["SUCCESS"]) {
                                     Alert.alert("Tamam", "Sipariş tamamlandı.");
                                     this.props.navigation.navigate("Nfc");
+                                }else {
+                                    Alert.alert("Hata", isSuccess["Message"]);
                                 }
                             }
                             else {

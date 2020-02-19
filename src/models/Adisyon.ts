@@ -11,4 +11,5 @@ export interface IAdisyonProduct {
     ID?: number;
     QUANTITY?: number;
     DESC?: string;
+    OLD?: boolean;
 }

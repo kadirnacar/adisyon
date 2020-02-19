@@ -1,4 +1,4 @@
-import { CustomerInfo, NfcReader } from '@components';
+import { CustomerInfo, NfcReader, LoaderSpinner } from '@components';
 import { ActivityOrderActions, AdisyonActions, Applications, CustomerActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
@@ -50,6 +50,10 @@ class NfcScreen extends Component<Props, any> {
                 <NavigationEvents
                     onWillBlur={this.handleComponentUnMount}
                     onWillFocus={this.handleComponentMount} />
+                <LoaderSpinner
+                    showLoader={this.props.ActivityOrder.isRequest}
+                    onCloseModal={async () => {
+                    }} />
                 <NfcReader onReadTag={async (tag) => {
                     const isFind = await this.props.CustomerActions.getItem(tag);
                     if (!isFind)

@@ -44,7 +44,9 @@ class TableScreen extends Component<Props, TableState> {
     async componentDidMount() {
     }
     async handleComponentMount() {
+        this.setState({ selectedItem: null })
         await this.props.TableActions.setCurrent(null);
+        console.log(this.props.Table.items)
         if (!this.props.Table.items || this.props.Table.items.length == 0)
             await this.props.TableActions.getItems(this.props.Department.current.KODU);
         await this.props.TableActions.getOpenedItems(this.props.Department.current.KODU);
@@ -60,6 +62,10 @@ class TableScreen extends Component<Props, TableState> {
         const { container } = styles;
         return (
             <SafeAreaView style={container}>
+                <LoaderSpinner
+                    showLoader={this.props.Table.isRequest}
+                    onCloseModal={async () => {
+                    }} />
                 <NavigationEvents
                     onWillBlur={this.handleComponentUnMount}
                     onWillFocus={this.handleComponentMount} />
@@ -108,11 +114,11 @@ class TableScreen extends Component<Props, TableState> {
                                         alignItems: "center",
                                         alignSelf: "center",
                                         justifyContent: "center",
-                                        borderColor: this.state.selectedItem == item ? "red" : "#7097c2",//colors.borderColor,
+                                        borderColor: this.state.selectedItem && this.state.selectedItem.MASANO == item.MASANO ? "red" : "#7097c2",//colors.borderColor,
                                         borderWidth: 4,
                                         margin: 5,
                                         borderRadius: (width / 3 - 18) / 2,
-                                        backgroundColor: this.state.selectedItem == item ? "#7097c2" : (this.props.Table.openedItems && this.props.Table.openedItems.findIndex(tbl => tbl.MASANO == item.MASANO) ? "#eddf72" : "#70a4db")
+                                        backgroundColor: this.state.selectedItem && this.state.selectedItem.MASANO == item.MASANO ? "#7097c2" : (this.props.Table.openedItems && this.props.Table.openedItems.findIndex(tbl => tbl.MASANO == item.MASANO) > -1 ? "#eddf72" : "#7097c2")
                                     }}
                                     onPressIn={() => {
                                         this.setState({ selectedItem: item })

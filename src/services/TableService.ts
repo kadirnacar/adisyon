@@ -72,7 +72,7 @@ export class TableService extends ServiceBase {
         return result;
     }
     public static async getTableAdisyon(departmentCode: string, masaNo: string) {
-        var result = await this.requestJson<AngusResponse<IAdisyonProduct>>({
+        var result = await this.requestJson<AngusResponse<any>>({
             url: `${config.restUrl}`,
             method: "POST",
             data: {

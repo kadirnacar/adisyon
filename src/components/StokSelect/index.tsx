@@ -88,7 +88,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                 removeClippedSubviews={false}
                                 data={(this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])).filter(stk => (this.state.selectedGrup && this.state.selectedGrup.STOKGRUPID ? stk.STOKGRUPID == this.state.selectedGrup.STOKGRUPID : true))}
                                 renderItem={({ item, index }) => {
-                                    let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID) : null;
+                                    let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID && !itm.OLD) : null;
                                     let discountRate = this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
                                     if (!adisyonItem)
                                         adisyonItem = { ID: item.STOKID, QUANTITY: 0 };
@@ -105,7 +105,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
 
                                                 let currentTotal = 0;
 
-                                                adisyon.ITEMS.forEach(i => {
+                                                adisyon.ITEMS.filter(i => !i.OLD).forEach(i => {
                                                     const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
                                                     currentTotal += i.QUANTITY * stokItem.SFIYAT1
                                                 });
@@ -116,7 +116,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                                     return;
                                                 }
 
-                                                const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID);
+                                                const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID && !i.OLD);
                                                 if (adisyonIndex < 0)
                                                     adisyon.ITEMS.push(itm);
                                                 itm.QUANTITY = itm.QUANTITY + 1;
@@ -126,7 +126,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                             }}
                                             onRemovePress={(itm) => {
                                                 const { adisyon } = this.props;
-                                                const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID);
+                                                const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID && !i.OLD);
                                                 if (itm.QUANTITY - 1 > 0) {
                                                     itm.QUANTITY = itm.QUANTITY - 1;
                                                 } else if (adisyonIndex >= 0) {

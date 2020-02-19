@@ -12,6 +12,9 @@ export const reducer = (currentState: AdisyonState = unloadedState, incomingActi
     switch (action.type) {
         case Actions.ReceiveSendAdisyonItems:
             currentState.isRequest = false;
+            currentState.current = {
+                ITEMS: []
+            };
             return { ...currentState };
         case Actions.RequestSendAdisyonItems:
             currentState.isRequest = true;

@@ -37,7 +37,6 @@ export const reducer = (currentState: TableState = unloadedState, incomingAction
             currentState.current = action.payload;
             return { ...currentState };
         case Actions.Clear:
-            currentState.items = null;
             currentState.current = null;
             currentState.tableAdisyon = null;
             return { ...currentState };

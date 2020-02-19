@@ -126,15 +126,16 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     render() {
         let currentTotal = 0;
         let discount = this.props.Customer && this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
-        this.props.Adisyon.current ? this.props.Adisyon.current.ITEMS.forEach(i => {
+        this.props.Adisyon.current && this.props.Adisyon.current.ITEMS ? this.props.Adisyon.current.ITEMS.forEach(i => {
             const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
-            currentTotal += i.QUANTITY * (stokItem.SFIYAT1 -
-                parseFloat((stokItem.SFIYAT1 * (discount / 100)).toFixed(2)))
+            if (stokItem)
+                currentTotal += i.QUANTITY * (stokItem.SFIYAT1 -
+                    parseFloat((stokItem.SFIYAT1 * (discount / 100)).toFixed(2)))
         }) : null;
         return (
             <React.Fragment>
                 <LoaderSpinner
-                    showLoader={this.props.Adisyon.isRequest}
+                    showLoader={this.props.Adisyon.isRequest || this.props.Table.isRequest || this.props.Customer.isRequest}
                     onCloseModal={async () => {
                         this.setState({
                             errorMessage: "",
@@ -168,16 +169,17 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     currentTotal += i.QUANTITY * stokItem1.SFIYAT1
                                 });
 
-                                if (this.props.Customer.current && (currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
+                                if (this.props.Customer.current && stokItem && (currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
                                     Alert.alert("Uyarı", "Yeterli bakiye yok");
                                     return;
                                 }
-
-                                const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == stokItem.STOKID);
-                                if (adisyonIndex < 0)
-                                    adisyon.ITEMS.push({ ID: stokItem.STOKID, QUANTITY: 1 });
-                                else
-                                    adisyon.ITEMS[adisyonIndex].QUANTITY = adisyon.ITEMS[adisyonIndex].QUANTITY + 1;
+                                if (stokItem) {
+                                    const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == stokItem.STOKID);
+                                    if (adisyonIndex < 0)
+                                        adisyon.ITEMS.push({ ID: stokItem.STOKID, QUANTITY: 1 });
+                                    else
+                                        adisyon.ITEMS[adisyonIndex].QUANTITY = adisyon.ITEMS[adisyonIndex].QUANTITY + 1;
+                                }
                                 this.setState({});
                             } else {
                                 Alert.alert("Bu barkoda ait ürün bulunamadı.")
@@ -201,11 +203,14 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                             this.props.Adisyon.current.GUESTID = this.props.Customer.current ? this.props.Customer.current.GUESTID : null;
                             this.props.Adisyon.current.GUESTNO = this.props.Customer.current ? this.props.Customer.current.GUESTNO : null;
+                            this.props.Adisyon.current.ITEMS = [];
 
                             const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
                             if (isSuccess["Success"]) {
                                 Alert.alert("Tamam", "Sipariş tamamlandı.");
                                 this.props.navigation.navigate("TableSelect");
+                            } else {
+                                Alert.alert("Hata", isSuccess["Message"]);
                             }
                         }
                         this.setState({ showNfc: false })
@@ -236,7 +241,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         marginHorizontal: 5
                     }}>
                     <ScrollView keyboardDismissMode="on-drag" style={{ flex: 1 }} keyboardShouldPersistTaps="always">
-                        {this.props.Adisyon.current ? this.props.Adisyon.current.ITEMS.map((item, index) => {
+                        {this.props.Adisyon.current && this.props.Adisyon.current.ITEMS ? this.props.Adisyon.current.ITEMS.map((item, index) => {
                             const stok = this.props.Stok.items.find(itm => itm.STOKID == item.ID);
                             return <AdisyonItem key={index}
                                 discountRate={discount}
@@ -245,11 +250,13 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 onAddPress={(stokId, change) => {
                                     let currentTotal = 0;
                                     let itemPrice = 0;
-                                    this.props.Adisyon.current.ITEMS.forEach(i => {
+                                    this.props.Adisyon.current.ITEMS.filter(i => !i.OLD).forEach(i => {
                                         const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
-                                        currentTotal += i.QUANTITY * +(stokItem.SFIYAT1 - (stokItem.SFIYAT1 * (discount / 100))).toFixed(2);
-                                        if (stokItem.STOKID == stokId.ID)
-                                            itemPrice = stokItem.SFIYAT1;
+                                        if (stokItem) {
+                                            currentTotal += i.QUANTITY * +(stokItem.SFIYAT1 - (stokItem.SFIYAT1 * (discount / 100))).toFixed(2);
+                                            if (stokItem.STOKID == stokId.ID)
+                                                itemPrice = stokItem.SFIYAT1;
+                                        }
                                     });
 
                                     if (this.props.Customer.current && currentTotal + itemPrice > this.props.Customer.current.BALANCE) {
@@ -382,13 +389,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         padding: 0
                     }}
                         onPressIn={async () => {
-                            if (this.props.Adisyon.current.ITEMS.length > 0) {
+                            if (this.props.Adisyon.current.ITEMS && this.props.Adisyon.current.ITEMS.length > 0) {
                                 if (this.props.Customer.current) {
                                     this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                                     const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
                                     if (isSuccess["Success"]) {
                                         Alert.alert("Tamam", "Sipariş tamamlandı.");
                                         this.props.navigation.navigate("Nfc");
+                                    } else {
+                                        Alert.alert("Hata", isSuccess["Message"]);
                                     }
                                 } else {
                                     this.setState({ showNfc: true })
@@ -435,7 +444,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             marginHorizontal: 0,
                         }}
                             onPressIn={async () => {
-                                if (this.props.Adisyon.current.ITEMS.length > 0) {
+                                if (this.props.Adisyon.current.ITEMS && this.props.Adisyon.current.ITEMS.filter(i => !i.OLD).length > 0) {
                                     this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                                     const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
                                     if (isSuccess["Success"]) {
@@ -444,6 +453,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                             this.props.navigation.navigate("TableSelect");
                                         else
                                             this.props.navigation.navigate("Nfc");
+                                    } else {
+                                        Alert.alert("Hata", isSuccess["Message"]);
                                     }
                                 }
                                 else {
@@ -484,6 +495,7 @@ export const Adisyon = withNavigation(connect(
     (state: ApplicationState) => state,
     dispatch => {
         return {
+            TableActions: bindActionCreators({ ...TableActions }, dispatch),
             AdisyonActions: bindActionCreators({ ...AdisyonActions }, dispatch),
             CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
             ActivityOrderActions: bindActionCreators({ ...ActivityOrderActions }, dispatch),

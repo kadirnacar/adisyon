@@ -46,8 +46,9 @@ export const actionCreators = {
         await batch(async () => {
             await dispatch({ type: Actions.RequestTableAdisyonItems });
             var result = await TableService.getTableAdisyon(departmentCode, masaNo);
-
-            await dispatch({ type: Actions.ReceiveTableAdisyonItems, payload: result.value && result.value.ResultSets && result.value.ResultSets.length > 0 ? result.value.ResultSets[0] : [] });
+            console.log(JSON.stringify(result));
+            const resultSet = result.value && result.value.ResultSets && result.value.ResultSets.length > 0 ? result.value.ResultSets[0] : [];
+            await dispatch({ type: Actions.ReceiveTableAdisyonItems, payload: resultSet ? resultSet.map(i => ({ QUANTITY: i.ADET, ID: i.STOKID, DESC: i.ACIKLAMA, OLD: true })) : [] });
 
             if (result.hasErrors()) {
                 Alert.alert(result.errors[0]);
