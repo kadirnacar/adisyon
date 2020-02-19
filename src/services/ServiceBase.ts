@@ -61,7 +61,6 @@ export abstract class ServiceBase {
             opts.data.LoginToken = UserInfo.LoginToken;
 
         }
-       
         try {
             switch (opts.method) {
                 case "GET":

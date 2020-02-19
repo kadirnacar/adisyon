@@ -149,7 +149,7 @@ export class AdisyonItem extends Component<Props, any> {
                     </View>
                     <View style={{ width: "20%" }}>
                         <Text style={{ textAlign: "right", width: "100%" }}>
-                            {(parseFloat((stok.SFIYAT1 - (stok.SFIYAT1 * (discountRate / 100))).toFixed(2)) * item.QUANTITY)}</Text>
+                            {(parseFloat((stok.SFIYAT1 - (stok.SFIYAT1 * (discountRate / 100))).toFixed(2)) * item.QUANTITY).toFixed(2)}</Text>
                     </View>
                 </View>
                 <Collapsible

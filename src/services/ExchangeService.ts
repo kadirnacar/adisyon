@@ -1,8 +1,5 @@
 import config from '@config';
 import { ServiceBase } from "./ServiceBase";
-import { AngusResponse } from './AngusResponse';
-import { IExchange } from '@models';
-import moment = require('moment');
 
 export class ExchangeService extends ServiceBase {
     public static async getItems(date: string) {
@@ -12,13 +9,13 @@ export class ExchangeService extends ServiceBase {
             data: {
                 "Action": "Function",
                 "Object": "FN_EXCHANGE_LIST",
-                "Paramaters": {
+                "Parameters": {
                     "DATE": date,
                     "PORTALID": config.tenant
                 }
             }
         });
-
+        console.log(date, result);
         return result;
     }
 }

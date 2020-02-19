@@ -1,26 +1,33 @@
 import { colors } from '@components';
-import { IAdisyonProduct, IStok, ICustomer } from '@models';
+import { IAdisyonProduct, IStok } from '@models';
+import { ExchangeActions } from '@reducers';
+import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { Dimensions, Text, TextInput, TouchableHighlight, View, Modal } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { invertColor } from '@utils';
+import { withNavigation } from 'react-navigation';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 const { width, scale, height } = Dimensions.get("window");
-
-interface Props {
+interface StokItemState {
+    showExchange?: boolean;
+}
+interface StokItemProps {
     item: IAdisyonProduct;
     stok: IStok;
     discountRate: number;
     onAddPress?: (item: IAdisyonProduct) => void;
     onRemovePress?: (item: IAdisyonProduct) => void;
     onTextActive?: (item: IAdisyonProduct) => void;
+    ExchangeActions: typeof ExchangeActions;
 }
+type Props = StokItemProps & ApplicationState;
 
-export class StokItem extends Component<Props, any> {
+export class StokItemComp extends Component<Props, StokItemState> {
     constructor(props) {
         super(props);
-        this.state = {
-        };
+        this.state = {};
     }
 
     render() {
@@ -36,12 +43,100 @@ export class StokItem extends Component<Props, any> {
                 borderBottomColor: colors.borderColor,
                 backgroundColor: stok.group ? stok.group.color : ""
             }}>
+                <Modal visible={this.state.showExchange || false}
+                    transparent={true}
+                    onRequestClose={() => {
+
+                    }}>
+                    <View style={{
+                        flex: 1,
+                        width: "100%",
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        backgroundColor: "rgba(255,255,255,0.7)"
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            width: "80%",
+                            padding: 20,
+                            marginHorizontal: 20,
+                            borderRadius: 10,
+                            backgroundColor: "#fff",
+                            borderColor: colors.borderColor,
+                            borderWidth: 2,
+                        }}>
+
+                            <View style={{
+                                flexDirection: "column",
+                                alignContent: "flex-start",
+                                alignItems: "flex-start",
+                                alignSelf: "flex-start",
+                                width: "100%"
+                            }}>
+                                <View style={{
+                                    flexDirection: "row",
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    alignSelf: "center"
+                                }} >
+                                    <Text style={{ fontWeight: "bold" }}>Fiyat Bilgisi </Text>
+                                </View>
+                                {this.props.Exchange.items.map((ex, index) => {
+                                    return <View key={index} style={{
+                                        flexDirection: "row",
+                                        alignContent: "flex-start",
+                                        alignItems: "flex-start",
+                                        alignSelf: "flex-start"
+                                    }}>
+                                        <Text>{ex.TOCUR} : </Text>
+                                        <Text>{((this.props.stok ? (stok.SFIYAT1 - parseFloat((stok.SFIYAT1 * (+discountRate / 100)).toFixed(2))) : 0) * ex.RATE).toFixed(2)}</Text>
+                                    </View>
+                                })}
+                            </View>
+
+                            <TouchableHighlight
+                                underlayColor="#ffffff00" style={{
+                                    width: "100%",
+
+                                    backgroundColor: "#b329de",
+                                    marginVertical: 10,
+                                    borderRadius: 50,
+                                    height: 50,
+                                    justifyContent: "center",
+                                    flexDirection: "row",
+                                    borderColor: "#b329de",
+                                    borderWidth: 2,
+                                    paddingVertical: 10,
+                                    marginHorizontal: 5,
+                                    padding: 10
+                                }}
+                                onPress={async () => {
+                                    this.setState({ showExchange: false })
+                                }}>
+                                <Text style={{ color: "#ffffff", fontWeight: "bold" }}>Tamam</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </Modal>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{
                         width: "60%"
                     }}>
-                        <Text>{stok.ADI}    (
-                            {stok.SFIYAT1 - parseFloat((stok.SFIYAT1 * (+discountRate / 100)).toFixed(2))})</Text>
+                        <Text>{stok.ADI}</Text>
+                        <TouchableHighlight underlayColor="#ffffff00"
+                            onPress={() => {
+                                this.setState({ showExchange: true })
+                            }}>
+                            <Text style={{
+                                color: "#000000",
+                                textDecorationLine: "underline"
+                            }}>{(stok.SFIYAT1 - parseFloat((stok.SFIYAT1 * (+discountRate / 100)).toFixed(2))).toFixed(2)}</Text>
+                        </TouchableHighlight>
                     </View>
                     <View style={{
                         width: "40%",
@@ -155,5 +250,12 @@ export class StokItem extends Component<Props, any> {
         )
     }
 }
-
+export const StokItem = withNavigation(connect(
+    (state: ApplicationState) => state,
+    dispatch => {
+        return {
+            ExchangeActions: bindActionCreators({ ...ExchangeActions }, dispatch),
+        };
+    }
+)(StokItemComp)) as any;
 
