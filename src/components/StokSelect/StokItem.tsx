@@ -3,13 +3,14 @@ import { IAdisyonProduct, IStok, ICustomer } from '@models';
 import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import { invertColor } from '@utils';
 
 const { width, scale, height } = Dimensions.get("window");
 
 interface Props {
     item: IAdisyonProduct;
     stok: IStok;
-    discountRate:number;
+    discountRate: number;
     onAddPress?: (item: IAdisyonProduct) => void;
     onRemovePress?: (item: IAdisyonProduct) => void;
     onTextActive?: (item: IAdisyonProduct) => void;
@@ -23,7 +24,7 @@ export class StokItem extends Component<Props, any> {
     }
 
     render() {
-        const { item, stok , discountRate } = this.props;
+        const { item, stok, discountRate } = this.props;
 
         return (
             <View style={{
@@ -33,17 +34,18 @@ export class StokItem extends Component<Props, any> {
                 paddingHorizontal: 5,
                 marginVertical: 2,
                 borderBottomColor: colors.borderColor,
+                backgroundColor: stok.group ? stok.group.color : ""
             }}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{
                         width: "60%"
                     }}>
                         <Text>{stok.ADI}    (
-                            {stok.SFIYAT1- parseFloat((stok.SFIYAT1*(+discountRate/100)).toFixed(2))})</Text>
+                            {stok.SFIYAT1 - parseFloat((stok.SFIYAT1 * (+discountRate / 100)).toFixed(2))})</Text>
                     </View>
                     <View style={{
                         width: "40%",
-                        flexDirection: "row"
+                        flexDirection: "row",
                     }}>
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
@@ -56,7 +58,7 @@ export class StokItem extends Component<Props, any> {
                                 alignSelf: "center",
                                 alignItems: "center"
                             }}
-                            onPressIn={() => {
+                            onPress={() => {
                                 if (this.props.onRemovePress)
                                     this.props.onRemovePress(item);
                                 this.setState({})
@@ -89,11 +91,8 @@ export class StokItem extends Component<Props, any> {
                                 paddingVertical: 2,
                                 marginHorizontal: 2,
                                 marginTop: 2,
-                                paddingHorizontal: 5,
-                                height: 35,
+                                paddingHorizontal: 10,
                                 textAlign: "center",
-                                alignSelf: "center",
-                                alignItems: "center",
                                 fontSize: 14,
                                 borderRadius: 20
                             }} />
@@ -118,7 +117,7 @@ export class StokItem extends Component<Props, any> {
                                 alignSelf: "center",
                                 alignItems: "center"
                             }}
-                            onPressIn={() => {
+                            onPress={() => {
                                 if (this.props.onAddPress)
                                     this.props.onAddPress(item);
                                 this.setState({})
@@ -129,26 +128,28 @@ export class StokItem extends Component<Props, any> {
                 </View>
                 <View style={{
                 }}>
-                    <TextInput
-                        value={item ? item.DESC : ""}
-                        editable={item && item.QUANTITY > 0 ? true : false}
-                        onChangeText={(text) => {
-                            item.DESC = text;
-                            this.setState({});
-                        }}
-                        onFocus={() => {
-                            if (this.props.onTextActive)
-                                this.props.onTextActive(item);
-                        }}
-                        style={{
-                            width: "100%",
-                            borderColor: colors.inputBackColor,
-                            borderWidth: 1,
-                            paddingVertical: 1,
-                            marginTop: 5,
-                            marginBottom: 0
-                        }}
-                        placeholder="Not" />
+                    {item && item.QUANTITY > 0 ?
+                        <TextInput
+                            value={item ? item.DESC : ""}
+                            editable={item && item.QUANTITY > 0 ? true : false}
+                            onChangeText={(text) => {
+                                item.DESC = text;
+                                this.setState({});
+                            }}
+                            onFocus={() => {
+                                if (this.props.onTextActive)
+                                    this.props.onTextActive(item);
+                            }}
+                            style={{
+                                width: "100%",
+                                backgroundColor: "#ffffff",
+                                borderColor: colors.inputBackColor,
+                                borderWidth: 1,
+                                paddingVertical: 1,
+                                marginTop: 5,
+                                marginBottom: 0
+                            }}
+                            placeholder="Not" /> : null}
                 </View>
             </View>
         )

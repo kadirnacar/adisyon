@@ -68,8 +68,8 @@ class LoginScreen extends Component<Props, LoginState> {
 
     async loadDataFromServer() {
         await this.props.DepartmentActions.getItems();
-        await this.props.StokActions.getItems();
         await this.props.StokGrupActions.getItems();
+        await this.props.StokActions.getItems();
         await this.props.ActivityActions.getItems(new Date());
         await this.props.ActivityActions.getTurnikeItems(new Date());
     }

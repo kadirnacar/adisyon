@@ -179,7 +179,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
 
                                                 const adisyonIndex = order.ITEMS.findIndex(i => i.ItemID == itm.ItemID);
                                                 if (adisyonIndex < 0)
-                                                    order.ITEMS.push(itm);
+                                                    order.ITEMS.unshift(itm);
                                                 itm.Quantity = itm.Quantity + 1;
                                                 if (this.props.onPress)
                                                     this.props.onPress(order);

@@ -16,6 +16,7 @@ export const reducer = (currentState: StokState = unloadedState, incomingAction:
                 currentState.items = action.payload;
                 if (currentState.items) {
                     currentState.items.forEach(i => {
+                        i.group = action.categories.find(g => i.STOKGRUPID == g.STOKGRUPID);
                         if (i.SDEPART)
                             i.departments = i.SDEPART.split(',')
                     });

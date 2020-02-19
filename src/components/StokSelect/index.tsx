@@ -49,7 +49,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
             limit: 20,
             allowTypo: true,
             threshold: -50000,
-            key: 'ADI'
+            keys: ['ADI', 'group.ADI']
         }).map(i => i.obj)
     }
     render() {
@@ -73,19 +73,20 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                             borderWidth: 1,
                             borderColor: colors.borderColor,
                             flexDirection: "column",
-                            width: "65%",
+                            width: "70%",
                             marginRight: 5
                         }}>
                         {this.props.adisyon ?
                             <FlatList
+
                                 keyboardDismissMode="on-drag"
                                 style={{ flex: 1 }}
                                 keyboardShouldPersistTaps="always"
                                 updateCellsBatchingPeriod={10}
-                                windowSize={10}
-                                maxToRenderPerBatch={10}
+                                windowSize={20}
+                                maxToRenderPerBatch={20}
                                 initialNumToRender={10}
-                                removeClippedSubviews={false}
+                                removeClippedSubviews={true}
                                 data={(this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])).filter(stk => (this.state.selectedGrup && this.state.selectedGrup.STOKGRUPID ? stk.STOKGRUPID == this.state.selectedGrup.STOKGRUPID : true))}
                                 renderItem={({ item, index }) => {
                                     let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID && !itm.OLD) : null;
@@ -104,22 +105,22 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                                 const { adisyon } = this.props;
 
                                                 let currentTotal = 0;
-
+                                                let count = 1;
                                                 adisyon.ITEMS.filter(i => !i.OLD).forEach(i => {
                                                     const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
                                                     currentTotal += i.QUANTITY * stokItem.SFIYAT1
                                                 });
 
                                                 const stokItem = this.props.Stok.items.find(t => t.STOKID == itm.ID);
-                                                if (this.props.Customer.current && (currentTotal + stokItem.SFIYAT1) > this.props.Customer.current.BALANCE) {
+                                                if (this.props.Customer.current && (currentTotal + (stokItem.SFIYAT1 * count)) > this.props.Customer.current.BALANCE) {
                                                     Alert.alert("Uyarı", "Yeterli bakiye yok");
                                                     return;
                                                 }
 
                                                 const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == itm.ID && !i.OLD);
                                                 if (adisyonIndex < 0)
-                                                    adisyon.ITEMS.push(itm);
-                                                itm.QUANTITY = itm.QUANTITY + 1;
+                                                    adisyon.ITEMS.unshift(itm);
+                                                itm.QUANTITY = itm.QUANTITY + count;
                                                 if (this.props.onPress)
                                                     this.props.onPress(adisyon);
                                                 this.setState({});
@@ -139,7 +140,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                     )
                                 }}
                                 numColumns={1}
-                                keyExtractor={(item, index) => index.toString()}
+                                keyExtractor={(item, index) => item.STOKID.toString()}
                             /> : null}
                     </View>
                     <View
@@ -147,20 +148,21 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                             borderWidth: 1,
                             borderColor: colors.borderColor,
                             flexDirection: "column",
-                            width: "35%",
+                            width: "30%",
                         }}>
                         <FlatList
                             ListHeaderComponent={<GroupItem selected={!this.state.selectedGrup || this.state.selectedGrup.STOKGRUPID == 0}
-                                group={{ ADI: "Hepsi", KODU: null, STOKGRUPID: 0 }}
+                                group={{ ADI: "Hepsi", KODU: null, STOKGRUPID: 0, color: "#ffffff" }}
                                 onPress={(group) => {
                                     this.setState({ selectedGrup: group });
                                 }} />}
                             keyboardDismissMode="on-drag" style={{ flex: 1 }} keyboardShouldPersistTaps="always"
                             data={this.props.StokGrup.items}
                             updateCellsBatchingPeriod={10}
-                            windowSize={10}
-                            maxToRenderPerBatch={10}
+                            windowSize={20}
+                            maxToRenderPerBatch={20}
                             initialNumToRender={10}
+                            removeClippedSubviews={true}
                             renderItem={({ item, index }) => {
                                 return (
                                     <GroupItem key={index} group={item} selected={this.state.selectedGrup == item} index={index} onPress={(group) => {
@@ -169,7 +171,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                 )
                             }}
                             numColumns={1}
-                            keyExtractor={(item, index) => index.toString()}
+                            keyExtractor={(item, index) => item.STOKGRUPID.toString()}
                         />
                     </View>
                 </View>

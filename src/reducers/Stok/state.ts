@@ -1,4 +1,4 @@
-import { IStok } from '@models';
+import { IStok, IStokGrup } from '@models';
 import { IBaseReducer } from '../BaseReducer';
 
 export enum Actions {
@@ -17,4 +17,5 @@ export interface IRequestStokItemsAction {
 export interface IReceiveStokItemsAction {
     type: Actions.ReceiveStokItems;
     payload: IStok[];
+    categories: IStokGrup[];
 }

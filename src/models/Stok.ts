@@ -1,3 +1,5 @@
+import { IStokGrup } from "./StokGrup";
+
 export interface IStok {
     STOKID: number;
     ADI: string;
@@ -9,4 +11,5 @@ export interface IStok {
     PORSIYONLUSATIS: boolean;
     BARKOD?: string;
     departments?: string[];
+    group?: IStokGrup;
 }

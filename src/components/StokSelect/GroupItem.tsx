@@ -1,10 +1,9 @@
 import { colors } from '@components';
 import { IStokGrup } from '@models';
-import ColorScheme from 'color-scheme';
-import colorPalette from 'nice-color-palettes';
 import React, { Component } from 'react';
 import { Dimensions, Text, TouchableHighlight, View } from 'react-native';
 import RNMaterialLetterIcon from 'react-native-material-letter-icon';
+import { invertColor } from '@utils';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -26,43 +25,9 @@ export class GroupItem extends Component<Props, GroupItemState> {
         this.state = {
         };
 
-        this.scheme = new ColorScheme();
-        this.scheme.from_hue(10)
-            .scheme('triade')
-            .variation('pastel');
     }
 
-    scheme;
-
-    invertColor(hex, bw?) {
-        if (hex.indexOf('#') === 0) {
-            hex = hex.slice(1);
-        }
-        if (hex.length === 3) {
-            hex = hex[0] + hex[0] + hex[1] + hex[1] + hex[2] + hex[2];
-        }
-        if (hex.length !== 6) {
-            throw new Error('Invalid HEX color.');
-        }
-        var r = parseInt(hex.slice(0, 2), 16),
-            g = parseInt(hex.slice(2, 4), 16),
-            b = parseInt(hex.slice(4, 6), 16);
-        if (bw) {
-            return (r * 0.299 + g * 0.587 + b * 0.114) > 186
-                ? '#000000'
-                : '#FFFFFF';
-        }
-        var rString = (255 - r).toString(16);
-        var gString = (255 - g).toString(16);
-        var bString = (255 - b).toString(16);
-        return "#" + this.padZero(rString) + this.padZero(gString) + this.padZero(bString);
-    }
-
-    padZero(str, len?) {
-        len = len || 2;
-        var zeros = new Array(len).join('0');
-        return (zeros + str).slice(-len);
-    }
+ 
 
     render() {
         return (
@@ -95,8 +60,8 @@ export class GroupItem extends Component<Props, GroupItemState> {
                         <RNMaterialLetterIcon
                             size={35}
                             border={false}
-                            shapeColor={colorPalette[(this.props.index != null ? this.props.index : 9999) % colorPalette.length][0]}
-                            letterColor={this.invertColor(colorPalette[(this.props.index != null ? this.props.index : 9999) % colorPalette.length][0])}
+                            shapeColor={this.props.group.color}
+                            letterColor={invertColor(this.props.group.color)}
                             shapeType={"round"}
                             borderRy={6}
                             borderRx={6}

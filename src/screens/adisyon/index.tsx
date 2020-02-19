@@ -176,7 +176,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 if (stokItem) {
                                     const adisyonIndex = adisyon.ITEMS.findIndex(i => i.ID == stokItem.STOKID);
                                     if (adisyonIndex < 0)
-                                        adisyon.ITEMS.push({ ID: stokItem.STOKID, QUANTITY: 1 });
+                                        adisyon.ITEMS.unshift({ ID: stokItem.STOKID, QUANTITY: 1 });
                                     else
                                         adisyon.ITEMS[adisyonIndex].QUANTITY = adisyon.ITEMS[adisyonIndex].QUANTITY + 1;
                                 }
