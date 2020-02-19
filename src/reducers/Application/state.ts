@@ -4,7 +4,8 @@ export enum Applications {
     Siparis,
     AktiviteSatis,
     AktiviteKontrol,
-    Turnike
+    Turnike,
+    CustomerInfo
 }
 
 export enum Actions {

@@ -68,10 +68,19 @@ class NfcScreen extends Component<Props, any> {
                             if (result) {
                                 Alert.alert(result["MESSAGE"]);
                             }
-                        } else if (this.props.Application.current == Applications.Turnike) {
+                        }
+                        else if (this.props.Application.current == Applications.Turnike) {
                             const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, null, tag);
                             if (result) {
                                 Alert.alert(result["MESSAGE"]);
+                            }
+                        }
+                        else if (this.props.Application.current == Applications.CustomerInfo) {
+                            const result = await this.props.CustomerActions.getTrans(tag);
+                            if (result && result["MESSAGE"]) {
+                                Alert.alert(result["MESSAGE"]);
+                            } else {
+                                this.props.navigation.navigate("CustomerTrans")
                             }
                         }
                     }

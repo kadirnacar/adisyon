@@ -1,7 +1,7 @@
 export { IActivity, ISeance } from './Activity';
 export { IActivityOrder, IActivityProduct } from './ActivityOrder';
 export { IAdisyon, IAdisyonProduct } from './Adisyon';
-export { ICustomer } from './Customer';
+export { ICustomer, ICustomerTrans } from './Customer';
 export { IDepartment } from './Department';
 export { IExchange } from './Exchange';
 export { IGarson } from './Garson';
