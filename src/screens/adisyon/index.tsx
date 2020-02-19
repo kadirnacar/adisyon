@@ -11,11 +11,14 @@ import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-s
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { TextInput } from 'react-native-gesture-handler';
+import config from '@config';
 const { width, scale, height } = Dimensions.get("window");
 
 interface AdisyonState {
     showBarcode?: boolean;
     showNfc?: boolean;
+    showTableNo?: boolean;
+    tableNo?: string;
     errorMessage?: string;
     password?: any;
 }
@@ -97,15 +100,18 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
     async handleComponentMount() {
         if (!this.props.Adisyon.current) {
-            if (this.props.Table.current) {
+            if (config.useAlagart && this.props.Table.current) {
                 await this.props.TableActions.getTableItems(this.props.Department.current.KODU, this.props.Table.current.MASANO);
+            }
+            if (this.props.Department.useTable) {
+                this.setState({ showTableNo: true })
             }
             this.props.AdisyonActions.setCurrent({
                 DEPCODE: this.props.Department.current.KODU,
                 GARSONID: this.props.Garson.current.ID,
                 GUESTNO: this.props.Customer.current ? this.props.Customer.current.GUESTNO : null,
                 GUESTID: this.props.Customer.current ? this.props.Customer.current.GUESTID : null,
-                ITEMS: this.props.Table.current && this.props.Table.tableAdisyon ? this.props.Table.tableAdisyon : [],
+                ITEMS: config.useAlagart && this.props.Table.current && this.props.Table.tableAdisyon ? this.props.Table.tableAdisyon : [],
                 NOTES: ""
             });
         }
@@ -217,15 +223,110 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     }} />
                     <CustomerInfo style={{ height: 120, top: -10 }} total={currentTotal} />
                 </Modal>
+                <Modal visible={this.state.showTableNo || false}
+                    transparent={true}
+                    onRequestClose={() => {
 
+                    }}>
+                    <View style={{
+                        flex: 1,
+                        width: "100%",
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        backgroundColor: "rgba(255,255,255,0.7)"
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            width: "80%",
+                            marginHorizontal: 20,
+                            borderRadius: 10,
+                            backgroundColor: "#fff",
+                            borderColor: colors.borderColor,
+                            borderWidth: 2,
+                        }}>
+                            <TextInput placeholder="Masa No"
+                                value={this.state.tableNo}
+                                style={{
+                                    backgroundColor: colors.buttonBackColor,
+                                    color: colors.inputTextColor,
+                                    width: "100%",
+                                    marginVertical: 10,
+                                    marginHorizontal: 10,
+                                    textAlign: "center"
+                                }}
+                                onChangeText={text => {
+                                    this.setState({ tableNo: text });
+                                }} />
+                            <TouchableHighlight
+                                underlayColor="#ffffff00" style={{
+                                    backgroundColor: "#b329de",
+                                    marginVertical: 10,
+                                    borderRadius: 50,
+                                    height: 50,
+                                    justifyContent: "center",
+                                    flexDirection: "row",
+                                    borderColor: "#b329de",
+                                    borderWidth: 2,
+                                    paddingVertical: 10,
+                                    marginHorizontal: 5,
+                                    padding: 10
+                                }}
+                                onPress={async () => {
+                                    this.props.TableActions.setCurrent({ MASANO: this.state.tableNo, MASAGRUP: "" })
 
+                                    this.setState({ showTableNo: false })
+                                }}>
+                                <Text style={{ color: "#ffffff", fontWeight: "bold" }}>Tamam</Text>
+                            </TouchableHighlight>
+                        </View>
+                    </View>
+                </Modal>
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
-                {!this.props.Table.current ?
-                    <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
-                {this.props.Table.current ?
-                    <TableInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
+                {config.useAlagart ? <React.Fragment>
+                    {!this.props.Table.current ?
+                        <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
+                    {this.props.Table.current ?
+                        <TableInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
+                </React.Fragment> : <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} />}
+                {!config.useAlagart && this.props.Department.useTable ?
+                    <View style={{
+                        marginTop: 12,
+                        height: 50
+                    }}>
+                        <TouchableHighlight underlayColor="#ffffff00" style={{
+                            flex: 1,
+                            backgroundColor: colors.buttonBackColor,
+                            borderRadius: 50,
+                            height: 50,
+                            justifyContent: "center",
+                            flexDirection: "row",
+                            borderWidth: 0,
+                            paddingVertical: 10,
+                            marginHorizontal: 5,
+                        }}
+                            onPressIn={async () => {
+                                this.setState({ showTableNo: true })
+                            }}>
+                            <React.Fragment>
+                                <Icon name="chair" size={25} color={"#ffffff"} />
+                                <Text style={{
+                                    color: "#ffffff",
+                                    marginLeft: 5,
+                                    alignSelf: "center",
+                                    fontWeight: "bold",
+                                    fontSize: 16
+                                }}>{this.props.Table.current && this.props.Table.current.MASANO ? "Masa No : " + this.props.Table.current.MASANO : "Masa Seçiniz"}</Text>
+                            </React.Fragment>
+                        </TouchableHighlight>
+                    </View>
+                    : null}
                 <View
                     style={{
                         flex: 1,
@@ -428,7 +529,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             }}>Öde</Text>
                         </React.Fragment>
                     </TouchableHighlight>
-                    {this.props.Table.current ?
+                    {config.useAlagart && this.props.Table.current ?
                         <TouchableHighlight underlayColor="#ffffff00" style={{
                             flex: 1,
                             backgroundColor: "#de2974",

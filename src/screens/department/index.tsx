@@ -10,6 +10,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import config from '@config';
 
 const { height, width } = Dimensions.get("window");
 
@@ -129,7 +130,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                         onPressIn={async () => {
                             await this.props.TableActions.clear();
                             await this.props.DepartmentActions.setCurrent(this.state.selectedItem);
-                            if (this.props.Department.useTable) {
+                            if (config.useAlagart && this.props.Department.useTable) {
                                 this.props.navigation.navigate("TableSelect");
                             } else {
                                 this.props.navigation.navigate("Nfc");
