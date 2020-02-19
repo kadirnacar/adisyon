@@ -1,5 +1,5 @@
 import { colors, LoaderSpinner } from '@components';
-import { CustomerActions, UserActions, GarsonActions, DepartmentActions, StokActions, StokGrupActions, ActivityActions } from '@reducers';
+import { CustomerActions, UserActions, GarsonActions, DepartmentActions, StokActions, StokGrupActions, ActivityActions, ExchangeActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
 import { Dimensions, SafeAreaView, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
@@ -24,6 +24,7 @@ interface UserProps {
     StokActions: typeof StokActions;
     StokGrupActions: typeof StokGrupActions;
     ActivityActions: typeof ActivityActions;
+    ExchangeActions: typeof ExchangeActions;
 }
 
 type Props = NavigationInjectedProps & UserProps & ApplicationState;
@@ -70,6 +71,7 @@ class LoginScreen extends Component<Props, LoginState> {
         await this.props.DepartmentActions.getItems();
         await this.props.StokGrupActions.getItems();
         await this.props.StokActions.getItems();
+        await this.props.ExchangeActions.getItems();
         await this.props.ActivityActions.getItems(new Date());
         await this.props.ActivityActions.getTurnikeItems(new Date());
     }
@@ -215,6 +217,7 @@ export const Login = withNavigation(connect(
     (state: ApplicationState) => state,
     dispatch => {
         return {
+            ExchangeActions: bindActionCreators({ ...ExchangeActions }, dispatch),
             UserActions: bindActionCreators({ ...UserActions }, dispatch),
             CustomerActions: bindActionCreators({ ...CustomerActions }, dispatch),
             GarsonActions: bindActionCreators({ ...GarsonActions }, dispatch),

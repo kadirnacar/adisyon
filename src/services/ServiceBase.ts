@@ -61,12 +61,7 @@ export abstract class ServiceBase {
             opts.data.LoginToken = UserInfo.LoginToken;
 
         }
-        // console.log(JSON.stringify(opts.data))
-        // axiosRequestConfig = {
-        //     headers: {
-        //         Authorization: `Bearer ${config.token}`
-        //     }
-        // };
+       
         try {
             switch (opts.method) {
                 case "GET":

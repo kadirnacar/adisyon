@@ -24,24 +24,7 @@ export class AdisyonService extends ServiceBase {
                 "Object": "SP_PARK_MOBILE_SENDCHECK"
             }
         });
-        console.log(JSON.stringify({
-            url: `${config.restUrl}`,
-            method: "POST",
-            data: {
-                "Parameters": {
-                    "ITEMS": JSON.stringify(data.ITEMS),
-                    "DEPCODE": data.DEPCODE,
-                    "TABLENO": data.TABLENO,
-                    "PAYTYPE": type,
-                    "GUESTID": data.GUESTID,
-                    "GUESTNO": data.GUESTNO,
-                    "NOTES": data.NOTES,
-                    "GARSONID": data.GARSONID
-                },
-                "Action": "Execute",
-                "Object": "SP_PARK_MOBILE_SENDCHECK"
-            }
-        }), JSON.stringify(result.value));
+      
         return result;
     }
 }

@@ -46,7 +46,6 @@ class TableScreen extends Component<Props, TableState> {
     async handleComponentMount() {
         this.setState({ selectedItem: null })
         await this.props.TableActions.setCurrent(null);
-        console.log(this.props.Table.items)
         if (!this.props.Table.items || this.props.Table.items.length == 0)
             await this.props.TableActions.getItems(this.props.Department.current.KODU);
         await this.props.TableActions.getOpenedItems(this.props.Department.current.KODU);
