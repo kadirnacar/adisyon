@@ -4,7 +4,8 @@ import { TableActions, CustomerActions, AdisyonActions, ActivityOrderActions, Ap
 import { ApplicationState } from '@store';
 import ColorScheme from 'color-scheme';
 import React, { Component } from 'react';
-import { Dimensions, SafeAreaView, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
+import SafeAreaView from 'react-native-safe-area-view';
 import RNMaterialLetterIcon from 'react-native-material-letter-icon';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { FlatList, NavigationInjectedProps, withNavigation, NavigationEvents } from 'react-navigation';
