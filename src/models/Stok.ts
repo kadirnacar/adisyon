@@ -10,6 +10,7 @@ export interface IStok {
     FOTO: string;
     PORSIYONLUSATIS: boolean;
     BARKOD?: string;
+    INCLUDEDIN_AI?: boolean;
     departments?: string[];
     group?: IStokGrup;
 }

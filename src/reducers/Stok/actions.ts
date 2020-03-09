@@ -13,7 +13,6 @@ export const actionCreators = {
             const state: ApplicationState = getState();
 
             const payload = result.value && result.value.ResultSets && result.value.ResultSets.length > 0 ? result.value.ResultSets[0] : [];
-
             await dispatch({ type: Actions.ReceiveStokItems, payload, categories: state.StokGrup.items });
 
             if (result.hasErrors()) {

@@ -10,4 +10,5 @@ export { IStok } from './Stok';
 export { IStokGrup } from './StokGrup';
 export { ITable } from './Table';
 export { IUser } from './User';
+export { IConfig } from './Config';
 

@@ -108,6 +108,24 @@ class LoginScreen extends Component<Props, LoginState> {
                             await this.props.UserActions.clear();
                         }} />
                     <View style={styles.formContainer}>
+                        <TouchableHighlight
+                            style={{
+                                position: "absolute",
+                                top: 10,
+                                right: 10,
+                                borderColor: colors.borderColor,
+                                borderWidth: 2,
+                                borderRadius: 30,
+                                padding: 10,
+                                alignContent: "center",
+                                alignItems: "center",
+                            }}>
+                            <FontAwesome5Icon
+                                name="cogs"
+                                size={20}
+                                color={colors.borderColor}
+                            />
+                        </TouchableHighlight>
                         {!!this.state.errorMessage && (
                             <View style={{
                                 flexDirection: "row",

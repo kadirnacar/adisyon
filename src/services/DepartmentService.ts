@@ -12,10 +12,10 @@ export class DepartmentService extends ServiceBase {
                 "Action": "Select",
                 "Object": "DEPART",
                 "Select": [
-                    "KODU",
-                    "ADI",
-                    "ID",
-                    "MOBILPOSCONFIG"
+                    // "KODU",
+                    // "ADI",
+                    // "ID",
+                    // "MOBILPOSCONFIG"
                 ],
                 "Where": [
                     {

@@ -18,7 +18,8 @@ export class StokService extends ServiceBase {
                     "SDEPART",
                     "STOKGRUPID",
                     "SDOVIZ",
-                    "PORSIYONLUSATIS"
+                    "PORSIYONLUSATIS",
+                    "INCLUDEDIN_AI"
                 ],
                 "Where": [
                     {
@@ -38,7 +39,6 @@ export class StokService extends ServiceBase {
                 }
             }
         });
-       
         return result;
     }
 }

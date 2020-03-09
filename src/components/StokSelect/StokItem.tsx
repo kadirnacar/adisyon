@@ -32,7 +32,8 @@ export class StokItemComp extends Component<Props, StokItemState> {
 
     render() {
         const { item, stok, discountRate } = this.props;
-
+        const stokFiyat = this.props.Customer.current && stok && this.props.Customer.current.ALLINCLUSIVE == true && stok.INCLUDEDIN_AI == true ? 0 : stok.SFIYAT1;
+        const fiyat = (stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2)));
         return (
             <View style={{
                 flex: 1,
@@ -94,7 +95,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                                         alignSelf: "flex-start"
                                     }}>
                                         <Text>{ex.TOCUR} : </Text>
-                                        <Text>{((this.props.stok ? (stok.SFIYAT1 - parseFloat((stok.SFIYAT1 * (+discountRate / 100)).toFixed(2))) : 0) * ex.RATE).toFixed(2)}</Text>
+                                        <Text>{(fiyat * ex.RATE).toFixed(2)}</Text>
                                     </View>
                                 })}
                             </View>
@@ -135,7 +136,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                             <Text style={{
                                 color: "#000000",
                                 textDecorationLine: "underline"
-                            }}>{(stok.SFIYAT1 - parseFloat((stok.SFIYAT1 * (+discountRate / 100)).toFixed(2))).toFixed(2)}</Text>
+                            }}>{fiyat}</Text>
                         </TouchableHighlight>
                     </View>
                     <View style={{

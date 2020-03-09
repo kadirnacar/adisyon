@@ -8,6 +8,7 @@ export interface ICustomer {
     RESID: string;
     SURNAME: string;
     DISCOUNT_RATE: number;
+    ALLINCLUSIVE?:boolean;
     Trans: ICustomerTrans[];
 }
 

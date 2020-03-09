@@ -1,16 +1,14 @@
 import { colors } from '@components';
-import { IAdisyonProduct, IStok } from '@models';
+import { IAdisyonProduct, ICustomer, IStok } from '@models';
 import React, { Component } from 'react';
-import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
 import Icon from 'react-native-vector-icons/FontAwesome5';
-import { template, parse } from '@babel/core';
-
-const { width, scale, height } = Dimensions.get("window");
 
 interface Props {
     item: IAdisyonProduct;
     stok: IStok;
+    customer: ICustomer;
     onAddPress?: (item: IAdisyonProduct, change?: boolean) => void;
     onRemovePress?: (item: IAdisyonProduct) => void;
     discountRate: number;
@@ -25,7 +23,10 @@ export class AdisyonItem extends Component<Props, any> {
     }
 
     render() {
-        const { item, stok, discountRate } = this.props;
+        const { item, stok, customer, discountRate } = this.props;
+        const stokFiyat = customer && stok && customer.ALLINCLUSIVE == true && stok.INCLUDEDIN_AI == true ? 0 : stok.SFIYAT1;
+        const fiyat = (parseFloat((stokFiyat - (stokFiyat * (discountRate / 100))).toFixed(2)) * item.QUANTITY).toFixed(2);
+
         return (
             <View style={{
                 flex: 1,
@@ -149,7 +150,7 @@ export class AdisyonItem extends Component<Props, any> {
                     </View>
                     <View style={{ width: "20%" }}>
                         <Text style={{ textAlign: "right", width: "100%" }}>
-                            {(parseFloat((stok.SFIYAT1 - (stok.SFIYAT1 * (discountRate / 100))).toFixed(2)) * item.QUANTITY).toFixed(2)}</Text>
+                            {fiyat}</Text>
                     </View>
                 </View>
                 <Collapsible

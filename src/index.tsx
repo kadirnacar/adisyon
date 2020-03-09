@@ -7,6 +7,7 @@ import SafeAreaView, { SafeAreaProvider } from 'react-native-safe-area-view';
 import { Provider } from "react-redux";
 import { Store } from 'redux';
 import { configureStore } from './store/configureStore';
+import config from '@config';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -22,8 +23,13 @@ export default class App extends Component<any, any> {
 
     async componentDidMount() {
         const initialState = await FileService.readStateFromFile();
-         initialState.User = null;
+
+        initialState.User = null;
         initialState.Garson = null;
+
+        if (initialState && initialState.Config && initialState.Config.config)
+            config.setConfig(initialState.Config.config);
+
         this.store = configureStore(initialState);
         this.setState({ isLoaded: true });
     }

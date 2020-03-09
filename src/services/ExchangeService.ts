@@ -15,7 +15,6 @@ export class ExchangeService extends ServiceBase {
                 }
             }
         });
-        console.log(date, result);
         return result;
     }
 }

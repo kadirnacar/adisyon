@@ -348,6 +348,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 discountRate={discount}
                                 item={item}
                                 stok={stok}
+                                customer={this.props.Customer.current}
                                 onAddPress={(stokId, change) => {
                                     let currentTotal = 0;
                                     let itemPrice = 0;
