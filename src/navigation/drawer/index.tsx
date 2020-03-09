@@ -1,5 +1,5 @@
 import { colors } from "@components";
-import { Adisyon, Department, Login, Nfc, StokSelectScreen, TableSelect, ActivityCheckScreen, ActivitySelectScreen, AppSelector, ActiviteTypeSelector, Aktivite, TurnikeCheckScreen } from "@screens";
+import { Adisyon, Department, Login, Nfc, StokSelectScreen, TableSelect, ActivityCheckScreen, ActivitySelectScreen, AppSelector, ActiviteTypeSelector, Aktivite, TurnikeCheckScreen, Config } from "@screens";
 import { createStackNavigator } from "react-navigation-stack";
 
 export const AppNavigator = createStackNavigator({
@@ -15,6 +15,7 @@ export const AppNavigator = createStackNavigator({
     ActiviteTypeSelector: ActiviteTypeSelector,
     Aktivite: Aktivite,
     TableSelect: TableSelect,
+    Config: Config,
 }, {
     initialRouteName: 'Login',
     mode: "card",

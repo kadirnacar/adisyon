@@ -109,6 +109,9 @@ class LoginScreen extends Component<Props, LoginState> {
                         }} />
                     <View style={styles.formContainer}>
                         <TouchableHighlight
+                            onPress={() => {
+                                this.props.navigation.navigate("Config");
+                            }}
                             style={{
                                 position: "absolute",
                                 top: 10,
