@@ -3,7 +3,6 @@ import { isNode } from "@utils";
 import Axios, { AxiosRequestConfig } from "axios";
 import jsonToUrl from "json-to-url";
 import * as LocalStorage from '../store/localStorage';
-import config from "@config";
 
 export interface IRequestOptions {
     url: string;

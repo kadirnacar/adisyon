@@ -1,7 +1,6 @@
 import config from '@config';
+import { IActivity, IActivityOrder, ISeance } from '@models';
 import { ServiceBase } from "./ServiceBase";
-import { IActivityOrder, IActivity, ISeance } from '@models';
-import { AngusProcedureResponse } from './AngusResponse';
 
 export class ActivityOrderService extends ServiceBase {
     public static async sendItem(data: IActivityOrder) {

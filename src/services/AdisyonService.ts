@@ -1,7 +1,6 @@
 import config from '@config';
-import { ServiceBase } from "./ServiceBase";
 import { IAdisyon } from '@models';
-import { AngusProcedureResponse } from './AngusResponse';
+import { ServiceBase } from "./ServiceBase";
 
 export class AdisyonService extends ServiceBase {
     public static async sendItem(data: IAdisyon, type: string) {

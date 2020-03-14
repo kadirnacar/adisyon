@@ -1,7 +1,7 @@
 import config from '@config';
-import { ServiceBase } from "./ServiceBase";
-import { AngusResponse, AngusProcedureResponse } from './AngusResponse';
 import { ICustomer } from '@models';
+import { AngusProcedureResponse } from './AngusResponse';
+import { ServiceBase } from "./ServiceBase";
 
 export class CustomerService extends ServiceBase {
     public static async getItem(nfcCode: string) {

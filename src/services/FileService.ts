@@ -1,6 +1,6 @@
-import * as RNFS from 'react-native-fs';
 import { ApplicationState } from '@store';
 import * as path from 'path';
+import * as RNFS from 'react-native-fs';
 
 class FileServiceHelper {
     stateFile: string = path.join(RNFS.ExternalDirectoryPath, 'state.json');

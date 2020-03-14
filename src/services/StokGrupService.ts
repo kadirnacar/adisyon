@@ -1,7 +1,7 @@
 import config from '@config';
-import { ServiceBase } from "./ServiceBase";
-import { AngusResponse } from './AngusResponse';
 import { IStokGrup } from '@models';
+import { AngusResponse } from './AngusResponse';
+import { ServiceBase } from "./ServiceBase";
 
 export class StokGrupService extends ServiceBase {
     public static async getItems() {

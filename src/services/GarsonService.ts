@@ -1,7 +1,7 @@
 import config from '@config';
-import { ServiceBase } from "./ServiceBase";
+import { IGarson } from '@models';
 import { AngusResponse } from './AngusResponse';
-import { IUser, IGarson } from '@models';
+import { ServiceBase } from "./ServiceBase";
 
 export class GarsonService extends ServiceBase {
     public static async getItem(garsonId: number) {
