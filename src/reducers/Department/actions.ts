@@ -17,7 +17,8 @@ export const actionCreators = {
                         KODU: itm.DEPCODE,
                         ADI: itm.DEPARTMENTNAME,
                         ID: itm.ID,
-                        MOBILPOSCONFIG: itm.MOBILPOSCONFIG
+                        MOBILPOSCONFIG: itm.MOBILPOSCONFIG,
+                        AIENABLED: itm.AIENABLED
                     }
                 })
             });

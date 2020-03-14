@@ -11,9 +11,11 @@ export const actionCreators = {
             var result = await CustomerService.getItem(nfcCode);
 
             const customer = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0][0] : null;
+            console.log(JSON.stringify(customer));
+
             await dispatch({
                 type: Actions.ReceiveCustomerItem,
-                payload: {
+                payload: customer ? {
                     BALANCE: customer.BALANCE,
                     BOARDTYPE: customer.BOARDTYPE,
                     GUESTID: customer.GUESTNO,
@@ -23,7 +25,7 @@ export const actionCreators = {
                     DISCOUNT_RATE: customer.POSDISCOUNTPERCENT,
                     ALLINCLUSIVE: customer.ALLINCLUSIVE,
                     SALETYPEID: customer.SALETYPEID,
-                }
+                } : null
             });
 
             if (result.hasErrors()) {

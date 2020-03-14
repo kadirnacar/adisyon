@@ -361,6 +361,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             const stok = this.props.Stok.items.find(itm => itm.STOKID == item.ID);
                             return <AdisyonItem key={index}
                                 discountRate={discount}
+                                department={this.props.Department.current}
                                 item={item}
                                 stok={stok}
                                 customer={this.props.Customer.current}

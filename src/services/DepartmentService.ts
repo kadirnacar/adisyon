@@ -16,6 +16,7 @@ export class DepartmentService extends ServiceBase {
                     "DEPCODE",
                     "DEPARTMENTNAME",
                     "ID",
+                    "AIENABLED",
                     "MOBILPOSCONFIG"
                 ],
                 "Where": [

@@ -17,7 +17,6 @@ export class CustomerService extends ServiceBase {
         //         }
         //     }
         // });
-        console.log(nfcCode)
         var result = await this.requestJson<AngusProcedureResponse<any>>({
             url: `${config.restUrl}`,
             method: "POST",

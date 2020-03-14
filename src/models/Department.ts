@@ -3,4 +3,5 @@ export interface IDepartment {
     ADI?: string;
     KODU?: string;
     MOBILPOSCONFIG?: any;
+    AIENABLED?: boolean;
 }

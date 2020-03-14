@@ -52,7 +52,7 @@ export class AdisyonService extends ServiceBase {
                             };
                         })
                     }),
-                    "CLOSECHECK": 0,
+                    "CLOSECHECK": 1,
                     "PRINTCHECK": 1
                 },
                 "Action": "Execute",
@@ -83,7 +83,7 @@ export class AdisyonService extends ServiceBase {
                     };
                 })
             },
-            "CLOSECHECK": 0,
+            "CLOSECHECK": 1,
             "PRINTCHECK": 1
         })
         return result;

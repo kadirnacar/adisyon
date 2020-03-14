@@ -1,5 +1,5 @@
 import { colors } from '@components';
-import { IAdisyonProduct, IStok } from '@models';
+import { IAdisyonProduct, IStok, IDepartment } from '@models';
 import { ExchangeActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
@@ -16,6 +16,7 @@ interface StokItemState {
 interface StokItemProps {
     item: IAdisyonProduct;
     stok: IStok;
+    department: IDepartment;
     discountRate: number;
     onAddPress?: (item: IAdisyonProduct) => void;
     onRemovePress?: (item: IAdisyonProduct) => void;
@@ -32,8 +33,8 @@ export class StokItemComp extends Component<Props, StokItemState> {
     }
 
     render() {
-        const { item, stok, discountRate } = this.props;
-        const stokFiyat = this.props.Customer.current && stok && this.props.Customer.current.ALLINCLUSIVE == true && stok.INCLUDEDIN_AI == true ? 0 : stok.SFIYAT1;
+        const { item, stok, discountRate, department } = this.props;
+        const stokFiyat = this.props.Customer.current && stok && this.props.Customer.current.ALLINCLUSIVE == true && stok.INCLUDEDIN_AI == true && department.AIENABLED == true ? 0 : stok.SFIYAT1;
         const fiyat = (stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2)));
         return (
             <View style={{

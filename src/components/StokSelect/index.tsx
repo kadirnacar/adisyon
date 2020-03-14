@@ -116,7 +116,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                     </View>
                                 })}
                             </View>
-                            <Button title="Tamam"  onPress={async () => {
+                            <Button title="Tamam" onPress={async () => {
                                 this.setState({ showExchange: false })
                             }} />
                             {/* <TouchableHighlight
@@ -186,6 +186,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                                 discountRate={discountRate}
                                                 stok={item}
                                                 item={adisyonItem}
+                                                department={this.props.Department.current}
                                                 onShowExhange={(fiyat) => {
                                                     this.setState({
                                                         showExchange: true,

@@ -60,11 +60,23 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                         <Text>{this.props.Customer.current.NAME}</Text>
                         <Text>{this.props.Customer.current.SURNAME}</Text>
                     </View>
-                    <View style={{ 
-                        
-                     }}>
+                    <View style={{
+
+                    }}>
                         <FlatList
-                            data={this.props.Customer.currentTrans ? this.props.Customer.currentTrans : []}
+                            data={this.props.Customer.currentTrans ? this.props.Customer.currentTrans.sort((a, b) => {
+                                if (a.DATE > b.DATE)
+                                    return -1;
+                                else if (a.DATE < b.DATE)
+                                    return 1;
+                                else
+                                    if (a.TIME > b.TIME)
+                                        return -1;
+                                    else if (a.TIME < b.TIME)
+                                        return 1;
+                                    else
+                                        return 0;
+                            }) : []}
                             style={{ height: height - 160 }}
                             renderItem={({ item, index }) => {
                                 return (
@@ -76,10 +88,10 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                                         </View>
                                         <View style={{ borderWidth: 0, flexDirection: "column", flex: 1 }}>
                                             <View style={{ borderWidth: 0, flexWrap: "nowrap", alignContent: "flex-end", alignItems: "flex-end", alignSelf: "flex-end" }}>
-                                                <Text>{moment(item.DATE).format("DD.MM.YYYY")} {moment(item.TIME).format("HH:mm")}</Text>
+                                                <Text>{moment.utc(item.DATE).local().format("DD.MM.YYYY")} {moment.utc(item.TIME).local().format("HH:mm")}</Text>
                                             </View>
-                                            <View style={{ borderWidth: 0, alignContent: "flex-end", alignItems: "flex-end", alignSelf: "flex-end"  }}>
-                                                <Text>{item.AMOUNT} x {item.CTOTAL} = {item.MCTOTAL}</Text>
+                                            <View style={{ borderWidth: 0, alignContent: "flex-end", alignItems: "flex-end", alignSelf: "flex-end" }}>
+                                                <Text>{item.AMOUNT} x {item.CTOTAL} = {item.CTOTAL * item.AMOUNT}</Text>
                                             </View>
                                         </View>
                                     </View>
