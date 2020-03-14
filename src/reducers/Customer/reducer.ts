@@ -32,6 +32,7 @@ export const reducer = (currentState: CustomerState = unloadedState, incomingAct
         case Actions.ClearItem:
             currentState.isRequest = false;
             currentState.current = null;
+            currentState.currentTrans = null;
             return { ...currentState };
         default:
             break;

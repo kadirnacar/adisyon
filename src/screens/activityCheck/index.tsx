@@ -1,16 +1,17 @@
-import { ActivityCheckSelect } from '@components';
-import { IActivityProduct, IActivity, ISeance } from '@models';
+import { ActivityCheckSelect, colors } from '@components';
+import { IActivity, IActivityProduct, ISeance } from '@models';
 import { ActivityOrderActions, ApplicationActions, Applications } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
+import moment from 'moment';
 import React, { Component } from 'react';
 import { Dimensions, View } from 'react-native';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import moment from 'moment';
 const { width, scale, height } = Dimensions.get("window");
 
 interface ActivityCheckState {
@@ -28,6 +29,22 @@ class ActivityCheckComp extends Component<Props, ActivityCheckState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Aktivite",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight: 5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("CustomerTrans", { current: true });
+                    }}>
+                    <FontAwesome5Icon name="user" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            }
             // headerLeft: (props: StackHeaderLeftButtonProps) => {
             //     return <HeaderBackButton {...props} label="Tamam" labelVisible={true} />
             // }

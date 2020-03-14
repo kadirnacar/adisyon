@@ -12,7 +12,6 @@ export const actionCreators = {
             var result = await DepartmentService.getItems();
 
             await dispatch({ type: Actions.ReceiveDepartmentItems, payload: result.value && result.value.ResultSets && result.value.ResultSets.length > 0 ? result.value.ResultSets[0] : [] });
-            console.log(result.value.ResultSets[0][0])
             if (result.hasErrors()) {
                 Alert.alert(result.errors[0]);
                 isSuccess = false;

@@ -1,14 +1,14 @@
 import { colors } from '@components';
-import { ApplicationActions } from '@reducers';
+import { ApplicationActions, Applications } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { Dimensions, StyleSheet, Text, TouchableHighlight, View, Image } from 'react-native';
+import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { Applications } from '@reducers';
-import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 const activityLogo = require('../../../assets/dolphin.png');
 const turnikeLogo = require('../../../assets/turnike.png');
 const { height, width } = Dimensions.get("window");
@@ -26,6 +26,22 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Uygulama Seçiniz",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight:5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("CustomerTrans", { current: true });
+                    }}>
+                    <FontAwesome5Icon name="user" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            }
         };
     };
     constructor(props) {

@@ -43,7 +43,6 @@ class NfcReaderComp extends Component<Props, NfcReaderState> {
                     });
                     NfcManager.registerTagEvent();
                 } else {
-                    console.log("disabled");
                 }
             }).catch(ex => {
                 console.log("ex", ex)

@@ -1,4 +1,4 @@
-import { CustomerInfo, NfcReader, LoaderSpinner } from '@components';
+import { CustomerInfo, LoaderSpinner, NfcReader } from '@components';
 import { ActivityOrderActions, AdisyonActions, Applications, CustomerActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
@@ -59,6 +59,7 @@ class NfcScreen extends Component<Props, any> {
                     if (!isFind)
                         Alert.alert("Kart Bilgisi Bulunamadı.");
                     else {
+                        await this.props.CustomerActions.getTrans(tag);
                         if (this.props.Application.current == Applications.Siparis)
                             this.props.navigation.navigate("Adisyon")
                         else if (this.props.Application.current == Applications.AktiviteSatis)
@@ -80,7 +81,7 @@ class NfcScreen extends Component<Props, any> {
                             if (result && result["MESSAGE"]) {
                                 Alert.alert(result["MESSAGE"]);
                             } else {
-                                this.props.navigation.navigate("CustomerTrans")
+                                this.props.navigation.navigate("CustomerTrans", { current: true })
                             }
                         }
                     }

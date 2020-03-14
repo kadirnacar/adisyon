@@ -4,6 +4,7 @@ import { ApplicationState } from '@store';
 import React, { Component } from 'react';
 import { Dimensions, Image, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
@@ -25,6 +26,22 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Aktivite",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight: 5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("CustomerTrans", { current: true });
+                    }}>
+                    <FontAwesome5Icon name="user" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            }
         };
     };
     constructor(props) {

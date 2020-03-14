@@ -1,15 +1,14 @@
-import { colors, LoaderSpinner } from '@components';
-import { CustomerActions, UserActions, GarsonActions, DepartmentActions, StokActions, StokGrupActions, ActivityActions, ExchangeActions, ConfigActions } from '@reducers';
+import { colors } from '@components';
+import config from '@config';
+import { IConfig } from '@models';
+import { ConfigActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableHighlight, View, Alert } from 'react-native';
+import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { NavigationEventPayload, NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import { IConfig } from '@models';
-import config from '@config';
 const { width, scale, height } = Dimensions.get("window");
 
 interface ConfigState {

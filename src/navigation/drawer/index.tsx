@@ -1,5 +1,5 @@
 import { colors } from "@components";
-import { Adisyon, Department, Login, Nfc, StokSelectScreen, TableSelect, ActivityCheckScreen, ActivitySelectScreen, AppSelector, ActiviteTypeSelector, Aktivite, TurnikeCheckScreen, Config } from "@screens";
+import { ActiviteTypeSelector, ActivityCheckScreen, ActivitySelectScreen, Adisyon, Aktivite, AppSelector, Config, CustomerTrans, Department, Login, Nfc, StokSelectScreen, TableSelect, TurnikeCheckScreen } from "@screens";
 import { createStackNavigator } from "react-navigation-stack";
 
 export const AppNavigator = createStackNavigator({
@@ -16,6 +16,7 @@ export const AppNavigator = createStackNavigator({
     Aktivite: Aktivite,
     TableSelect: TableSelect,
     Config: Config,
+    CustomerTrans: CustomerTrans,
 }, {
     initialRouteName: 'Login',
     mode: "card",
@@ -29,7 +30,7 @@ export const AppNavigator = createStackNavigator({
         headerBackTitleStyle: { color: "#ffffff" },
         headerStyle: { backgroundColor: "#266580" },
         headerTitleAlign: "center",
-        headerTitleStyle: { color: colors.buttonTextColor, fontWeight: "bold", textShadowColor: "#00000090", textShadowOffset: { height: 0, width: 0 }, textShadowRadius: 7 }
+        headerTitleStyle: { color: colors.buttonTextColor, fontWeight: "bold", textShadowColor: "#00000090", textShadowOffset: { height: 0, width: 0 }, textShadowRadius: 7 },
 
     },
     headerMode: 'screen',

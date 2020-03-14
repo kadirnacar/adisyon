@@ -5,7 +5,7 @@ import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
 import { Alert, BackHandler, Dimensions, Text, TouchableHighlight, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { default as FontAwesome5Icon, default as Icon } from 'react-native-vector-icons/FontAwesome5';
 import { NavigationEvents, NavigationInjectedProps, ScrollView, withNavigation } from 'react-navigation';
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
@@ -24,6 +24,22 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Aktivite",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight: 5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("CustomerTrans", { current: false });
+                    }}>
+                    <FontAwesome5Icon name="user" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            },
             headerLeft: (props: StackHeaderLeftButtonProps) => {
                 return <HeaderBackButton {...props}
                     onPress={() => {

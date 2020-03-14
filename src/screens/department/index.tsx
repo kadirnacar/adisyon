@@ -1,17 +1,17 @@
-import { colors, LoaderSpinner } from '@components';
+import { colors } from '@components';
+import config from '@config';
 import { IDepartment } from '@models';
-import { DepartmentActions, TableActions } from '@reducers';
+import { DepartmentActions, TableActions, ApplicationActions, Applications } from '@reducers';
 import { ApplicationState } from '@store';
 import ColorScheme from 'color-scheme';
 import React, { Component } from 'react';
 import { Dimensions, StyleSheet, Text, TouchableHighlight, View } from 'react-native';
-import SafeAreaView from 'react-native-safe-area-view';
 import RNMaterialLetterIcon from 'react-native-material-letter-icon';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import SafeAreaView from 'react-native-safe-area-view';
+import { default as FontAwesome5Icon, default as Icon } from 'react-native-vector-icons/FontAwesome5';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import config from '@config';
 
 const { height, width } = Dimensions.get("window");
 
@@ -22,6 +22,7 @@ interface DepartmentState {
 interface DepartmentProps {
     DepartmentActions: typeof DepartmentActions
     TableActions: typeof TableActions
+    ApplicationActions: typeof ApplicationActions
 }
 
 type Props = NavigationInjectedProps & DepartmentProps & ApplicationState;
@@ -30,6 +31,22 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Departman Seçimi",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight: 5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("CustomerTrans", { current: true });
+                    }}>
+                    <FontAwesome5Icon name="user" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            }
         };
     };
     constructor(props) {
@@ -134,6 +151,8 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                             if (config.useAlagart && this.props.Department.useTable) {
                                 this.props.navigation.navigate("TableSelect");
                             } else {
+                                await this.props.ApplicationActions.setCurrent(Applications.Siparis);
+                                await this.props.ApplicationActions.setNfcTitle("F&B");
                                 this.props.navigation.navigate("Nfc");
                             }
                         }}
@@ -152,6 +171,7 @@ export const Department = withNavigation(connect(
         return {
             DepartmentActions: bindActionCreators({ ...DepartmentActions }, dispatch),
             TableActions: bindActionCreators({ ...TableActions }, dispatch),
+            ApplicationActions: bindActionCreators({ ...ApplicationActions }, dispatch),
         };
     }
 )(DepartmentScreen));

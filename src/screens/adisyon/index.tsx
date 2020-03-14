@@ -1,17 +1,17 @@
-import { AdisyonItem, colors, CustomerInfo, LoaderSpinner, BarcodeReader, TableInfo, NfcReader } from '@components';
-import { AdisyonActions, CustomerActions, ActivityOrderActions, Applications, TableActions } from '@reducers';
+import { AdisyonItem, BarcodeReader, colors, CustomerInfo, LoaderSpinner, NfcReader, TableInfo } from '@components';
+import config from '@config';
+import { ActivityOrderActions, AdisyonActions, CustomerActions, TableActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
-import { Alert, BackHandler, Dimensions, Text, TouchableHighlight, View, Modal } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Alert, BackHandler, Dimensions, Modal, Text, TouchableHighlight, View } from 'react-native';
+import { TextInput } from 'react-native-gesture-handler';
+import { default as FontAwesome5Icon, default as Icon } from 'react-native-vector-icons/FontAwesome5';
 import { NavigationEvents, NavigationInjectedProps, ScrollView, withNavigation } from 'react-navigation';
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { TextInput } from 'react-native-gesture-handler';
-import config from '@config';
 const { width, scale, height } = Dimensions.get("window");
 
 interface AdisyonState {
@@ -35,6 +35,22 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Adisyon",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight: 5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("CustomerTrans", { current: false });
+                    }}>
+                    <FontAwesome5Icon name="user" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            },
             headerLeft: (props: StackHeaderLeftButtonProps) => {
                 return <HeaderBackButton {...props}
                     onPress={() => {
@@ -206,6 +222,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         if (!isFind)
                             Alert.alert("Kart Bilgisi Bulunamadı.");
                         else {
+                            await this.props.CustomerActions.getTrans(tag);
                             this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                             this.props.Adisyon.current.GUESTID = this.props.Customer.current ? this.props.Customer.current.GUESTID : null;
                             this.props.Adisyon.current.GUESTNO = this.props.Customer.current ? this.props.Customer.current.GUESTNO : null;
@@ -263,14 +280,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     this.setState({ tableNo: text });
                                 }} />
                             <TouchableHighlight
+                                disabled={!this.state.tableNo}
                                 underlayColor="#ffffff00" style={{
-                                    backgroundColor: "#b329de",
+                                    backgroundColor: this.state.tableNo ? "#b329de" : "#ccc",
                                     marginVertical: 10,
                                     borderRadius: 50,
                                     height: 50,
                                     justifyContent: "center",
                                     flexDirection: "row",
-                                    borderColor: "#b329de",
+                                    borderColor: this.state.tableNo ? "#b329de" : "#ccc",
                                     borderWidth: 2,
                                     paddingVertical: 10,
                                     marginHorizontal: 5,

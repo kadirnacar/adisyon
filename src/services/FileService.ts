@@ -3,7 +3,7 @@ import { ApplicationState } from '@store';
 import * as path from 'path';
 
 class FileServiceHelper {
-    stateFile: string = path.join(RNFS.DocumentDirectoryPath, 'state.json');
+    stateFile: string = path.join(RNFS.ExternalDirectoryPath, 'state.json');
 
     public async readStateFromFile(): Promise<any> {
         try {

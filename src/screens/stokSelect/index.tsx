@@ -1,17 +1,17 @@
-import { StokSelect, colors, BarcodeReader } from '@components';
+import { colors, StokSelect } from '@components';
 import { IAdisyonProduct } from '@models';
 import { AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
 import React, { Component } from 'react';
-import { Dimensions, View, Text, Button, Modal } from 'react-native';
+import { Dimensions, View } from 'react-native';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { HeaderBackButton, StackHeaderLeftButtonProps } from 'react-navigation-stack';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 const { width, scale, height } = Dimensions.get("window");
 
 interface StokSelectState {
@@ -29,6 +29,22 @@ class StokSelectComp extends Component<Props, StokSelectState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "F&B",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight: 5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("CustomerTrans", { current: true });
+                    }}>
+                    <FontAwesome5Icon name="user" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            },
             headerLeft: (props: StackHeaderLeftButtonProps) => {
                 return <HeaderBackButton {...props} label="Tamam" labelVisible={true} />
             }

@@ -87,7 +87,6 @@ export abstract class ServiceBase {
 
         if (result.hasErrors) {
             // Ui.showErrors(result.errors);
-            // console.log(result)
             // if (result.errors[0].indexOf("401") > -1 && window.location.href.indexOf("login") == -1) {
             //     window.location.href = "/";
             // }
