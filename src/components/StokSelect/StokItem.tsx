@@ -20,6 +20,7 @@ interface StokItemProps {
     onAddPress?: (item: IAdisyonProduct) => void;
     onRemovePress?: (item: IAdisyonProduct) => void;
     onTextActive?: (item: IAdisyonProduct) => void;
+    onShowExhange?: (fiyat: number) => void;
     ExchangeActions: typeof ExchangeActions;
 }
 type Props = StokItemProps & ApplicationState;
@@ -44,7 +45,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                 borderBottomColor: colors.borderColor,
                 backgroundColor: stok.group ? stok.group.color : ""
             }}>
-                <Modal visible={this.state.showExchange || false}
+                {/* <Modal visible={this.state.showExchange || false}
                     transparent={true}
                     onRequestClose={() => {
 
@@ -123,7 +124,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                             </TouchableHighlight>
                         </View>
                     </View>
-                </Modal>
+                </Modal>*/}
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{
                         width: "60%"
@@ -131,7 +132,9 @@ export class StokItemComp extends Component<Props, StokItemState> {
                         <Text>{stok.ADI}</Text>
                         <TouchableHighlight underlayColor="#ffffff00"
                             onPress={() => {
-                                this.setState({ showExchange: true })
+                                // this.setState({ showExchange: true })
+                                if (this.props.onShowExhange)
+                                    this.props.onShowExhange(fiyat);
                             }}>
                             <Text style={{
                                 color: "#000000",

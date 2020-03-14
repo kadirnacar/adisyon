@@ -11,7 +11,6 @@ export const actionCreators = {
             await dispatch({ type: Actions.RequestUserItem });
             var result = await UserService.getItem(username, password);
             const user = result.value && result.value.Success ? result.value : null;
-
             await dispatch({
                 type: Actions.ReceiveUserItem,
                 payload: user
@@ -22,7 +21,7 @@ export const actionCreators = {
                 isSuccess = false;
                 return;
             }
-            
+
             isSuccess = user != null;
 
             if (isSuccess) {

@@ -1,5 +1,4 @@
 export interface IActivityOrder {
-    GUESTNO?: number;
     GUESTID?: number;
     NOTES?: string;
     GARSONID?: number;

@@ -13,7 +13,17 @@ export const actionCreators = {
             const customer = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0][0] : null;
             await dispatch({
                 type: Actions.ReceiveCustomerItem,
-                payload: customer
+                payload: {
+                    BALANCE: customer.BALANCE,
+                    BOARDTYPE: customer.BOARDTYPE,
+                    GUESTID: customer.GUESTNO,
+                    NAME: customer.NAME,
+                    ODANO: customer.ODANO,
+                    SURNAME: customer.SURNAME,
+                    DISCOUNT_RATE: customer.POSDISCOUNTPERCENT,
+                    ALLINCLUSIVE: customer.ALLINCLUSIVE,
+                    SALETYPEID: customer.SALETYPEID,
+                }
             });
 
             if (result.hasErrors()) {
@@ -21,7 +31,7 @@ export const actionCreators = {
                 isSuccess = false;
                 return;
             }
-            
+
             isSuccess = customer != null;
         });
         return isSuccess;
@@ -43,7 +53,7 @@ export const actionCreators = {
                 isSuccess = false;
                 return;
             }
-            
+
             isSuccess = customer;
         });
         return isSuccess;

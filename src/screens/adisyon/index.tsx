@@ -123,9 +123,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                 this.setState({ showTableNo: true })
             }
             this.props.AdisyonActions.setCurrent({
-                DEPCODE: this.props.Department.current.KODU,
+                DEPID: this.props.Department.current.ID,
                 GARSONID: this.props.Garson.current.ID,
-                GUESTNO: this.props.Customer.current ? this.props.Customer.current.GUESTNO : null,
                 GUESTID: this.props.Customer.current ? this.props.Customer.current.GUESTID : null,
                 ITEMS: config.useAlagart && this.props.Table.current && this.props.Table.tableAdisyon ? this.props.Table.tableAdisyon : [],
                 NOTES: ""
@@ -164,9 +163,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             password: null
                         });
                         await this.props.AdisyonActions.setCurrent({
-                            DEPCODE: this.props.Department.current.KODU,
+                            DEPID: this.props.Department.current.ID,
                             GARSONID: this.props.Garson.current.ID,
-                            GUESTNO: this.props.Customer.current ? this.props.Customer.current.GUESTNO : null,
                             ITEMS: [],
                             NOTES: ""
                         });
@@ -225,7 +223,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             await this.props.CustomerActions.getTrans(tag);
                             this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                             this.props.Adisyon.current.GUESTID = this.props.Customer.current ? this.props.Customer.current.GUESTID : null;
-                            this.props.Adisyon.current.GUESTNO = this.props.Customer.current ? this.props.Customer.current.GUESTNO : null;
                             this.props.Adisyon.current.ITEMS = [];
 
                             const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
@@ -512,8 +509,10 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             if (this.props.Adisyon.current.ITEMS && this.props.Adisyon.current.ITEMS.length > 0) {
                                 if (this.props.Customer.current) {
                                     this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
+                                    this.props.Adisyon.current.SALETYPEID = this.props.Customer.current.SALETYPEID;
+                                    
                                     const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
-                                    if (isSuccess["Success"]) {
+                                    if (isSuccess) {
                                         Alert.alert("Tamam", "Sipariş tamamlandı.");
                                         this.props.navigation.navigate("Nfc");
                                     } else {
@@ -566,8 +565,9 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             onPressIn={async () => {
                                 if (this.props.Adisyon.current.ITEMS && this.props.Adisyon.current.ITEMS.filter(i => !i.OLD).length > 0) {
                                     this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
+                                    this.props.Adisyon.current.SALETYPEID = this.props.Customer.current.SALETYPEID;
                                     const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
-                                    if (isSuccess["Success"]) {
+                                    if (isSuccess) {
                                         Alert.alert("Tamam", "Sipariş tamamlandı.");
                                         if (this.props.Department.useTable)
                                             this.props.navigation.navigate("TableSelect");

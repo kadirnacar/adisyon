@@ -10,8 +10,17 @@ export const actionCreators = {
         await batch(async () => {
             await dispatch({ type: Actions.RequestDepartmentItems });
             var result = await DepartmentService.getItems();
-
-            await dispatch({ type: Actions.ReceiveDepartmentItems, payload: result.value && result.value.ResultSets && result.value.ResultSets.length > 0 ? result.value.ResultSets[0] : [] });
+            var depts = result.value && result.value.ResultSets && result.value.ResultSets.length > 0 ? result.value.ResultSets[0] : [];
+            await dispatch({
+                type: Actions.ReceiveDepartmentItems, payload: depts.map((itm) => {
+                    return {
+                        KODU: itm.DEPCODE,
+                        ADI: itm.DEPARTMENTNAME,
+                        ID: itm.ID,
+                        MOBILPOSCONFIG: itm.MOBILPOSCONFIG
+                    }
+                })
+            });
             if (result.hasErrors()) {
                 Alert.alert(result.errors[0]);
                 isSuccess = false;

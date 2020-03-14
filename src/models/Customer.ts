@@ -1,7 +1,6 @@
 export interface ICustomer {
     BALANCE: number;
     BOARDTYPE: string;
-    GUESTNO: number;
     GUESTID: number;
     NAME: string;
     ODANO: string;
@@ -9,6 +8,7 @@ export interface ICustomer {
     SURNAME: string;
     DISCOUNT_RATE: number;
     ALLINCLUSIVE?:boolean;
+    SALETYPEID?:number;
     Trans: ICustomerTrans[];
 }
 

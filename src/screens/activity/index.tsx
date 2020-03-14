@@ -107,7 +107,6 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
         if (!this.props.ActivityOrder.current) {
             this.props.ActivityOrderActions.setCurrent({
                 GARSONID: this.props.Garson.current.ID,
-                GUESTNO: this.props.Customer.current.GUESTNO,
                 GUESTID: this.props.Customer.current.GUESTID,
                 ITEMS: [],
                 NOTES: ""
@@ -145,7 +144,6 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                         });
                         await this.props.ActivityOrderActions.setCurrent({
                             GARSONID: this.props.Garson.current.ID,
-                            GUESTNO: this.props.Customer.current.GUESTNO,
                             ITEMS: [],
                             NOTES: ""
                         });

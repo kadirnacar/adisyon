@@ -6,18 +6,29 @@ import { ServiceBase } from "./ServiceBase";
 export class CustomerService extends ServiceBase {
     public static async getItem(nfcCode: string) {
 
-        var result = await this.requestJson<AngusProcedureResponse<ICustomer>>({
+        // var result = await this.requestJson<AngusProcedureResponse<ICustomer>>({
+        //     url: `${config.restUrl}`,
+        //     method: "POST",
+        //     data: {
+        //         "Action": "Execute",
+        //         "Object": "SP_PARK_MOBILE_FINDGUEST",
+        //         "Parameters": {
+        //             "CARDNO": nfcCode
+        //         }
+        //     }
+        // });
+        console.log(nfcCode)
+        var result = await this.requestJson<AngusProcedureResponse<any>>({
             url: `${config.restUrl}`,
             method: "POST",
             data: {
                 "Action": "Execute",
-                "Object": "SP_PARK_MOBILE_FINDGUEST",
+                "Object": "SP_EASYPOS3_FINDGUEST",
                 "Parameters": {
-                    "CARDNO": nfcCode
+                    "PARKCARDNO": nfcCode
                 }
             }
         });
-
         return result;
     }
     public static async getTransactions(nfcCode: string) {

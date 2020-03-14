@@ -5,23 +5,24 @@ import { IDepartment } from '@models';
 
 export class DepartmentService extends ServiceBase {
     public static async getItems() {
-        var result = await this.requestJson<AngusResponse<IDepartment>>({
+      
+        var result = await this.requestJson<AngusResponse<any>>({
             url: `${config.restUrl}`,
             method: "POST",
             data: {
                 "Action": "Select",
-                "Object": "DEPART",
+                "Object": "HOTEL_DEPARTMENT",
                 "Select": [
-                    // "KODU",
-                    // "ADI",
-                    // "ID",
-                    // "MOBILPOSCONFIG"
+                    "DEPCODE",
+                    "DEPARTMENTNAME",
+                    "ID",
+                    "MOBILPOSCONFIG"
                 ],
                 "Where": [
                     {
-                        "Column": "ISLEMTURU",
+                        "Column": "DEPTTYPE",
                         "Operator": "=",
-                        "Value": "1"
+                        "Value": "2"
                     },
                     {
                         "Column": "MOBILPOSACTIVE",
@@ -35,7 +36,6 @@ export class DepartmentService extends ServiceBase {
                 }
             }
         });
-
         return result;
     }
 }
