@@ -7,7 +7,7 @@ import { IConfig } from "@models";
 // };
 
 class config {
-    public static restUrl: string = 'https://5004.hoteladvisor.net/';
+    public static restUrl: string = 'http://webapi.landoflegend.com/';
     public static tenant: number = 341;
     public static useAlagart: boolean = false;
 

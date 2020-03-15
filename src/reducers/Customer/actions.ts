@@ -11,12 +11,12 @@ export const actionCreators = {
             var result = await CustomerService.getItem(nfcCode);
 
             const customer = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0][0] : null;
-            console.log(JSON.stringify(customer));
 
             await dispatch({
                 type: Actions.ReceiveCustomerItem,
                 payload: customer ? {
                     BALANCE: customer.BALANCE,
+                    POSCHECKTYPEID: customer.POSCHECKTYPEID,
                     BOARDTYPE: customer.BOARDTYPE,
                     GUESTID: customer.GUESTNO,
                     NAME: customer.NAME,
@@ -47,6 +47,28 @@ export const actionCreators = {
             const customer = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0] : false;
             await dispatch({
                 type: Actions.ReceiveCustomerTrans,
+                payload: customer
+            });
+
+            if (result.hasErrors()) {
+                Alert.alert(result.errors[0]);
+                isSuccess = false;
+                return;
+            }
+
+            isSuccess = customer;
+        });
+        return isSuccess;
+    },
+    getFreeItems: (customerId: number) => async (dispatch, getState) => {
+        let isSuccess: boolean = false;
+        await batch(async () => {
+            await dispatch({ type: Actions.RequestCustomerFreeItems });
+            var result = await CustomerService.getFreeItems(customerId);
+
+            const customer = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0] : false;
+            await dispatch({
+                type: Actions.ReceiveCustomerFreeItems,
                 payload: customer
             });
 

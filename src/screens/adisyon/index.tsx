@@ -221,6 +221,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             Alert.alert("Kart Bilgisi Bulunamadı.");
                         else {
                             await this.props.CustomerActions.getTrans(tag);
+                            await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTID);
                             this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                             this.props.Adisyon.current.GUESTID = this.props.Customer.current ? this.props.Customer.current.GUESTID : null;
                             this.props.Adisyon.current.ITEMS = [];
@@ -510,7 +511,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             if (this.props.Adisyon.current.ITEMS && this.props.Adisyon.current.ITEMS.length > 0) {
                                 if (this.props.Customer.current) {
                                     this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
-                                    this.props.Adisyon.current.SALETYPEID = this.props.Customer.current.SALETYPEID;
+                                    this.props.Adisyon.current.POSCHECKTYPEID = this.props.Customer.current.POSCHECKTYPEID;
                                     
                                     const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
                                     if (isSuccess) {
@@ -566,7 +567,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             onPressIn={async () => {
                                 if (this.props.Adisyon.current.ITEMS && this.props.Adisyon.current.ITEMS.filter(i => !i.OLD).length > 0) {
                                     this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
-                                    this.props.Adisyon.current.SALETYPEID = this.props.Customer.current.SALETYPEID;
+                                    this.props.Adisyon.current.POSCHECKTYPEID = this.props.Customer.current.POSCHECKTYPEID;
                                     const isSuccess = await this.props.AdisyonActions.sendItem(this.props.Adisyon.current);
                                     if (isSuccess) {
                                         Alert.alert("Tamam", "Sipariş tamamlandı.");

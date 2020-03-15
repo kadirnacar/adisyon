@@ -2,12 +2,19 @@ import { colors, LoaderSpinner } from '@components';
 import { CustomerActions, UserActions, GarsonActions, DepartmentActions, StokActions, StokGrupActions, ActivityActions, ExchangeActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
-import { Dimensions, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
+import { Dimensions, StyleSheet, Text, TextInput, TouchableHighlight, View, Modal, ProgressBarAndroid, Alert } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { NavigationEventPayload, NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import { UpdaterService } from '@services';
+import VersionNumber from 'react-native-version-number';
+import RNFS from 'react-native-fs';
+import RNApkInstallerN from 'react-native-apk-installer-n';
+
+import * as path from 'path';
+
 const { width, scale, height } = Dimensions.get("window");
 
 interface LoginState {
@@ -15,6 +22,8 @@ interface LoginState {
     username?: string;
     password?: string;
     isRequest: boolean;
+    showDownloader?: boolean;
+    downloadPercent?: number;
 }
 
 interface UserProps {
@@ -45,16 +54,49 @@ class LoginScreen extends Component<Props, LoginState> {
             errorMessage: "",
             password: null,//"123",
             username: null,//"posmobil",
-            isRequest: false
+            isRequest: false,
+            showDownloader: false,
+            downloadPercent: 0
         }
     }
 
     async handleLogin() {
         this.setState({ isRequest: true })
+
         const isLogin = await this.props.UserActions.getItem(this.state.username, this.state.password);
         if (!isLogin) {
             this.setState({ errorMessage: "Hatalı giriş" })
         } else {
+
+            const updater = await UpdaterService.getUpdateInfo();
+            const result = updater.value && updater.value.ResultSets && updater.value.ResultSets.length > 0 && updater.value.ResultSets[0].length > 0 ? updater.value.ResultSets[0][0] : null;
+            if (result && result.POSMOBILE_VERSIONNO && VersionNumber.appVersion != result.POSMOBILE_VERSIONNO) {
+                const updateUrl = result.POSMOBILE_VERSIONURL;
+                this.setState({ isRequest: false, showDownloader: true });
+
+                try {
+                    var filePath = path.join(RNFS.ExternalDirectoryPath, 'update' + result.POSMOBILE_VERSIONNO + '.apk');
+                    const download = RNFS.downloadFile({
+
+                        fromUrl: updateUrl,
+                        toFile: filePath,
+                        progress: res => {
+                            this.setState({ downloadPercent: (res.bytesWritten / res.contentLength * 100) })
+                        },
+                        progressDivider: 1
+                    });
+
+                    const downloadResult = await download.promise;
+                    if (downloadResult.statusCode == 200) {
+                        RNApkInstallerN.install(filePath);
+                    }
+                }
+                catch (error) {
+                    console.warn(error);
+                    Alert.alert(error);
+                    this.setState({ isRequest: false });
+                }
+            }
             await this.loadDataFromServer();
             await this.props.CustomerActions.clear();
             const getGarson = await this.props.GarsonActions.getItem(this.props.User.current.GARSONID);
@@ -93,6 +135,49 @@ class LoginScreen extends Component<Props, LoginState> {
         const { container } = styles;
         return (
             <React.Fragment>
+                <Modal visible={this.state.showDownloader || false}
+                    transparent={true}
+                    onRequestClose={() => {
+
+                    }}>
+                    <View style={{
+                        flex: 1,
+                        width: "100%",
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        backgroundColor: "rgba(255,255,255,0.7)"
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            width: "80%",
+                            marginHorizontal: 20,
+                            borderRadius: 10,
+                            backgroundColor: "#fff",
+                            borderColor: colors.borderColor,
+                            borderWidth: 2,
+                        }}>
+                            <Text style={{
+                                backgroundColor: colors.buttonBackColor,
+                                color: colors.inputTextColor,
+                                width: "100%",
+                                marginVertical: 10,
+                                marginHorizontal: 10,
+                                textAlign: "center"
+                            }}>
+                                Yeni Güncelleme indiriliyor... {this.state.downloadPercent.toFixed(2)}%
+                            </Text>
+                            <View style={{ width: "100%" }}>
+                                <ProgressBarAndroid style={{ width: "100%" }} progress={0.1} />
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnMount}
@@ -107,6 +192,7 @@ class LoginScreen extends Component<Props, LoginState> {
                             });
                             await this.props.UserActions.clear();
                         }} />
+
                     <View style={styles.formContainer}>
                         <TouchableHighlight
                             onPress={() => {

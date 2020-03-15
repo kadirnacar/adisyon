@@ -60,6 +60,8 @@ class NfcScreen extends Component<Props, any> {
                         Alert.alert("Kart Bilgisi Bulunamadı.");
                     else {
                         await this.props.CustomerActions.getTrans(tag);
+                        await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTID);
+                            
                         if (this.props.Application.current == Applications.Siparis)
                             this.props.navigation.navigate("Adisyon")
                         else if (this.props.Application.current == Applications.AktiviteSatis)

@@ -10,7 +10,6 @@ export const actionCreators = {
         await batch(async () => {
             await dispatch({ type: Actions.RequestSendAdisyonItems });
             var result = await AdisyonService.sendItem(data, "SAVE");
-            console.log(JSON.stringify(result))
 
             const isRequestSuccess = result.value && result.value.length > 0 && result.value[0].length > 0 ? true : false;
             await dispatch({
@@ -34,7 +33,6 @@ export const actionCreators = {
         await batch(async () => {
             await dispatch({ type: Actions.RequestSendAdisyonItems });
             var result = await AdisyonService.sendItem(data, "ROOM");
-            console.log(JSON.stringify(result))
             const isRequestSuccess = result.value && result.value.length > 0 && result.value[0].length > 0 ? true : false;
             await dispatch({
                 type: Actions.ReceiveSendAdisyonItems,

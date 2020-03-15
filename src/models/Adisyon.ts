@@ -1,6 +1,7 @@
 export interface IAdisyon {
     GUESTID?: number;
     SALETYPEID?: number;
+    POSCHECKTYPEID?: number;
     DEPID?: any;
     TABLENO?: string;
     NOTES?: string;
@@ -12,4 +13,5 @@ export interface IAdisyonProduct {
     QUANTITY?: number;
     DESC?: string;
     OLD?: boolean;
+    ISFREEITEM?: boolean;
 }

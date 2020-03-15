@@ -44,188 +44,125 @@ export class StokItemComp extends Component<Props, StokItemState> {
                 paddingHorizontal: 5,
                 marginVertical: 2,
                 borderBottomColor: colors.borderColor,
-                backgroundColor: stok.group ? stok.group.color : ""
+                backgroundColor: stok.group ? stok.group.color : "",
             }}>
-                {/* <Modal visible={this.state.showExchange || false}
-                    transparent={true}
-                    onRequestClose={() => {
-
-                    }}>
-                    <View style={{
+                <View style={{
+                    flexDirection: "row",
+                    alignContent: "flex-end"
+                }}>
+                    <Text style={{
                         flex: 1,
-                        width: "100%",
                         flexDirection: "row",
-                        alignContent: "center",
-                        alignItems: "center",
-                        alignSelf: "center",
-                        backgroundColor: "rgba(255,255,255,0.7)"
-                    }}>
-                        <View style={{
-                            flex: 1,
-                            alignContent: "center",
-                            alignItems: "center",
-                            alignSelf: "center",
-                            width: "80%",
-                            padding: 20,
-                            marginHorizontal: 20,
+                        alignSelf: "flex-start",
+                        alignItems: "flex-start",
+                        alignContent: "flex-start",
+                    }}>{stok.ADI}</Text>
+                    <TouchableHighlight
+                        style={{
+                            alignSelf: "flex-end",
+                            alignItems: "flex-end",
+                            alignContent: "flex-end",
+                            right: 0,
+                            width: 50
+                        }}
+                        underlayColor="#ffffff00"
+                        onPress={() => {
+                            // this.setState({ showExchange: true })
+                            if (this.props.onShowExhange)
+                                this.props.onShowExhange(fiyat);
+                        }}>
+                        <Text style={{
+                            color: "#000000",
+                            textDecorationLine: "underline"
+                        }}>{fiyat.toFixed(2)}</Text>
+                    </TouchableHighlight>
+                </View>
+                <View style={{
+                    flex: 1,
+                    marginTop: 5,
+                    flexDirection: "row",
+                    alignContent: "flex-end",
+                    alignItems: "flex-end",
+                    alignSelf: "flex-end"
+                }}>
+                    <TouchableHighlight underlayColor="#ffffff00"
+                        activeOpacity={1}
+                        style={{
+                            width: 35,
                             borderRadius: 10,
+                            borderWidth: 1,
+                            backgroundColor: colors.transparentBackColor,
+                            borderColor: colors.inputTextColor,
+                            height: 35,
+                            alignSelf: "center",
+                            alignItems: "center",
+                            alignContent: "center"
+                        }}
+                        onPress={() => {
+                            if (this.props.onRemovePress)
+                                this.props.onRemovePress(item);
+                            this.setState({})
+                        }}
+                    >
+                        <Icon name="minus" size={30} />
+                    </TouchableHighlight>
+                    <TextInput
+                        value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
+                        keyboardType="numeric"
+                        onChangeText={text => {
+                            const quantity = parseFloat(text);
+                            if (!isNaN(quantity)) {
+                                item.QUANTITY = quantity;
+                            } else {
+                                item.QUANTITY = null;
+                            }
+                            this.setState({})
+                        }}
+                        onBlur={() => {
+                            if (!item.QUANTITY && this.props.onRemovePress)
+                                this.props.onRemovePress(item)
+                            this.setState({})
+                        }}
+                        style={{
+                            color: colors.inputTextColor,
                             backgroundColor: "#fff",
                             borderColor: colors.borderColor,
-                            borderWidth: 2,
-                        }}>
+                            borderWidth: 1,
+                            paddingVertical: 2,
+                            marginHorizontal: 2,
+                            paddingHorizontal: 5,
+                            textAlign: "center",
+                            fontSize: 16,
+                            borderRadius: 10,
+                            minWidth: 75
+                        }} />
 
-                            <View style={{
-                                flexDirection: "column",
-                                alignContent: "flex-start",
-                                alignItems: "flex-start",
-                                alignSelf: "flex-start",
-                                width: "100%"
-                            }}>
-                                <View style={{
-                                    flexDirection: "row",
-                                    alignContent: "center",
-                                    alignItems: "center",
-                                    alignSelf: "center"
-                                }} >
-                                    <Text style={{ fontWeight: "bold" }}>Fiyat Bilgisi </Text>
-                                </View>
-                                {this.props.Exchange.items.map((ex, index) => {
-                                    return <View key={index} style={{
-                                        flexDirection: "row",
-                                        alignContent: "flex-start",
-                                        alignItems: "flex-start",
-                                        alignSelf: "flex-start"
-                                    }}>
-                                        <Text>{ex.TOCUR} : </Text>
-                                        <Text>{(fiyat * ex.RATE).toFixed(2)}</Text>
-                                    </View>
-                                })}
-                            </View>
-
-                            <TouchableHighlight
-                                underlayColor="#ffffff00" style={{
-                                    width: "100%",
-
-                                    backgroundColor: "#b329de",
-                                    marginVertical: 10,
-                                    borderRadius: 50,
-                                    height: 50,
-                                    justifyContent: "center",
-                                    flexDirection: "row",
-                                    borderColor: "#b329de",
-                                    borderWidth: 2,
-                                    paddingVertical: 10,
-                                    marginHorizontal: 5,
-                                    padding: 10
-                                }}
-                                onPress={async () => {
-                                    this.setState({ showExchange: false })
-                                }}>
-                                <Text style={{ color: "#ffffff", fontWeight: "bold" }}>Tamam</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
-                </Modal>*/}
-                <View style={{ flex: 1, flexDirection: "row" }}>
-                    <View style={{
-                        width: "60%"
-                    }}>
-                        <Text>{stok.ADI}</Text>
-                        <TouchableHighlight underlayColor="#ffffff00"
-                            onPress={() => {
-                                // this.setState({ showExchange: true })
-                                if (this.props.onShowExhange)
-                                    this.props.onShowExhange(fiyat);
-                            }}>
-                            <Text style={{
-                                color: "#000000",
-                                textDecorationLine: "underline"
-                            }}>{fiyat}</Text>
-                        </TouchableHighlight>
-                    </View>
-                    <View style={{
-                        width: "40%",
-                        flexDirection: "row",
-                    }}>
-                        <TouchableHighlight underlayColor="#ffffff00"
-                            activeOpacity={1}
-                            style={{
-                                width: 30,
-                                borderRadius: 10,
-                                borderWidth: 1,
-                                borderColor: colors.inputBackColor,
-                                height: 30,
-                                alignSelf: "center",
-                                alignItems: "center"
-                            }}
-                            onPress={() => {
-                                if (this.props.onRemovePress)
-                                    this.props.onRemovePress(item);
-                                this.setState({})
-                            }}
-                        >
-                            <Icon name="minus" size={25} />
-                        </TouchableHighlight>
-                        <TextInput
-                            value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
-                            keyboardType="numeric"
-                            onChangeText={text => {
-                                const quantity = parseFloat(text);
-                                if (!isNaN(quantity)) {
-                                    item.QUANTITY = quantity;
-                                } else {
-                                    item.QUANTITY = null;
-                                }
-                                this.setState({})
-                            }}
-                            onBlur={() => {
-                                if (!item.QUANTITY && this.props.onRemovePress)
-                                    this.props.onRemovePress(item)
-                                this.setState({})
-                            }}
-                            style={{
-                                color: colors.inputTextColor,
-                                backgroundColor: "#fff",
-                                borderColor: colors.borderColor,
-                                borderWidth: 1,
-                                paddingVertical: 2,
-                                marginHorizontal: 2,
-                                marginTop: 2,
-                                paddingHorizontal: 10,
-                                textAlign: "center",
-                                fontSize: 14,
-                                borderRadius: 20
-                            }} />
-                        {/* <Text style={{
-                            width: 28,
+                    <TouchableHighlight underlayColor="#ffffff00"
+                        activeOpacity={1}
+                        style={{
+                            width: 35,
+                            borderRadius: 10,
+                            borderWidth: 1,
+                            backgroundColor: colors.transparentBackColor,
+                            borderColor: colors.inputTextColor,
+                            height: 35,
                             alignSelf: "center",
                             alignItems: "center",
-                            textAlign: "center",
-                            fontSize: 18,
-                            fontWeight: "bold"
+                            alignContent: "center"
+                        }}
+                        onPress={() => {
+                            if (this.props.onAddPress)
+                                this.props.onAddPress(item);
+                            this.setState({})
                         }}>
-                            {item ? item.QUANTITY : 0}
-                        </Text> */}
-                        <TouchableHighlight underlayColor="#ffffff00"
-                            activeOpacity={1}
-                            style={{
-                                width: 30,
-                                borderRadius: 10,
-                                borderColor: colors.inputBackColor,
-                                borderWidth: 1,
-                                height: 30,
-                                alignSelf: "center",
-                                alignItems: "center"
-                            }}
-                            onPress={() => {
-                                if (this.props.onAddPress)
-                                    this.props.onAddPress(item);
-                                this.setState({})
-                            }}>
-                            <Icon name="plus" size={25} />
-                        </TouchableHighlight>
-                    </View>
+                        <Icon name="plus" size={30} style={{
+                            alignSelf: "center",
+                            alignItems: "center",
+                            alignContent: "center"
+                        }} />
+                    </TouchableHighlight>
                 </View>
+
                 <View style={{
                 }}>
                     {item && item.QUANTITY > 0 ?

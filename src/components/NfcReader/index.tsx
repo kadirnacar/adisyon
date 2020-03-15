@@ -76,7 +76,7 @@ class NfcReaderComp extends Component<Props, NfcReaderState> {
                     }}>
                     <Icon name="wrench" size={35} color={colors.inputTextColor} />
                 </TouchableHighlight>
-                <TouchableHighlight
+                {/* <TouchableHighlight
                     underlayColor="#ffffff00"
                     style={{
                         zIndex: 2,
@@ -95,7 +95,7 @@ class NfcReaderComp extends Component<Props, NfcReaderState> {
                             this.props.onReadTag("5B9865ED");
                     }}>
                     <Icon name="readme" size={35} color={colors.inputTextColor} />
-                </TouchableHighlight>
+                </TouchableHighlight> */}
                 <View style={{
                     alignContent: "center",
                     alignItems: "center",

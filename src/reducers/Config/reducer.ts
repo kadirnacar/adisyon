@@ -3,7 +3,7 @@ import { Actions, ConfigState, ISetConfigAction } from './state';
 
 const unloadedState: ConfigState = {
     config: {
-        restUrl: 'https://5004.hoteladvisor.net/',
+        restUrl: 'http://webapi.landoflegend.com/',
         tenant: 341,
         useAlagart: false,
     }

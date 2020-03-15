@@ -71,13 +71,15 @@ export class AdisyonItem extends Component<Props, any> {
                                 <TouchableHighlight underlayColor="#ffffff00"
                                     activeOpacity={1}
                                     style={{
-                                        width: 30,
+                                        width: 35,
                                         borderRadius: 10,
                                         borderWidth: 1,
-                                        borderColor: colors.inputBackColor,
-                                        height: 30,
+                                        backgroundColor: colors.transparentBackColor,
+                                        borderColor: colors.inputTextColor,
+                                        height: 35,
                                         alignSelf: "center",
-                                        alignItems: "center"
+                                        alignItems: "center",
+                                        alignContent: "center"
                                     }}
                                     onPressIn={() => {
                                         if (this.props.onRemovePress)
@@ -85,7 +87,7 @@ export class AdisyonItem extends Component<Props, any> {
                                         this.setState({});
                                     }}
                                 >
-                                    <Icon name="minus" size={25} />
+                                    <Icon name="minus" size={30} />
                                 </TouchableHighlight>
                                 <TextInput
                                     value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
@@ -113,11 +115,11 @@ export class AdisyonItem extends Component<Props, any> {
                                         borderWidth: 1,
                                         paddingVertical: 2,
                                         marginHorizontal: 2,
-                                        marginTop: 2,
-                                        paddingHorizontal: 10,
+                                        paddingHorizontal: 5,
                                         textAlign: "center",
-                                        fontSize: 14,
-                                        borderRadius: 20
+                                        fontSize: 16,
+                                        borderRadius: 10,
+                                        minWidth: 40
                                     }} />
                                 {/* <Text style={{
                             width: 28,
@@ -132,20 +134,22 @@ export class AdisyonItem extends Component<Props, any> {
                                 <TouchableHighlight underlayColor="#ffffff00"
                                     activeOpacity={1}
                                     style={{
-                                        width: 30,
+                                        width: 35,
                                         borderRadius: 10,
-                                        borderColor: colors.inputBackColor,
                                         borderWidth: 1,
-                                        height: 30,
+                                        backgroundColor: colors.transparentBackColor,
+                                        borderColor: colors.inputTextColor,
+                                        height: 35,
                                         alignSelf: "center",
-                                        alignItems: "center"
+                                        alignItems: "center",
+                                        alignContent: "center"
                                     }}
                                     onPressIn={() => {
                                         if (this.props.onAddPress)
                                             this.props.onAddPress(item);
                                         this.setState({});
                                     }}>
-                                    <Icon name="plus" size={25} />
+                                    <Icon name="plus" size={30} />
                                 </TouchableHighlight></React.Fragment>
                             : <Text>{item.QUANTITY}</Text>}
                     </View>

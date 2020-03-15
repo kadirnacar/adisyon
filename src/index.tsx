@@ -1,5 +1,5 @@
 import { AppContainer } from '@navigation';
-import { FileService } from '@services';
+import { FileService, UpdaterService } from '@services';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
 import { AppState, Dimensions, View } from 'react-native';

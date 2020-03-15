@@ -7,11 +7,21 @@ export interface ICustomer {
     RESID: string;
     SURNAME: string;
     DISCOUNT_RATE: number;
-    ALLINCLUSIVE?:boolean;
-    SALETYPEID?:number;
+    ALLINCLUSIVE?: boolean;
+    SALETYPEID?: number;
+    POSCHECKTYPEID?: number;
     Trans: ICustomerTrans[];
 }
-
+export interface ICustomerFreeItems {
+    ID: number;
+    PORTALID: number;
+    PARKGUESTID: number;
+    DEPID: number;
+    ITEMID: number;
+    ITEMGROUPID: number;
+    QUANTITY: number;
+    USEDQUANTITY: number;
+}
 export interface ICustomerTrans {
     OPERATIONTYPE: string;
     LOCATION: string;

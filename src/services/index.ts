@@ -9,5 +9,6 @@ export { GarsonService } from './GarsonService';
 export { StokGrupService } from './StokGrupService';
 export { StokService } from './StokService';
 export { TableService } from './TableService';
+export { UpdaterService } from './UpdaterService';
 export { UserService } from './UserService';
 
