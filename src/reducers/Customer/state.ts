@@ -15,7 +15,8 @@ export enum Actions {
 export interface CustomerState extends IBaseReducer {
     current: ICustomer;
     currentTrans: ICustomerTrans[];
-    freeItems: ICustomerFreeItems[];
+    freeItems: { [key: number]: ICustomerFreeItems };
+    freeGroups: { [key: number]: ICustomerFreeItems };
 }
 
 export interface IClearAction {

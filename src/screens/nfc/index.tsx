@@ -1,4 +1,4 @@
-import { CustomerInfo, LoaderSpinner, NfcReader } from '@components';
+import { CustomerInfo, LoaderSpinner, NfcReader, colors } from '@components';
 import { ActivityOrderActions, AdisyonActions, Applications, CustomerActions } from '@reducers';
 import { ApplicationState } from '@store';
 import React, { Component } from 'react';
@@ -6,6 +6,8 @@ import { Alert, Dimensions } from 'react-native';
 import { NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { TouchableHighlight } from 'react-native-gesture-handler';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -24,6 +26,22 @@ class NfcScreen extends Component<Props, any> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Kart Oku",
+            headerRight: (props) => {
+                return <TouchableHighlight
+                    underlayColor="#ffffff00"
+                    style={{
+                        borderRadius: 40,
+                        borderColor: colors.borderColor,
+                        borderWidth: 2,
+                        padding: 5,
+                        marginRight: 5
+                    }}
+                    onPressIn={() => {
+                        navigation.navigate("StokSelect", { current: true });
+                    }}>
+                    <FontAwesome5Icon name="utensils" size={25} color={"#fff"} />
+                </TouchableHighlight>
+            }
         };
     };
     constructor(props) {

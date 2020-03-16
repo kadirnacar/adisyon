@@ -26,6 +26,7 @@ interface StokSelectState {
 interface StokSelectProps {
     style?: StyleProp<ViewStyle>;
     adisyon: IAdisyon;
+    onlyList?: boolean;
     isSelected?: boolean;
     onPress?: (adisyon: IAdisyon) => void;
 }
@@ -164,7 +165,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                 width: "70%",
                                 marginRight: 5
                             }}>
-                            {this.props.adisyon ?
+                            {this.props.adisyon || this.props.onlyList == true ?
                                 <FlatList
 
                                     keyboardDismissMode="on-drag"
@@ -177,14 +178,19 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                     removeClippedSubviews={true}
                                     data={(this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])).filter(stk => (this.state.selectedGrup && this.state.selectedGrup.STOKGRUPID ? stk.STOKGRUPID == this.state.selectedGrup.STOKGRUPID : true))}
                                     renderItem={({ item, index }) => {
-                                        let adisyonItem = this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID && !itm.OLD) : null;
+                                        let adisyonItem = !this.props.onlyList && this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID && !itm.OLD) : null;
                                         let discountRate = this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
                                         if (!adisyonItem)
                                             adisyonItem = { ID: item.STOKID, QUANTITY: 0 };
+                                        let isFree = this.props.Customer.freeItems ? this.props.Customer.freeItems[item.STOKID] != null : false;
+                                        if (!isFree)
+                                            isFree = this.props.Customer.freeGroups ? this.props.Customer.freeGroups[item.STOKGRUPID] != null : false;
                                         return (
                                             <StokItem
                                                 discountRate={discountRate}
                                                 stok={item}
+                                                isFree={isFree}
+                                                addable={!this.props.onlyList}
                                                 item={adisyonItem}
                                                 department={this.props.Department.current}
                                                 onShowExhange={(fiyat) => {

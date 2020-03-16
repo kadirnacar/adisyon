@@ -16,6 +16,9 @@ interface StokItemState {
 interface StokItemProps {
     item: IAdisyonProduct;
     stok: IStok;
+    addable?: boolean;
+    isFree: boolean;
+    freeQuantity?: number;
     department: IDepartment;
     discountRate: number;
     onAddPress?: (item: IAdisyonProduct) => void;
@@ -33,9 +36,9 @@ export class StokItemComp extends Component<Props, StokItemState> {
     }
 
     render() {
-        const { item, stok, discountRate, department } = this.props;
+        const { item, stok, isFree, discountRate, department } = this.props;
         const stokFiyat = this.props.Customer.current && stok && this.props.Customer.current.ALLINCLUSIVE == true && stok.INCLUDEDIN_AI == true && department.AIENABLED == true ? 0 : stok.SFIYAT1;
-        const fiyat = (stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2)));
+        const fiyat = isFree == true ? 0 : (stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2)));
         return (
             <View style={{
                 flex: 1,
@@ -77,92 +80,93 @@ export class StokItemComp extends Component<Props, StokItemState> {
                         }}>{fiyat.toFixed(2)}</Text>
                     </TouchableHighlight>
                 </View>
-                <View style={{
-                    flex: 1,
-                    marginTop: 5,
-                    flexDirection: "row",
-                    alignContent: "flex-end",
-                    alignItems: "flex-end",
-                    alignSelf: "flex-end"
-                }}>
-                    <TouchableHighlight underlayColor="#ffffff00"
-                        activeOpacity={1}
-                        style={{
-                            width: 35,
-                            borderRadius: 10,
-                            borderWidth: 1,
-                            backgroundColor: colors.transparentBackColor,
-                            borderColor: colors.inputTextColor,
-                            height: 35,
-                            alignSelf: "center",
-                            alignItems: "center",
-                            alignContent: "center"
-                        }}
-                        onPress={() => {
-                            if (this.props.onRemovePress)
-                                this.props.onRemovePress(item);
-                            this.setState({})
-                        }}
-                    >
-                        <Icon name="minus" size={30} />
-                    </TouchableHighlight>
-                    <TextInput
-                        value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
-                        keyboardType="numeric"
-                        onChangeText={text => {
-                            const quantity = parseFloat(text);
-                            if (!isNaN(quantity)) {
-                                item.QUANTITY = quantity;
-                            } else {
-                                item.QUANTITY = null;
-                            }
-                            this.setState({})
-                        }}
-                        onBlur={() => {
-                            if (!item.QUANTITY && this.props.onRemovePress)
-                                this.props.onRemovePress(item)
-                            this.setState({})
-                        }}
-                        style={{
-                            color: colors.inputTextColor,
-                            backgroundColor: "#fff",
-                            borderColor: colors.borderColor,
-                            borderWidth: 1,
-                            paddingVertical: 2,
-                            marginHorizontal: 2,
-                            paddingHorizontal: 5,
-                            textAlign: "center",
-                            fontSize: 16,
-                            borderRadius: 10,
-                            minWidth: 75
-                        }} />
+                {this.props.addable ?
+                    <View style={{
+                        flex: 1,
+                        marginTop: 5,
+                        flexDirection: "row",
+                        alignContent: "flex-end",
+                        alignItems: "flex-end",
+                        alignSelf: "flex-end"
+                    }}>
+                        <TouchableHighlight underlayColor="#ffffff00"
+                            activeOpacity={1}
+                            style={{
+                                width: 35,
+                                borderRadius: 10,
+                                borderWidth: 1,
+                                backgroundColor: colors.transparentBackColor,
+                                borderColor: colors.inputTextColor,
+                                height: 35,
+                                alignSelf: "center",
+                                alignItems: "center",
+                                alignContent: "center"
+                            }}
+                            onPress={() => {
+                                if (this.props.onRemovePress)
+                                    this.props.onRemovePress(item);
+                                this.setState({})
+                            }}
+                        >
+                            <Icon name="minus" size={30} />
+                        </TouchableHighlight>
+                        <TextInput
+                            value={item.QUANTITY != null ? item.QUANTITY.toString() : ""}
+                            keyboardType="numeric"
+                            onChangeText={text => {
+                                const quantity = parseFloat(text);
+                                if (!isNaN(quantity)) {
+                                    item.QUANTITY = quantity;
+                                } else {
+                                    item.QUANTITY = null;
+                                }
+                                this.setState({})
+                            }}
+                            onBlur={() => {
+                                if (!item.QUANTITY && this.props.onRemovePress)
+                                    this.props.onRemovePress(item)
+                                this.setState({})
+                            }}
+                            style={{
+                                color: colors.inputTextColor,
+                                backgroundColor: "#fff",
+                                borderColor: colors.borderColor,
+                                borderWidth: 1,
+                                paddingVertical: 2,
+                                marginHorizontal: 2,
+                                paddingHorizontal: 5,
+                                textAlign: "center",
+                                fontSize: 16,
+                                borderRadius: 10,
+                                minWidth: 75
+                            }} />
 
-                    <TouchableHighlight underlayColor="#ffffff00"
-                        activeOpacity={1}
-                        style={{
-                            width: 35,
-                            borderRadius: 10,
-                            borderWidth: 1,
-                            backgroundColor: colors.transparentBackColor,
-                            borderColor: colors.inputTextColor,
-                            height: 35,
-                            alignSelf: "center",
-                            alignItems: "center",
-                            alignContent: "center"
-                        }}
-                        onPress={() => {
-                            if (this.props.onAddPress)
-                                this.props.onAddPress(item);
-                            this.setState({})
-                        }}>
-                        <Icon name="plus" size={30} style={{
-                            alignSelf: "center",
-                            alignItems: "center",
-                            alignContent: "center"
-                        }} />
-                    </TouchableHighlight>
-                </View>
-
+                        <TouchableHighlight underlayColor="#ffffff00"
+                            activeOpacity={1}
+                            style={{
+                                width: 35,
+                                borderRadius: 10,
+                                borderWidth: 1,
+                                backgroundColor: colors.transparentBackColor,
+                                borderColor: colors.inputTextColor,
+                                height: 35,
+                                alignSelf: "center",
+                                alignItems: "center",
+                                alignContent: "center"
+                            }}
+                            onPress={() => {
+                                if (this.props.onAddPress)
+                                    this.props.onAddPress(item);
+                                this.setState({})
+                            }}>
+                            <Icon name="plus" size={30} style={{
+                                alignSelf: "center",
+                                alignItems: "center",
+                                alignContent: "center"
+                            }} />
+                        </TouchableHighlight>
+                    </View>
+                    : null}
                 <View style={{
                 }}>
                     {item && item.QUANTITY > 0 ?

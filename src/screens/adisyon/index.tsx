@@ -365,6 +365,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 department={this.props.Department.current}
                                 item={item}
                                 stok={stok}
+                                isFree={false}
                                 customer={this.props.Customer.current}
                                 onAddPress={(stokId, change) => {
                                     let currentTotal = 0;
@@ -512,7 +513,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 if (this.props.Customer.current) {
                                     this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
                                     this.props.Adisyon.current.POSCHECKTYPEID = this.props.Customer.current.POSCHECKTYPEID;
-                                    
+
                                     const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
                                     if (isSuccess) {
                                         Alert.alert("Tamam", "Sipariş tamamlandı.");

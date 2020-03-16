@@ -1,5 +1,5 @@
 import { colors } from '@components';
-import { IAdisyonProduct, ICustomer, IStok, IDepartment } from '@models';
+import { IAdisyonProduct, ICustomer, IStok, IDepartment, ICustomerFreeItems } from '@models';
 import React, { Component } from 'react';
 import { Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Collapsible from 'react-native-collapsible';
@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 interface Props {
     item: IAdisyonProduct;
     stok: IStok;
+    isFree: boolean;
     customer: ICustomer;
     department: IDepartment;
     onAddPress?: (item: IAdisyonProduct, change?: boolean) => void;
@@ -24,9 +25,9 @@ export class AdisyonItem extends Component<Props, any> {
     }
 
     render() {
-        const { item, stok, customer, discountRate, department } = this.props;
+        const { item, stok, isFree, customer, discountRate, department } = this.props;
         const stokFiyat = customer && stok && customer.ALLINCLUSIVE == true && stok.INCLUDEDIN_AI == true && department.AIENABLED == true ? 0 : stok.SFIYAT1;
-        const fiyat = (parseFloat((stokFiyat - (stokFiyat * (discountRate / 100))).toFixed(2)) * item.QUANTITY).toFixed(2);
+        const fiyat = isFree == true ? 0 : (parseFloat((stokFiyat - (stokFiyat * (discountRate / 100))).toFixed(2)) * item.QUANTITY).toFixed(2);
 
         return (
             <View style={{

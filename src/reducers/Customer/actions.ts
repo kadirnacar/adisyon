@@ -67,6 +67,7 @@ export const actionCreators = {
             var result = await CustomerService.getFreeItems(customerId);
 
             const customer = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0] : false;
+            console.log(customerId, JSON.stringify(result))
             await dispatch({
                 type: Actions.ReceiveCustomerFreeItems,
                 payload: customer
