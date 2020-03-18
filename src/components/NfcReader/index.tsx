@@ -101,7 +101,7 @@ class NfcReaderComp extends Component<Props, NfcReaderState> {
                     alignItems: "center",
                     padding: 10
                 }}>
-                    <Text>{this.props.Application.nfcScreenTitle}</Text>
+                    <Text style={{ fontSize: 20 }}>{this.props.Application.nfcScreenTitle}</Text>
                 </View>
                 <View style={{ flex: 1, width: width, height: 500, flexDirection: "row" }}>
                     <LottieView source={require('../../../assets/animation.json')} autoPlay loop />

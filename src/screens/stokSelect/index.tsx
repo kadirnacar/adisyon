@@ -65,7 +65,7 @@ class StokSelectComp extends Component<Props, StokSelectState> {
         return (
             <View style={{ flex: 1 }} >
 
-                <StokSelect adisyon={this.props.Adisyon.current} onlyList={this.props.navigation.state.params.current} onPress={(data) => {
+                <StokSelect adisyon={this.props.Adisyon.current} onlyList={this.props.navigation.state.params && this.props.navigation.state.params.current} onPress={(data) => {
                     this.setState({ selectedStoks: data });
                 }} />
             </View>

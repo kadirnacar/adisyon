@@ -9,6 +9,7 @@ import SafeAreaView from 'react-native-safe-area-view';
 import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 const { height, width } = Dimensions.get("window");
 
@@ -81,7 +82,7 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                             renderItem={({ item, index }) => {
                                 return (
                                     <View style={{ borderBottomWidth: 1, flex: 1, flexDirection: "row" }}>
-                                        <View style={{ borderWidth: 0, flexDirection: "column", flex: 2 }}>
+                                        <View style={{ borderWidth: 0, flexDirection: "column", flex: 1 }}>
 
                                             <Text>{item.LOCATION}</Text>
                                             <Text>{item.PRODUCT}</Text>
@@ -90,8 +91,21 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                                             <View style={{ borderWidth: 0, flexWrap: "nowrap", alignContent: "flex-end", alignItems: "flex-end", alignSelf: "flex-end" }}>
                                                 <Text>{moment.utc(item.DATE).local().format("DD.MM.YYYY")} {moment.utc(item.TIME).local().format("HH:mm")}</Text>
                                             </View>
-                                            <View style={{ borderWidth: 0, alignContent: "flex-end", alignItems: "flex-end", alignSelf: "flex-end" }}>
-                                                <Text>{item.AMOUNT} x {item.CTOTAL} = {item.CTOTAL * item.AMOUNT}</Text>
+                                            <View style={{
+                                                borderWidth: 0,
+                                                marginTop: 2,
+                                                flexDirection: "row",
+                                                alignContent: "flex-end",
+                                                alignItems: "flex-end",
+                                                alignSelf: "flex-end",
+                                                flexWrap: "nowrap",
+                                                justifyContent: "flex-end"
+                                            }}>
+                                                <Text style={{}}>{item.AMOUNT} x {item.CTOTAL.toFixed(2)} = {(item.CTOTAL * item.AMOUNT).toFixed(2)}</Text>
+                                                <FontAwesome5Icon name="lira-sign" size={14} style={{
+                                                    marginLeft: 3,
+                                                    alignSelf: "baseline"
+                                                }} />
                                             </View>
                                         </View>
                                     </View>

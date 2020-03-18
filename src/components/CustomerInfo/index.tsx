@@ -113,6 +113,33 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                     </View>
                                 })}
                             </View>
+                            <View style={{
+                                flexDirection: "column",
+                                alignContent: "flex-start",
+                                alignItems: "flex-start",
+                                alignSelf: "flex-start",
+                                width: "100%"
+                            }}>
+                                <View style={{
+                                    flexDirection: "row",
+                                    alignContent: "center",
+                                    alignItems: "center",
+                                    alignSelf: "center"
+                                }} >
+                                    <Text style={{ fontWeight: "bold" }}>Kalan Bakiye </Text>
+                                </View>
+                                {this.props.Exchange.items.map((ex, index) => {
+                                    return <View key={index} style={{
+                                        flexDirection: "row",
+                                        alignContent: "flex-start",
+                                        alignItems: "flex-start",
+                                        alignSelf: "flex-start"
+                                    }}>
+                                        <Text>{ex.TOCUR} : </Text>
+                                        <Text>{(((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0)) * ex.RATE).toFixed(2)}</Text>
+                                    </View>
+                                })}
+                            </View>
                             <TouchableHighlight
                                 underlayColor="#ffffff00" style={{
                                     width: "100%",
@@ -154,8 +181,8 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                     }, this.props.style]}>
                     <View style={{ flex: 1 }}>
                         <View style={{ flexDirection: "row", flexWrap: "wrap" }}>
-                            <Text style={{ color: colors.borderColor, flexDirection: "row", width: "100%" }}>Misafir Adı</Text>
-                            <Text style={{ width: "100%", fontWeight: "bold", fontSize: 18, color: colors.inputTextColor, flexDirection: "row" }}>
+                            <Text style={{ fontSize: 18, color: colors.borderColor, flexDirection: "row", width: "100%" }}>Misafir Adı</Text>
+                            <Text style={{ fontSize: 18, width: "100%", fontWeight: "bold", color: colors.inputTextColor, flexDirection: "row" }}>
                                 {this.props.Customer.current ? this.props.Customer.current.NAME + " " + this.props.Customer.current.SURNAME : null}
                             </Text>
 
@@ -164,13 +191,13 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                             <View style={{
                                 width: "33%"
                             }}>
-                                <Text style={{ color: colors.borderColor }}>Bakiye</Text>
+                                <Text style={{ fontSize: 18, color: colors.borderColor }}>Bakiye</Text>
                                 <TouchableHighlight underlayColor="#ffffff00"
                                     onPress={() => {
                                         this.setState({ showExchange: true })
                                     }}>
                                     <Text style={{
-                                        color: colors.borderColor,
+                                        fontSize: 18,
                                         textDecorationLine: "underline"
                                     }}>
                                         {Intl.NumberFormat("TR", {
@@ -186,14 +213,17 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                     alignItems: "flex-end",
                                     alignSelf: "flex-end"
                                 }}>
-                                    <Text style={{ color: colors.borderColor }}>Toplam Tutar</Text>
+                                    <Text style={{
+                                        color: colors.borderColor,
+                                        fontSize: 18
+                                    }}>Toplam Tutar</Text>
                                     <TouchableHighlight underlayColor="#ffffff00"
                                         onPress={() => {
                                             this.setState({ showExchange: true })
                                         }}>
                                         <Text style={{
-                                            color: colors.borderColor,
-                                            textDecorationLine: "underline"
+                                            textDecorationLine: "underline",
+                                            fontSize: 18
                                         }}>{Intl.NumberFormat("TR", {
                                             style: "currency",
                                             currency: "TRL"
@@ -207,11 +237,24 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                     alignItems: "flex-end",
                                     alignSelf: "flex-end"
                                 }}>
-                                    <Text style={{ color: colors.borderColor }}>Kalan</Text>
-                                    <Text style={{ color: colors.inputTextColor }}>{Intl.NumberFormat("TR", {
-                                        style: "currency",
-                                        currency: "TRL"
-                                    }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0))}</Text>
+                                    <TouchableHighlight underlayColor="#ffffff00"
+                                        onPress={() => {
+                                            this.setState({ showExchange: true })
+                                        }}>
+                                        <React.Fragment>
+                                            <Text style={{
+                                                color: colors.borderColor,
+                                                fontSize: 18
+                                            }}>Kalan</Text>
+                                            <Text style={{
+                                                fontSize: 18,
+                                                textDecorationLine: "underline"
+                                            }}>{Intl.NumberFormat("TR", {
+                                                style: "currency",
+                                                currency: "TRL"
+                                            }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0))}</Text>
+                                        </React.Fragment>
+                                    </TouchableHighlight>
                                 </View> : null}
                         </View>
                     </View>

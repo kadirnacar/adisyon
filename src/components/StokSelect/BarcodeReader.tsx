@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Button, Dimensions, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { colors } from '../colors';
+import BarcodeMask from 'react-native-barcode-mask';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -57,7 +58,9 @@ export class BarcodeReader extends Component<Props, any> {
                     onGoogleVisionBarcodesDetected={({ barcodes }) => {
                         this.setState({ barcode: barcodes && barcodes.length > 0 ? barcodes[0].data : null })
                     }}
-                />
+                >
+                    <BarcodeMask />
+                </RNCamera>
                 <View style={{
                     backgroundColor: this.state.barcode ? colors.buttonBackColor : "#fff",
                     width: "100%",

@@ -18,6 +18,7 @@ interface AdisyonState {
     showBarcode?: boolean;
     showNfc?: boolean;
     showTableNo?: boolean;
+    showConfirm: boolean;
     tableNo?: string;
     errorMessage?: string;
     password?: any;
@@ -86,6 +87,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
         this.handleComponentMount = this.handleComponentMount.bind(this);
         this.handleComponentUnmount = this.handleComponentUnmount.bind(this);
         this.state = {
+            showConfirm: false
         }
     }
 
@@ -270,6 +272,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     backgroundColor: colors.buttonBackColor,
                                     color: colors.inputTextColor,
                                     width: "100%",
+                                    fontSize: 20,
+                                    fontWeight: "bold",
                                     marginVertical: 10,
                                     marginHorizontal: 10,
                                     textAlign: "center"
@@ -284,6 +288,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     marginVertical: 10,
                                     borderRadius: 50,
                                     height: 50,
+
                                     justifyContent: "center",
                                     flexDirection: "row",
                                     borderColor: this.state.tableNo ? "#b329de" : "#ccc",
@@ -297,11 +302,104 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
                                     this.setState({ showTableNo: false })
                                 }}>
-                                <Text style={{ color: "#ffffff", fontWeight: "bold" }}>Tamam</Text>
+                                <Text style={{ color: "#ffffff", fontWeight: "bold", fontSize: 18 }}>Tamam</Text>
                             </TouchableHighlight>
                         </View>
                     </View>
                 </Modal>
+                <Modal visible={this.state.showConfirm || false}
+                    transparent={true}
+                    onRequestClose={() => {
+
+                    }}>
+                    <View style={{
+                        flex: 1,
+                        width: "100%",
+                        flexDirection: "row",
+                        alignContent: "center",
+                        alignItems: "center",
+                        alignSelf: "center",
+                        backgroundColor: "rgba(255,255,255,0.7)"
+                    }}>
+                        <View style={{
+                            flex: 1,
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            width: "80%",
+                            marginHorizontal: 20,
+                            borderRadius: 10,
+                            backgroundColor: "#fff",
+                            borderColor: colors.borderColor,
+                            borderWidth: 2,
+                            padding: 10
+                        }}>
+                            <Text style={{ fontSize: 18 }}>Sipariş tamamlanıp, ödeme işlemi gerçekleşecektir. Onaylıyormusunuz?</Text>
+                            <Text style={{ fontSize: 18, textAlign: "left", fontWeight: "bold", alignSelf: "flex-start" }}>Masa No</Text>
+                            <TextInput placeholder="Masa No"
+                                value={this.state.tableNo}
+                                style={{
+                                    backgroundColor: colors.buttonBackColor,
+                                    color: colors.inputTextColor,
+                                    width: "100%",
+                                    fontSize: 20,
+                                    fontWeight: "bold",
+                                    marginVertical: 10,
+                                    marginHorizontal: 10,
+                                    textAlign: "center"
+                                }}
+                                onChangeText={text => {
+                                    this.setState({ tableNo: text });
+                                }} />
+                            <View style={{ flexDirection: "row" }}>
+                                <TouchableHighlight
+                                    underlayColor="#ffffff00" style={{
+                                        width: "50%",
+                                        backgroundColor: colors.buttonBackColor,
+                                        borderRadius: 0,
+                                        justifyContent: "center",
+                                        flexDirection: "row",
+                                        borderColor: colors.buttonBackColor,
+                                        padding: 10
+                                    }}
+                                    onPress={async () => {
+                                        this.setState({ showConfirm: false })
+                                    }}>
+                                    <Text style={{ color: "#ffffff", fontWeight: "bold", fontSize: 18 }}>İptal</Text>
+                                </TouchableHighlight>
+                                <TouchableHighlight
+                                    disabled={!this.state.tableNo}
+                                    underlayColor="#ffffff00" style={{
+                                        width: "50%",
+                                        backgroundColor: "#b329de",
+                                        borderRadius: 0,
+                                        justifyContent: "center",
+                                        flexDirection: "row",
+                                        borderColor: "#b329de",
+                                        padding: 10
+                                    }}
+                                    onPress={async () => {
+                                        this.props.TableActions.setCurrent({ MASANO: this.state.tableNo, MASAGRUP: "" })
+                                        this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
+                                        this.props.Adisyon.current.POSCHECKTYPEID = this.props.Customer.current.POSCHECKTYPEID;
+                                        this.setState({ showTableNo: false })
+
+                                        const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
+
+                                        if (isSuccess) {
+                                            Alert.alert("Tamam", "Sipariş tamamlandı.");
+                                            this.props.navigation.navigate("Nfc");
+                                        } else {
+                                            Alert.alert("Hata", isSuccess["Message"]);
+                                        }
+                                    }}>
+                                    <Text style={{ color: "#ffffff", fontWeight: "bold", fontSize: 18 }}>Tamam</Text>
+                                </TouchableHighlight>
+                            </View>
+                        </View>
+                    </View>
+                </Modal>
+
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
@@ -338,7 +436,10 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                     alignSelf: "center",
                                     fontWeight: "bold",
                                     fontSize: 16
-                                }}>{this.props.Table.current && this.props.Table.current.MASANO ? "Masa No : " + this.props.Table.current.MASANO : "Masa Seçiniz"}</Text>
+                                }}>
+                                    {/* {this.props.Table.current && this.props.Table.current.MASANO ? "Masa No : " + this.props.Table.current.MASANO : "Masa Seçiniz"} */}
+                                    {this.state.tableNo ? "Masa No : " + this.state.tableNo : "Masa Seçiniz"}
+                                </Text>
                             </React.Fragment>
                         </TouchableHighlight>
                     </View>
@@ -511,16 +612,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         onPressIn={async () => {
                             if (this.props.Adisyon.current.ITEMS && this.props.Adisyon.current.ITEMS.length > 0) {
                                 if (this.props.Customer.current) {
-                                    this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
-                                    this.props.Adisyon.current.POSCHECKTYPEID = this.props.Customer.current.POSCHECKTYPEID;
-
-                                    const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);
-                                    if (isSuccess) {
-                                        Alert.alert("Tamam", "Sipariş tamamlandı.");
-                                        this.props.navigation.navigate("Nfc");
-                                    } else {
-                                        Alert.alert("Hata", isSuccess["Message"]);
-                                    }
+                                    this.setState({ showConfirm: true });
                                 } else {
                                     this.setState({ showNfc: true })
                                 }
