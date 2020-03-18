@@ -6,6 +6,8 @@ import { Dimensions, GestureResponderEvent, Modal, StyleProp, Text, TouchableHig
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import NumberFormat from 'react-number-format';
 const { width, scale, height } = Dimensions.get("window");
 
 interface CustomerState {
@@ -170,7 +172,7 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                     style={[{
                         flex: 0,
                         width: width - 10,
-                        height: 150,
+                        height: 170,
                         flexDirection: "row",
                         backgroundColor: colors.transparentBackColor,
                         borderRadius: 10,
@@ -192,18 +194,21 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                 width: "33%"
                             }}>
                                 <Text style={{ fontSize: 18, color: colors.borderColor }}>Bakiye</Text>
+
                                 <TouchableHighlight underlayColor="#ffffff00"
                                     onPress={() => {
                                         this.setState({ showExchange: true })
                                     }}>
-                                    <Text style={{
-                                        fontSize: 18,
-                                        textDecorationLine: "underline"
-                                    }}>
-                                        {Intl.NumberFormat("TR", {
-                                            style: "currency",
-                                            currency: "TRL"
-                                        }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0))}</Text>
+                                    <NumberFormat
+                                        value={(this.props.Customer.current && this.props.Customer.current.BALANCE ? this.props.Customer.current.BALANCE : "")}
+                                        displayType={"text"}
+                                        thousandSeparator={true}
+                                        suffix="₺"
+                                        renderText={value => <Text style={{
+                                            textDecorationLine: "underline",
+                                            fontSize: 18
+                                        }}>{value}</Text>}
+                                    />
                                 </TouchableHighlight>
                             </View>
                             {this.props.total != null ?
@@ -211,7 +216,6 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                     width: "33%",
                                     alignContent: "flex-end",
                                     alignItems: "flex-end",
-                                    alignSelf: "flex-end"
                                 }}>
                                     <Text style={{
                                         color: colors.borderColor,
@@ -221,13 +225,16 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                         onPress={() => {
                                             this.setState({ showExchange: true })
                                         }}>
-                                        <Text style={{
-                                            textDecorationLine: "underline",
-                                            fontSize: 18
-                                        }}>{Intl.NumberFormat("TR", {
-                                            style: "currency",
-                                            currency: "TRL"
-                                        }).format((this.props.total ? this.props.total : 0))}</Text>
+                                        <NumberFormat
+                                            value={(this.props.total ? this.props.total : 0)}
+                                            displayType={"text"}
+                                            thousandSeparator={true}
+                                            suffix="₺"
+                                            renderText={value => <Text style={{
+                                                textDecorationLine: "underline",
+                                                fontSize: 18
+                                            }}>{value}</Text>}
+                                        />
                                     </TouchableHighlight>
                                 </View> : null}
                             {this.props.total != null ?
@@ -235,27 +242,28 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                     width: "33%",
                                     alignContent: "flex-end",
                                     alignItems: "flex-end",
-                                    alignSelf: "flex-end"
                                 }}>
+                                    <Text style={{
+                                        color: colors.borderColor,
+                                        fontSize: 18
+                                    }}>Kalan</Text>
                                     <TouchableHighlight underlayColor="#ffffff00"
                                         onPress={() => {
                                             this.setState({ showExchange: true })
                                         }}>
-                                        <React.Fragment>
-                                            <Text style={{
-                                                color: colors.borderColor,
+                                        <NumberFormat
+                                            value={(this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0)}
+                                            displayType={"text"}
+                                            thousandSeparator={true}
+                                            suffix="₺"
+                                            renderText={value => <Text style={{
+                                                textDecorationLine: "underline",
                                                 fontSize: 18
-                                            }}>Kalan</Text>
-                                            <Text style={{
-                                                fontSize: 18,
-                                                textDecorationLine: "underline"
-                                            }}>{Intl.NumberFormat("TR", {
-                                                style: "currency",
-                                                currency: "TRL"
-                                            }).format((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0))}</Text>
-                                        </React.Fragment>
+                                            }}>{value}</Text>}
+                                        />
                                     </TouchableHighlight>
                                 </View> : null}
+
                         </View>
                     </View>
                 </TouchableHighlight>

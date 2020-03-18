@@ -238,7 +238,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         }
                         this.setState({ showNfc: false })
                     }} />
-                    <CustomerInfo style={{ height: 120, top: -10 }} total={currentTotal} />
+                    <CustomerInfo style={{ height: 130, top: -10 }} total={currentTotal} />
                 </Modal>
                 <Modal visible={this.state.showTableNo || false}
                     transparent={true}
@@ -405,10 +405,10 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                     onWillBlur={this.handleComponentUnmount} />
                 {config.useAlagart ? <React.Fragment>
                     {!this.props.Table.current ?
-                        <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
+                        <CustomerInfo style={{ height: 130, top: 10 }} total={currentTotal} /> : null}
                     {this.props.Table.current ?
                         <TableInfo style={{ height: 120, top: 10 }} total={currentTotal} /> : null}
-                </React.Fragment> : <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} />}
+                </React.Fragment> : <CustomerInfo style={{ height: 130, top: 10 }} total={currentTotal} />}
                 {!config.useAlagart && this.props.Department.useTable ?
                     <View style={{
                         marginTop: 12,

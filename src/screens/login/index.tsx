@@ -70,9 +70,11 @@ class LoginScreen extends Component<Props, LoginState> {
 
             const updater = await UpdaterService.getUpdateInfo();
             const result = updater.value && updater.value.ResultSets && updater.value.ResultSets.length > 0 && updater.value.ResultSets[0].length > 0 ? updater.value.ResultSets[0][0] : null;
+            console.log(VersionNumber.appVersion, result, JSON.stringify(updater))
             if (result && result.POSMOBILE_VERSIONNO && VersionNumber.appVersion != result.POSMOBILE_VERSIONNO) {
                 const updateUrl = result.POSMOBILE_VERSIONURL;
                 this.setState({ isRequest: false, showDownloader: true });
+                console.log("update")
 
                 try {
                     var filePath = path.join(RNFS.ExternalDirectoryPath, 'update' + result.POSMOBILE_VERSIONNO + '.apk');

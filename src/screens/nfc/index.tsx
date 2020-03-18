@@ -106,7 +106,7 @@ class NfcScreen extends Component<Props, any> {
                         }
                     }
                 }} />
-                <CustomerInfo style={{ height: 120, bottom: 20 }} onPress={() => {
+                <CustomerInfo style={{ height: 130, bottom: 20 }} onPress={() => {
                     // this.props.navigation.navigate("Adisyon")
                 }} />
             </React.Fragment>

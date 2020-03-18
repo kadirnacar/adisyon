@@ -151,7 +151,7 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                 <NavigationEvents
                     onWillFocus={this.handleComponentMount}
                     onWillBlur={this.handleComponentUnmount} />
-                <CustomerInfo style={{ height: 120, top: 10 }} total={currentTotal} />
+                <CustomerInfo style={{ height: 130, top: 10 }} total={currentTotal} />
                 <View
                     style={{
                         flex: 1,
