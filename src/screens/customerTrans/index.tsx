@@ -81,7 +81,6 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                             }) : []}
                             style={{ height: height - 160 }}
                             renderItem={({ item, index }) => {
-                                console.log(JSON.stringify(item))
                                 return (
                                     <View style={{ borderBottomWidth: 1, flex: 1, flexDirection: "row" }}>
                                         <View style={{ borderWidth: 0, flexDirection: "column", flex: 1 }}>

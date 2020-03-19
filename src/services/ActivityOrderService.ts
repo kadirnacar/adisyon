@@ -37,16 +37,7 @@ export class ActivityOrderService extends ServiceBase {
                 "Object": "SP_PARK_TOUR_READPASS_VIRTUAL"
             }
         });
-        console.log(JSON.stringify({
-            "Parameters": {
-                "TOURID": activity.ID,
-                "SEANCEID": seance ? seance.SEANCEID : null,
-                "CARDID": guestId,
-                "PORTALID": config.tenant
-            },
-            "Action": "Execute",
-            "Object": "SP_PARK_TOUR_READPASS_VIRTUAL"
-        }))
+       
         return result;
     }
 }
