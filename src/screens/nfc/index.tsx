@@ -12,6 +12,7 @@ import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 const { width, scale, height } = Dimensions.get("window");
 
 interface CustomerState {
+    isRequest: boolean;
 }
 
 interface CustomerProps {
@@ -22,7 +23,7 @@ interface CustomerProps {
 
 type Props = NavigationInjectedProps & CustomerProps & ApplicationState;
 
-class NfcScreen extends Component<Props, any> {
+class NfcScreen extends Component<Props, CustomerState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Kart Oku",
@@ -46,6 +47,9 @@ class NfcScreen extends Component<Props, any> {
     };
     constructor(props) {
         super(props);
+        this.state = {
+            isRequest: false
+        }
         this.handleComponentMount = this.handleComponentMount.bind(this);
         this.handleComponentUnMount = this.handleComponentUnMount.bind(this);
     }
@@ -69,35 +73,43 @@ class NfcScreen extends Component<Props, any> {
                     onWillBlur={this.handleComponentUnMount}
                     onWillFocus={this.handleComponentMount} />
                 <LoaderSpinner
-                    showLoader={this.props.ActivityOrder.isRequest}
+                    showLoader={this.state.isRequest}
                     onCloseModal={async () => {
                     }} />
                 <NfcReader onReadTag={async (tag) => {
+                    this.setState({ isRequest: true })
                     const isFind = await this.props.CustomerActions.getItem(tag);
                     if (!isFind)
                         Alert.alert("Kart Bilgisi Bulunamadı.");
                     else {
-                        await this.props.CustomerActions.getTrans(tag);
-                        await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTID);
-                            
-                        if (this.props.Application.current == Applications.Siparis)
+
+                        if (this.props.Application.current == Applications.Siparis) {
+                            await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTID);
+                            this.setState({ isRequest: false })
                             this.props.navigation.navigate("Adisyon")
-                        else if (this.props.Application.current == Applications.AktiviteSatis)
+                        }
+                        else if (this.props.Application.current == Applications.AktiviteSatis) {
+                            this.setState({ isRequest: false })
                             this.props.navigation.navigate("Aktivite")
-                        else if (this.props.Application.current == Applications.AktiviteKontrol) {
+                        } else if (this.props.Application.current == Applications.AktiviteKontrol) {
                             const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, this.props.ActivityOrder.checkItemSeance, tag);
+                            this.setState({ isRequest: false })
                             if (result) {
                                 Alert.alert(result["MESSAGE"]);
                             }
                         }
                         else if (this.props.Application.current == Applications.Turnike) {
                             const result = await this.props.ActivityOrderActions.checkItem(this.props.ActivityOrder.checkItem, null, tag);
+                            this.setState({ isRequest: false })
                             if (result) {
                                 Alert.alert(result["MESSAGE"]);
                             }
                         }
                         else if (this.props.Application.current == Applications.CustomerInfo) {
+                            await this.props.CustomerActions.getTrans(tag);
+
                             const result = await this.props.CustomerActions.getTrans(tag);
+                            this.setState({ isRequest: false })
                             if (result && result["MESSAGE"]) {
                                 Alert.alert(result["MESSAGE"]);
                             } else {

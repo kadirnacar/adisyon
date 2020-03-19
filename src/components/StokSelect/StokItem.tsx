@@ -79,7 +79,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                             value={fiyat}
                             displayType={"text"}
                             thousandSeparator={true}
-                            suffix="₺"
+                            suffix=" ₺"
                             renderText={value => <Text style={{
                                 textDecorationLine: "underline",
                                 fontSize: 15,

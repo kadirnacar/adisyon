@@ -1,16 +1,17 @@
 import { colors } from '@components';
-import { IActivityOrder, IActivity, ICustomer } from '@models';
-import { ActivityActions, CustomerActions, AdisyonActions } from '@reducers';
+import { IActivity, IActivityOrder } from '@models';
+import { ActivityActions } from '@reducers';
 import { ApplicationState } from '@store';
 import fuzzysort from 'fuzzysort';
+import moment from 'moment';
 import React, { Component } from 'react';
-import { Dimensions, FlatList, StyleProp, TextInput, View, ViewStyle, Alert, Text, TouchableHighlight } from 'react-native';
+import { Alert, Button, Dimensions, FlatList, Modal, StyleProp, Text, TextInput, TouchableHighlight, View, ViewStyle } from 'react-native';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 import { NavigationInjectedProps, withNavigation } from 'react-navigation';
+import NumberFormat from 'react-number-format';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { OrderItem } from './OrderItem';
-import moment from 'moment';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -18,6 +19,8 @@ interface ActivitySelectState {
     search?: string;
     source?: IActivity[];
     scrollIndex: number;
+    showExchange: boolean;
+    currentFiyat: number;
     date?: Date;
 }
 
@@ -37,6 +40,8 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
             search: "",
             source: [],
             scrollIndex: 0,
+            currentFiyat: 0,
+            showExchange: false,
             date: new Date()
         };
     }
@@ -72,6 +77,75 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                     padding: 5,
                     paddingBottom: 0
                 }}>
+                    <Modal visible={this.state.showExchange || false}
+                        transparent={true}
+                        onRequestClose={() => {
+
+                        }}>
+                        <View style={{
+                            flex: 1,
+                            width: "100%",
+                            flexDirection: "row",
+                            alignContent: "center",
+                            alignItems: "center",
+                            alignSelf: "center",
+                            backgroundColor: "rgba(255,255,255,0.7)"
+                        }}>
+                            <View style={{
+                                flex: 1,
+                                alignContent: "center",
+                                alignItems: "center",
+                                alignSelf: "center",
+                                width: "80%",
+                                padding: 20,
+                                marginHorizontal: 20,
+                                borderRadius: 10,
+                                backgroundColor: "#fff",
+                                borderColor: colors.borderColor,
+                                borderWidth: 2,
+                            }}>
+
+                                <View style={{
+                                    flexDirection: "column",
+                                    alignContent: "flex-start",
+                                    alignItems: "flex-start",
+                                    alignSelf: "flex-start",
+                                    width: "100%"
+                                }}>
+                                    <View style={{
+                                        flexDirection: "row",
+                                        alignContent: "center",
+                                        alignItems: "center",
+                                        alignSelf: "center"
+                                    }} >
+                                        <Text style={{ fontWeight: "bold" }}>Fiyat Bilgisi </Text>
+                                    </View>
+                                    {this.props.Exchange.items.map((ex, index) => {
+                                        return <View key={index} style={{
+                                            flexDirection: "row",
+                                            alignContent: "flex-start",
+                                            alignItems: "flex-start",
+                                            alignSelf: "flex-start"
+                                        }}>
+                                            <Text>{ex.TOCUR} : </Text>
+                                            <NumberFormat
+                                                value={(this.state.currentFiyat * ex.RATE)}
+                                                displayType={"text"}
+                                                decimalScale={2}
+                                                thousandSeparator={true}
+                                                renderText={value => <Text style={{
+                                                    textDecorationLine: "underline",
+                                                }}>{value}</Text>}
+                                            />
+                                        </View>
+                                    })}
+                                </View>
+                                <Button title="Tamam" onPress={async () => {
+                                    this.setState({ showExchange: false })
+                                }} />
+                            </View>
+                        </View>
+                    </Modal>
 
                     <View
                         style={{
@@ -159,6 +233,12 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                                         <OrderItem
                                             activity={item}
                                             item={adisyonItem}
+                                            onShowExhange={(fiyat) => {
+                                                this.setState({
+                                                    showExchange: true,
+                                                    currentFiyat: fiyat
+                                                })
+                                            }}
                                             onTextActive={(item) => {
                                                 this.setState({ scrollIndex: index });
                                             }}

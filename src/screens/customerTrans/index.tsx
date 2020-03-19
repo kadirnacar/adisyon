@@ -10,6 +10,7 @@ import { FlatList, NavigationInjectedProps, withNavigation } from 'react-navigat
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import NumberFormat from 'react-number-format';
 
 const { height, width } = Dimensions.get("window");
 
@@ -80,6 +81,7 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                             }) : []}
                             style={{ height: height - 160 }}
                             renderItem={({ item, index }) => {
+                                console.log(JSON.stringify(item))
                                 return (
                                     <View style={{ borderBottomWidth: 1, flex: 1, flexDirection: "row" }}>
                                         <View style={{ borderWidth: 0, flexDirection: "column", flex: 1 }}>
@@ -89,7 +91,9 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                                         </View>
                                         <View style={{ borderWidth: 0, flexDirection: "column", flex: 1 }}>
                                             <View style={{ borderWidth: 0, flexWrap: "nowrap", alignContent: "flex-end", alignItems: "flex-end", alignSelf: "flex-end" }}>
-                                                <Text>{moment.utc(item.DATE).local().format("DD.MM.YYYY")} {moment.utc(item.TIME).local().format("HH:mm")}</Text>
+                                                <Text>{item.DATE ?
+                                                    moment.utc(item.DATE).local().format("DD.MM.YYYY") + " " + moment.utc(item.TIME).local().format("HH:mm")
+                                                    : null}</Text>
                                             </View>
                                             <View style={{
                                                 borderWidth: 0,
@@ -101,11 +105,28 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                                                 flexWrap: "nowrap",
                                                 justifyContent: "flex-end"
                                             }}>
-                                                <Text style={{}}>{item.AMOUNT} x {item.CTOTAL.toFixed(2)} = {(item.CTOTAL * item.AMOUNT).toFixed(2)}</Text>
-                                                <FontAwesome5Icon name="lira-sign" size={14} style={{
-                                                    marginLeft: 3,
-                                                    alignSelf: "baseline"
-                                                }} />
+                                                <Text style={{}}>{item.AMOUNT} x </Text>
+                                                <NumberFormat
+                                                    value={(item.CTOTAL)}
+                                                    displayType={"text"}
+                                                    decimalScale={2}
+                                                    suffix=" ₺"
+                                                    thousandSeparator={true}
+                                                    renderText={value => <Text style={{
+                                                    }}>{value}</Text>}
+                                                />
+
+                                                <Text style={{}}> = </Text>
+
+                                                <NumberFormat
+                                                    value={(item.CTOTAL * item.AMOUNT)}
+                                                    displayType={"text"}
+                                                    decimalScale={2}
+                                                    thousandSeparator={true}
+                                                    suffix=" ₺"
+                                                    renderText={value => <Text style={{
+                                                    }}>{value}</Text>}
+                                                />
                                             </View>
                                         </View>
                                     </View>

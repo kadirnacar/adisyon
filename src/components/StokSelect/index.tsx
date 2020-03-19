@@ -11,6 +11,7 @@ import { bindActionCreators } from 'redux';
 import { GroupItem } from './GroupItem';
 import { StokItem } from './StokItem';
 import { TouchableHighlight } from 'react-native-gesture-handler';
+import NumberFormat from 'react-number-format';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -113,7 +114,15 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                         alignSelf: "flex-start"
                                     }}>
                                         <Text>{ex.TOCUR} : </Text>
-                                        <Text>{(this.state.currentFiyat * ex.RATE).toFixed(2)}</Text>
+                                        <NumberFormat
+                                            value={(this.state.currentFiyat * ex.RATE)}
+                                            displayType={"text"}
+                                            decimalScale={2}
+                                            thousandSeparator={true}
+                                            renderText={value => <Text style={{
+                                                textDecorationLine: "underline",
+                                            }}>{value}</Text>}
+                                        />
                                     </View>
                                 })}
                             </View>

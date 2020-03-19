@@ -1,9 +1,8 @@
 import { colors } from '@components';
-import { IActivity, IActivityProduct, ISeance } from '@models';
+import { IActivity, ISeance } from '@models';
 import moment from 'moment';
 import React, { Component } from 'react';
-import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import { Dimensions, Text, TouchableHighlight, View } from 'react-native';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -22,6 +21,7 @@ export class CheckSelectItem extends Component<Props, any> {
 
     render() {
         const { activity } = this.props;
+        const hasSeans = (activity && activity.Seances) //? (item && item.Quantity > 0) : false;
 
         return (
             <View style={{
@@ -36,11 +36,25 @@ export class CheckSelectItem extends Component<Props, any> {
                     <View style={{
                         width: "60%"
                     }}>
-                        <Text style={{
-                            color: colors.inputTextColor,
-                            fontWeight: "bold",
-                            fontSize: 16
-                        }}>{activity.NAME}</Text>
+                        {hasSeans ?
+                            <Text style={{
+                                color: colors.inputTextColor,
+                                fontWeight: "bold",
+                                fontSize: 16
+                            }}>{activity.NAME}</Text> :
+                            <TouchableHighlight
+                                onPress={() => {
+                                    if (this.props.onSelect)
+                                        this.props.onSelect(activity, null);
+                                }}
+                            >
+                                <Text style={{
+                                    color: colors.inputTextColor,
+                                    fontWeight: "bold",
+                                    fontSize: 16
+                                }}>{activity.NAME}</Text>
+                            </TouchableHighlight>
+                        }
                     </View>
                 </View>
                 <View style={{
@@ -50,7 +64,7 @@ export class CheckSelectItem extends Component<Props, any> {
                     flexWrap: "wrap"
                 }}>
 
-                    {activity.Seances.sort((a, b) => {
+                    {hasSeans ? activity.Seances.sort((a, b) => {
                         if (a.SEANCESTART > b.SEANCESTART)
                             return 1;
                         else if (a.SEANCESTART < b.SEANCESTART)
@@ -75,7 +89,7 @@ export class CheckSelectItem extends Component<Props, any> {
                             }}>
                             <Text>{moment(act.SEANCESTART).format("HH:mm")}</Text>
                         </TouchableHighlight>
-                    })}
+                    }) : null}
                 </View>
             </View>
         )

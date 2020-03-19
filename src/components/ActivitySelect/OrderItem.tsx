@@ -60,7 +60,7 @@ export class OrderItem extends Component<Props, any> {
                                 displayType={"text"}
                                 thousandSeparator={true}
                                 decimalScale={2}
-                                suffix="₺"
+                                suffix=" ₺"
                                 renderText={value => <Text style={{
                                     textDecorationLine: "underline",
                                     fontSize: 15,

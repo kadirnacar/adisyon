@@ -72,7 +72,7 @@ export class AdisyonItem extends Component<Props, any> {
                                 value={fiyat}
                                 displayType={"text"}
                                 thousandSeparator={true}
-                                suffix="₺"
+                                suffix=" ₺"
                                 renderText={value => <Text style={{
                                     textDecorationLine: "underline",
                                     fontSize: 15,

@@ -53,10 +53,11 @@ export class ActivityOrderItem extends Component<Props, any> {
                     }}>
                         <View style={{ flex: 1, flexDirection: "row", marginBottom: 3, alignSelf: "flex-end" }}>
                             <NumberFormat
-                                value={((activity.ADULTPRICE ? activity.ADULTPRICE : 0) * item.Quantity).toFixed(2)}
+                                value={((activity.ADULTPRICE ? activity.ADULTPRICE : 0) * item.Quantity)}
                                 displayType={"text"}
+                                decimalScale={2}
                                 thousandSeparator={true}
-                                suffix="₺"
+                                suffix=" ₺"
                                 renderText={value => <Text style={{
                                     textDecorationLine: "underline",
                                     fontSize: 18

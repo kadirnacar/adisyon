@@ -63,7 +63,10 @@ class ActivityCheckComp extends Component<Props, ActivityCheckState> {
                 <ActivityCheckSelect order={this.props.ActivityOrder.current} onPress={async (adisyon: IActivity, seance: ISeance) => {
                     await this.props.ActivityOrderActions.setCheckItem(adisyon, seance);
                     await this.props.ApplicationActions.setCurrent(Applications.AktiviteKontrol);
-                    await this.props.ApplicationActions.setNfcTitle("Aktivite Geçiş Kontrol - " + adisyon.NAME + " - " + moment(seance.SEANCESTART).format("HH:mm"));
+                    if (seance)
+                        await this.props.ApplicationActions.setNfcTitle("Aktivite Geçiş Kontrol - " + adisyon.NAME + " - " + moment(seance.SEANCESTART).format("HH:mm"));
+                    else
+                        await this.props.ApplicationActions.setNfcTitle("Aktivite Geçiş Kontrol - " + adisyon.NAME);
                     this.props.navigation.navigate("Nfc");
                 }} />
             </View>

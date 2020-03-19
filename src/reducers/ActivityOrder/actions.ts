@@ -17,7 +17,7 @@ export const actionCreators = {
                 type: Actions.ReceiveSendActivityOrderItems,
                 payload: []
             });
-
+console.log(JSON.stringify(result))
             if (result.hasErrors()) {
                 Alert.alert(result.errors[0]);
                 isSuccess = false;

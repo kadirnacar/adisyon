@@ -84,7 +84,14 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                         alignSelf: "flex-start"
                                     }}>
                                         <Text>{ex.TOCUR} : </Text>
-                                        <Text>{((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) * ex.RATE).toFixed(2)}</Text>
+                                        <NumberFormat
+                                            value={((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) * ex.RATE)}
+                                            displayType={"text"}
+                                            decimalScale={2}
+                                            thousandSeparator={true}
+                                            renderText={value => <Text style={{
+                                            }}>{value}</Text>}
+                                        />
                                     </View>
                                 })}
                             </View>
@@ -111,7 +118,14 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                         alignSelf: "flex-start"
                                     }}>
                                         <Text>{ex.TOCUR} : </Text>
-                                        <Text>{((this.props.total ? this.props.total : 0) * ex.RATE).toFixed(2)}</Text>
+                                        <NumberFormat
+                                            value={((this.props.total ? this.props.total : 0) * ex.RATE)}
+                                            displayType={"text"}
+                                            decimalScale={2}
+                                            thousandSeparator={true}
+                                            renderText={value => <Text style={{
+                                            }}>{value}</Text>}
+                                        />
                                     </View>
                                 })}
                             </View>
@@ -138,7 +152,14 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                         alignSelf: "flex-start"
                                     }}>
                                         <Text>{ex.TOCUR} : </Text>
-                                        <Text>{(((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0)) * ex.RATE).toFixed(2)}</Text>
+                                        <NumberFormat
+                                            value={(((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0)) * ex.RATE)}
+                                            displayType={"text"}
+                                            decimalScale={2}
+                                            thousandSeparator={true}
+                                            renderText={value => <Text style={{
+                                            }}>{value}</Text>}
+                                        />
                                     </View>
                                 })}
                             </View>
@@ -201,10 +222,11 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                         this.setState({ showExchange: true })
                                     }}>
                                     <NumberFormat
-                                        value={(this.props.Customer.current && this.props.Customer.current.BALANCE ? this.props.Customer.current.BALANCE : 0).toFixed(2)}
+                                        value={(this.props.Customer.current && this.props.Customer.current.BALANCE ? this.props.Customer.current.BALANCE : 0)}
                                         displayType={"text"}
                                         thousandSeparator={true}
-                                        suffix="₺"
+                                        decimalScale={2}
+                                        suffix=" ₺"
                                         renderText={value => <Text style={{
                                             textDecorationLine: "underline",
                                             fontSize: 18
@@ -230,10 +252,11 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                             this.setState({ showExchange: true })
                                         }}>
                                         <NumberFormat
-                                            value={(this.props.total ? this.props.total : 0).toFixed(2)}
+                                            value={(this.props.total ? this.props.total : 0)}
                                             displayType={"text"}
                                             thousandSeparator={true}
-                                            suffix="₺"
+                                            decimalScale={2}
+                                            suffix=" ₺"
                                             renderText={value => <Text style={{
                                                 textDecorationLine: "underline",
                                                 fontSize: 18
@@ -256,10 +279,11 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                             this.setState({ showExchange: true })
                                         }}>
                                         <NumberFormat
-                                            value={((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0)).toFixed(2)}
+                                            value={((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0))}
                                             displayType={"text"}
+                                            decimalScale={2}
                                             thousandSeparator={true}
-                                            suffix="₺"
+                                            suffix=" ₺"
                                             renderText={value => <Text style={{
                                                 textDecorationLine: "underline",
                                                 fontSize: 18
