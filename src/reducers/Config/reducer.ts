@@ -3,7 +3,7 @@ import { Actions, ConfigState, ISetConfigAction } from './state';
 
 const unloadedState: ConfigState = {
     config: {
-        restUrl: 'http://webapi.landoflegend.com/',
+        restUrl: 'https://webapi.landoflegend.com/',
         tenant: 341,
         useAlagart: false,
     }
