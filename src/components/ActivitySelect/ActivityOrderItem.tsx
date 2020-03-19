@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import NumberFormat from 'react-number-format';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -36,117 +37,111 @@ export class ActivityOrderItem extends Component<Props, any> {
             }}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{
-                        width: "50%"
+                        flex: 2
                     }}>
                         <TouchableHighlight underlayColor="#ffffff00"
-                            style={{  }}
+                            style={{}}
                             onPressIn={() => this.setState({ collapsed: !this.state.collapsed })}>
                             <React.Fragment>
-                                {/* <Icon style={{
-                                    borderWidth: 1,
-                                    alignContent: "center",
-                                    alignSelf: "center",
-                                    alignItems: "center",
-                                    textAlign: "center",
-                                    padding: 3,
-                                    height: 20,
-                                    marginRight: 5,
-                                    borderRadius: 20,
-                                    width: 20
-                                }}
-                                    name={this.state.collapsed ? "angle-down" : "angle-up"} size={15} /> */}
-                                <Text>{activity.NAME}</Text>
-                                <Text>{seance ? moment(seance.SEANCESTART).format("HH:mm") : ""}</Text>
+                                <Text style={{ fontSize: 16 }}>{activity.NAME}</Text>
+                                <Text style={{ fontSize: 16 }}>{seance ? moment(seance.SEANCESTART).format("HH:mm") : ""}</Text>
                             </React.Fragment>
                         </TouchableHighlight>
                     </View>
                     <View style={{
-                        width: "30%",
-                        flexDirection: "row"
+                        flex: 1
                     }}>
-                        <TouchableHighlight underlayColor="#ffffff00"
-                            activeOpacity={1}
-                            style={{
-                                width: 30,
-                                borderRadius: 10,
-                                borderWidth: 1,
-                                borderColor: colors.inputBackColor,
-                                height: 30,
-                                alignSelf: "center",
-                                alignItems: "center"
-                            }}
-                            onPressIn={() => {
-                                if (this.props.onRemovePress)
-                                    this.props.onRemovePress(item);
-                                this.setState({});
-                            }}
-                        >
-                            <Icon name="minus" size={25} />
-                        </TouchableHighlight>
-                        <TextInput
-                            value={item.Quantity != null ? item.Quantity.toString() : ""}
-                            keyboardType="numeric"
-                            onChangeText={text => {
-                                const quantity = parseFloat(text);
-                                if (!isNaN(quantity)) {
-                                    item.Quantity = quantity;
-                                } else {
-                                    item.Quantity = null;
-                                }
-                                if (this.props.onRemovePress)
-                                    this.props.onAddPress(item, true);
-                                this.setState({});
-                            }}
-                            onBlur={() => {
-                                if (!item.Quantity && this.props.onRemovePress)
-                                    this.props.onRemovePress(item);
-                                this.setState({})
-                            }}
-                            style={{
-                                color: colors.inputTextColor,
-                                backgroundColor: "#fff",
-                                borderColor: colors.borderColor,
-                                borderWidth: 1,
-                                paddingVertical: 2,
-                                marginHorizontal: 2,
-                                marginTop: 2,
-                                paddingHorizontal: 10,
-                                textAlign: "center",
-                                fontSize: 14,
-                                borderRadius: 20
-                            }} />
-                        {/* <Text style={{
-                            width: 28,
-                            alignSelf: "center",
-                            alignItems: "center",
-                            textAlign: "center",
-                            fontSize: 18,
-                            fontWeight: "bold"
-                        }}>
-                            {item ? item.QUANTITY : 0}
-                        </Text> */}
-                        <TouchableHighlight underlayColor="#ffffff00"
-                            activeOpacity={1}
-                            style={{
-                                width: 30,
-                                borderRadius: 10,
-                                borderColor: colors.inputBackColor,
-                                borderWidth: 1,
-                                height: 30,
-                                alignSelf: "center",
-                                alignItems: "center"
-                            }}
-                            onPressIn={() => {
-                                if (this.props.onAddPress)
-                                    this.props.onAddPress(item);
-                                this.setState({});
-                            }}>
-                            <Icon name="plus" size={25} />
-                        </TouchableHighlight>
-                    </View>
-                    <View style={{ width: "20%" }}>
-                        <Text style={{ textAlign: "right", width: "100%" }}>
-                            {((activity.ADULTPRICE ? activity.ADULTPRICE : 0) * item.Quantity).toFixed(2)}</Text>
+                        <View style={{ flex: 1, flexDirection: "row", marginBottom: 3, alignSelf: "flex-end" }}>
+                            <NumberFormat
+                                value={((activity.ADULTPRICE ? activity.ADULTPRICE : 0) * item.Quantity).toFixed(2)}
+                                displayType={"text"}
+                                thousandSeparator={true}
+                                suffix="₺"
+                                renderText={value => <Text style={{
+                                    textDecorationLine: "underline",
+                                    fontSize: 18
+                                }}>{value}</Text>}
+                            />
+                        </View>
+                        <View style={{ flex: 1, flexDirection: "row", marginBottom: 3, alignSelf: "flex-end" }}>
+                            <TouchableHighlight underlayColor="#ffffff00"
+                                activeOpacity={1}
+                                style={{
+                                    width: 35,
+                                    borderRadius: 10,
+                                    borderWidth: 1,
+                                    backgroundColor: colors.transparentBackColor,
+                                    borderColor: colors.inputTextColor,
+                                    height: 35,
+                                    alignSelf: "center",
+                                    alignItems: "center",
+                                    alignContent: "center"
+                                }}
+                                onPressIn={() => {
+                                    if (this.props.onRemovePress)
+                                        this.props.onRemovePress(item);
+                                    this.setState({});
+                                }}
+                            >
+                                <Icon name="minus" size={30} />
+                            </TouchableHighlight>
+                            <TextInput
+                                value={item.Quantity != null ? item.Quantity.toString() : ""}
+                                keyboardType="numeric"
+                                onChangeText={text => {
+                                    const quantity = parseFloat(text);
+                                    if (!isNaN(quantity)) {
+                                        item.Quantity = quantity;
+                                    } else {
+                                        item.Quantity = null;
+                                    }
+                                    if (this.props.onRemovePress)
+                                        this.props.onAddPress(item, true);
+                                    this.setState({});
+                                }}
+                                onBlur={() => {
+                                    if (!item.Quantity && this.props.onRemovePress)
+                                        this.props.onRemovePress(item);
+                                    this.setState({})
+                                }}
+                                style={{
+                                    color: colors.inputTextColor,
+                                    backgroundColor: "#fff",
+                                    borderColor: colors.borderColor,
+                                    borderWidth: 1,
+                                    paddingVertical: 2,
+                                    marginHorizontal: 2,
+                                    paddingHorizontal: 5,
+                                    textAlign: "center",
+                                    fontSize: 16,
+
+                                    height: 35,
+                                    alignSelf: "baseline",
+                                    borderRadius: 10,
+                                    minWidth: 40
+                                }} />
+
+                            <TouchableHighlight underlayColor="#ffffff00"
+                                activeOpacity={1}
+                                style={{
+                                    width: 35,
+                                    borderRadius: 10,
+                                    borderWidth: 1,
+                                    backgroundColor: colors.transparentBackColor,
+                                    borderColor: colors.inputTextColor,
+                                    height: 35,
+                                    alignSelf: "center",
+                                    alignItems: "center",
+                                    alignContent: "center"
+                                }}
+                                onPressIn={() => {
+                                    if (this.props.onAddPress)
+                                        this.props.onAddPress(item);
+                                    this.setState({});
+                                }}>
+                                <Icon name="plus" size={30} />
+                            </TouchableHighlight>
+                        </View>
                     </View>
                 </View>
                 {/* <Collapsible

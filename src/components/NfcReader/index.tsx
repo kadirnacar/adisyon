@@ -45,7 +45,7 @@ class NfcReaderComp extends Component<Props, NfcReaderState> {
                 } else {
                 }
             }).catch(ex => {
-                console.log("ex", ex)
+                console.warn("ex", ex)
             })
         })
     }

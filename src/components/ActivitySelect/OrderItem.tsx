@@ -4,6 +4,7 @@ import moment from 'moment';
 import React, { Component } from 'react';
 import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome5';
+import NumberFormat from 'react-number-format';
 
 const { width, scale, height } = Dimensions.get("window");
 
@@ -13,6 +14,8 @@ interface Props {
     onAddPress?: (item: IActivityProduct) => void;
     onRemovePress?: (item: IActivityProduct) => void;
     onTextActive?: (item: IActivityProduct) => void;
+    onShowExhange?: (fiyat: number) => void;
+
 }
 
 export class OrderItem extends Component<Props, any> {
@@ -25,7 +28,7 @@ export class OrderItem extends Component<Props, any> {
 
     render() {
         const { item, activity } = this.props;
-
+        const hasSeans = (activity && activity.Seances) //? (item && item.Quantity > 0) : false;
         return (
             <View style={{
                 flex: 1,
@@ -37,27 +40,53 @@ export class OrderItem extends Component<Props, any> {
             }}>
                 <View style={{ flex: 1, flexDirection: "row" }}>
                     <View style={{
-                        width: "60%"
+                        flex: 2,
+                        flexDirection: "row"
                     }}>
-                        <Text>{activity.NAME}    (
-                            {(activity.ADULTPRICE ? activity.ADULTPRICE : 0).toFixed(2)})</Text>
+                        <Text style={{ fontSize: 15, marginRight: 10 }}>{activity.NAME}</Text>
+                        <TouchableHighlight
+                            style={{
+                                alignItems: "flex-end",
+                                alignContent: "flex-end",
+                                right: 0,
+                            }}
+                            underlayColor="#ffffff00"
+                            onPress={() => {
+                                if (this.props.onShowExhange)
+                                    this.props.onShowExhange(activity.ADULTPRICE ? activity.ADULTPRICE : 0);
+                            }}>
+                            <NumberFormat
+                                value={(activity.ADULTPRICE ? activity.ADULTPRICE : 0)}
+                                displayType={"text"}
+                                thousandSeparator={true}
+                                decimalScale={2}
+                                suffix="₺"
+                                renderText={value => <Text style={{
+                                    textDecorationLine: "underline",
+                                    fontSize: 15,
+                                }}>{value}</Text>}
+                            />
+                        </TouchableHighlight>
                     </View>
                     <View style={{
-                        width: "40%",
+                        flex: 1,
+                        alignSelf: "flex-end",
+                        alignContent: "flex-end",
                         flexDirection: "row",
 
                     }}>
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
-                            disabled={item.SeanceID == null}
                             style={{
-                                width: 30,
+                                width: 35,
                                 borderRadius: 10,
                                 borderWidth: 1,
-                                borderColor: colors.inputBackColor,
-                                height: 30,
+                                backgroundColor: colors.transparentBackColor,
+                                borderColor: colors.inputTextColor,
+                                height: 35,
                                 alignSelf: "center",
-                                alignItems: "center"
+                                alignItems: "center",
+                                alignContent: "center"
                             }}
                             onPressIn={() => {
                                 if (this.props.onRemovePress)
@@ -65,12 +94,11 @@ export class OrderItem extends Component<Props, any> {
                                 this.setState({})
                             }}
                         >
-                            <Icon name="minus" size={25} />
+                            <Icon name="minus" size={30} />
                         </TouchableHighlight>
                         <TextInput
                             value={item.Quantity != null ? item.Quantity.toString() : ""}
                             keyboardType="numeric"
-                            editable={item.SeanceID != null}
                             onChangeText={text => {
                                 const quantity = parseFloat(text);
                                 if (!isNaN(quantity)) {
@@ -92,43 +120,31 @@ export class OrderItem extends Component<Props, any> {
                                 borderWidth: 1,
                                 paddingVertical: 2,
                                 marginHorizontal: 2,
-                                marginTop: 2,
                                 paddingHorizontal: 5,
-                                height: 35,
                                 textAlign: "center",
-                                alignSelf: "center",
-                                alignItems: "center",
-                                fontSize: 14,
-                                borderRadius: 20
+                                fontSize: 16,
+                                borderRadius: 10,
+                                width: 40
                             }} />
-                        {/* <Text style={{
-                            width: 28,
-                            alignSelf: "center",
-                            alignItems: "center",
-                            textAlign: "center",
-                            fontSize: 18,
-                            fontWeight: "bold"
-                        }}>
-                            {item ? item.QUANTITY : 0}
-                        </Text> */}
                         <TouchableHighlight underlayColor="#ffffff00"
                             activeOpacity={1}
-                            disabled={item.SeanceID == null}
                             style={{
-                                width: 30,
+                                width: 35,
                                 borderRadius: 10,
-                                borderColor: colors.inputBackColor,
                                 borderWidth: 1,
-                                height: 30,
+                                backgroundColor: colors.transparentBackColor,
+                                borderColor: colors.inputTextColor,
+                                height: 35,
                                 alignSelf: "center",
-                                alignItems: "center"
+                                alignItems: "center",
+                                alignContent: "center"
                             }}
                             onPressIn={() => {
                                 if (this.props.onAddPress)
                                     this.props.onAddPress(item);
                                 this.setState({})
                             }}>
-                            <Icon name="plus" size={25} />
+                            <Icon name="plus" size={30} />
                         </TouchableHighlight>
                     </View>
                 </View>
@@ -139,7 +155,7 @@ export class OrderItem extends Component<Props, any> {
                     flexWrap: "wrap"
                 }}>
 
-                    {activity.Seances.sort((a, b) => {
+                    {hasSeans ? activity.Seances.sort((a, b) => {
                         if (a.SEANCESTART > b.SEANCESTART)
                             return 1;
                         else if (a.SEANCESTART < b.SEANCESTART)
@@ -165,7 +181,7 @@ export class OrderItem extends Component<Props, any> {
                             }}>
                             <Text>{moment(act.SEANCESTART).format("HH:mm")}</Text>
                         </TouchableHighlight>
-                    })}
+                    }) : null}
                 </View>
             </View>
         )

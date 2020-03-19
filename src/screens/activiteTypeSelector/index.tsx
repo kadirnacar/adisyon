@@ -87,11 +87,11 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                                 }}
                             ></Image>
                             <Text style={{
-                                fontSize: 20,
-                                height: 50,
+                                fontSize: 24,
                                 color: "#fff",
+                                width: 100,
                                 marginTop: 0,
-                                flexWrap: "nowrap",
+                                flexWrap: "wrap",
                                 textAlignVertical: "center",
                                 textAlign: "center"
                             }}>Aktivite Satış</Text>
@@ -129,7 +129,7 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                                 }}
                             ></Image>
                             <Text style={{
-                                fontSize: 20,
+                                fontSize: 24,
                                 height: 70,
                                 color: "#fff",
                                 marginTop: 0,

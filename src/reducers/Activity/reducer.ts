@@ -24,11 +24,11 @@ export const reducer = (currentState: ActivityState = unloadedState, incomingAct
                             NAME: act.NAME,
                             Date: action.date,
                             ADULTPRICE: act.ADULTPRICE,
-                            Seances: []
+                            Seances: null
                         }
                     }
                     oAct = activityObject[act.ID];
-                    if (oAct) {
+                    if (oAct && act.SEANCEID) {
                         if (!oAct.Seances)
                             oAct.Seances = [];
 

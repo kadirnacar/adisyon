@@ -187,11 +187,12 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                             <Text style={{ fontSize: 18, width: "100%", fontWeight: "bold", color: colors.inputTextColor, flexDirection: "row" }}>
                                 {this.props.Customer.current ? this.props.Customer.current.NAME + " " + this.props.Customer.current.SURNAME : null}
                             </Text>
-
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
                             <View style={{
-                                width: "33%"
+                                position: "absolute",
+                                right: 0,
+                                zIndex: 99,
+                                alignContent: "flex-end",
+                                alignItems: "flex-end",
                             }}>
                                 <Text style={{ fontSize: 18, color: colors.borderColor }}>Bakiye</Text>
 
@@ -200,7 +201,7 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                         this.setState({ showExchange: true })
                                     }}>
                                     <NumberFormat
-                                        value={(this.props.Customer.current && this.props.Customer.current.BALANCE ? this.props.Customer.current.BALANCE : "")}
+                                        value={(this.props.Customer.current && this.props.Customer.current.BALANCE ? this.props.Customer.current.BALANCE : 0).toFixed(2)}
                                         displayType={"text"}
                                         thousandSeparator={true}
                                         suffix="₺"
@@ -211,9 +212,12 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                     />
                                 </TouchableHighlight>
                             </View>
+                        </View>
+                        <View style={{ flexDirection: "row" }}>
+
                             {this.props.total != null ?
                                 <View style={{
-                                    width: "33%",
+                                    flex: 1,
                                     alignContent: "flex-end",
                                     alignItems: "flex-end",
                                 }}>
@@ -226,7 +230,7 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                             this.setState({ showExchange: true })
                                         }}>
                                         <NumberFormat
-                                            value={(this.props.total ? this.props.total : 0)}
+                                            value={(this.props.total ? this.props.total : 0).toFixed(2)}
                                             displayType={"text"}
                                             thousandSeparator={true}
                                             suffix="₺"
@@ -239,7 +243,7 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                 </View> : null}
                             {this.props.total != null ?
                                 <View style={{
-                                    width: "33%",
+                                    flex: 1,
                                     alignContent: "flex-end",
                                     alignItems: "flex-end",
                                 }}>
@@ -252,7 +256,7 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                                             this.setState({ showExchange: true })
                                         }}>
                                         <NumberFormat
-                                            value={(this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0)}
+                                            value={((this.props.Customer.current ? this.props.Customer.current.BALANCE : 0) - (this.props.total ? this.props.total : 0)).toFixed(2)}
                                             displayType={"text"}
                                             thousandSeparator={true}
                                             suffix="₺"

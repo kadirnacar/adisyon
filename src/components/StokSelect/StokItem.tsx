@@ -8,6 +8,7 @@ import Icon from 'react-native-vector-icons/FontAwesome5';
 import { withNavigation } from 'react-navigation';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import NumberFormat from 'react-number-format';
 
 const { width, scale, height } = Dimensions.get("window");
 interface StokItemState {
@@ -56,6 +57,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                     <Text style={{
                         flex: 1,
                         flexDirection: "row",
+                        fontSize: 15,
                         alignSelf: "flex-start",
                         alignItems: "flex-start",
                         alignContent: "flex-start",
@@ -70,14 +72,19 @@ export class StokItemComp extends Component<Props, StokItemState> {
                         }}
                         underlayColor="#ffffff00"
                         onPress={() => {
-                            // this.setState({ showExchange: true })
                             if (this.props.onShowExhange)
                                 this.props.onShowExhange(fiyat);
                         }}>
-                        <Text style={{
-                            color: "#000000",
-                            textDecorationLine: "underline"
-                        }}>{fiyat.toFixed(2)}</Text>
+                        <NumberFormat
+                            value={fiyat}
+                            displayType={"text"}
+                            thousandSeparator={true}
+                            suffix="₺"
+                            renderText={value => <Text style={{
+                                textDecorationLine: "underline",
+                                fontSize: 15,
+                            }}>{value}</Text>}
+                        />
                     </TouchableHighlight>
                 </View>
                 {this.props.addable ?

@@ -14,7 +14,7 @@ class FileServiceHelper {
             const result: ApplicationState = JSON.parse(content);
             return result;
         } catch (ex) {
-            console.log(ex)
+            console.warn(ex)
             return {};
         }
     }
