@@ -1,14 +1,10 @@
 import { colors } from '@components';
 import config from '@config';
 import { IConfig } from '@models';
-import { ConfigActions } from '@reducers';
-import { ApplicationState } from '@store';
 import React, { Component } from 'react';
 import { Alert, Dimensions, StyleSheet, Text, TextInput, TouchableHighlight, View } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import { NavigationEventPayload, NavigationEvents, NavigationInjectedProps, withNavigation } from 'react-navigation';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 const { width, scale, height } = Dimensions.get("window");
 
 interface ConfigState {
@@ -16,10 +12,9 @@ interface ConfigState {
 }
 
 interface UserProps {
-    ConfigActions: typeof ConfigActions;
 }
 
-type Props = NavigationInjectedProps & UserProps & ApplicationState;
+type Props = NavigationInjectedProps & UserProps;
 
 class ConfigScreen extends Component<Props, ConfigState> {
     static navigationOptions = ({ navigation }) => {
@@ -42,7 +37,7 @@ class ConfigScreen extends Component<Props, ConfigState> {
     }
 
     async handleConfig() {
-        await this.props.ConfigActions.setConfig(this.state.config);
+        await config.setConfig(this.state.config);
         Alert.alert("Ayarlar kaydedilmiştir.");
 
     }
@@ -130,7 +125,7 @@ class ConfigScreen extends Component<Props, ConfigState> {
                                 marginTop: 10,
                                 borderColor: colors.borderColor,
                                 borderWidth: 1,
-                                backgroundColor: this.props.User.isRequest ? colors.inputBackColor : colors.buttonBackColor,
+                                backgroundColor: colors.buttonBackColor,
                                 borderRadius: 25
                             }}
                             onPressIn={async () => await this.handleConfig()}
@@ -144,14 +139,7 @@ class ConfigScreen extends Component<Props, ConfigState> {
     }
 }
 
-export const Config = withNavigation(connect(
-    (state: ApplicationState) => state,
-    dispatch => {
-        return {
-            ConfigActions: bindActionCreators({ ...ConfigActions }, dispatch)
-        };
-    }
-)(ConfigScreen));
+export const Config = withNavigation(ConfigScreen);
 
 const styles = StyleSheet.create({
     container: {

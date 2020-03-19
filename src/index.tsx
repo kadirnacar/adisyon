@@ -22,13 +22,13 @@ export default class App extends Component<any, any> {
     store: Store<ApplicationState>;
 
     async componentDidMount() {
-        const initialState = await FileService.readStateFromFile();
+        const initialState = {};//await FileService.readStateFromFile();
+        const initialConfig = await FileService.readConfigFromFile();
+        // initialState.User = null;
+        // initialState.Garson = null;
 
-        initialState.User = null;
-        initialState.Garson = null;
-
-        if (initialState && initialState.Config && initialState.Config.config)
-            config.setConfig(initialState.Config.config);
+        if (initialConfig)
+            config.setConfig(initialConfig);
 
         this.store = configureStore(initialState);
         this.setState({ isLoaded: true });

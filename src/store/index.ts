@@ -1,5 +1,5 @@
 
-import { ActivityOrderReducer, ConfigState, ConfigReducer, ActivityOrderState, ActivityReducer, ActivityState, AdisyonReducer, AdisyonState, ApplicationReducer, AppState, CustomerReducer, CustomerState, DepartmentReducer, DepartmentState, ExchangeReducer, ExchangeState, GarsonReducer, GarsonState, StokGrupReducer, StokGrupState, StokReducer, StokState, TableReducer, TableState, UserReducer, UserState } from '@reducers';
+import { ActivityOrderReducer, ActivityOrderState, ActivityReducer, ActivityState, AdisyonReducer, AdisyonState, ApplicationReducer, AppState, CustomerReducer, CustomerState, DepartmentReducer, DepartmentState, ExchangeReducer, ExchangeState, GarsonReducer, GarsonState, StokGrupReducer, StokGrupState, StokReducer, StokState, TableReducer, TableState, UserReducer, UserState } from '@reducers';
 import * as LocalStorage from './localStorage';
 
 export { LocalStorage };
@@ -16,7 +16,6 @@ export interface ApplicationState {
     ActivityOrder?: ActivityOrderState;
     Table?: TableState;
     Exchange?: ExchangeState;
-    Config?: ConfigState;
 }
 
 export const reducers = {
@@ -32,7 +31,6 @@ export const reducers = {
     Application: ApplicationReducer,
     Table: TableReducer,
     Exchange: ExchangeReducer,
-    Config: ConfigReducer
 };
 
 export interface AppThunkAction<TAction> {

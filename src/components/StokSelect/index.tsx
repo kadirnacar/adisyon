@@ -262,7 +262,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                             }}>
                             <FlatList
                                 ListHeaderComponent={<GroupItem selected={!this.state.selectedGrup || this.state.selectedGrup.STOKGRUPID == 0}
-                                    group={{ ADI: "Hepsi", KODU: null, STOKGRUPID: 0, color: "#ffffff" }}
+                                    group={{ ADI: "Hepsi", STOKGRUPID: 0, color: "#ffffff" }}
                                     onPress={(group) => {
                                         this.setState({ selectedGrup: group });
                                     }} />}

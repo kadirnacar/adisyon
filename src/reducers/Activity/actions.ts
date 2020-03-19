@@ -19,7 +19,7 @@ export const actionCreators = {
                 return;
             }
 
-            await FileService.saveStateToFile(getState());
+            // await FileService.saveStateToFile(getState());
             isSuccess = true;
         });
         return isSuccess;
@@ -37,7 +37,7 @@ export const actionCreators = {
                 return;
             }
 
-            await FileService.saveStateToFile(getState());
+            // await FileService.saveStateToFile(getState());
             isSuccess = true;
         });
         return isSuccess;

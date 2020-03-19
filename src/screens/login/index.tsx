@@ -8,7 +8,7 @@ import { NavigationEventPayload, NavigationEvents, NavigationInjectedProps, with
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import { UpdaterService } from '@services';
+import { UpdaterService, StokService } from '@services';
 import VersionNumber from 'react-native-version-number';
 import RNFS from 'react-native-fs';
 import RNApkInstallerN from 'react-native-apk-installer-n';
@@ -112,11 +112,12 @@ class LoginScreen extends Component<Props, LoginState> {
 
     async loadDataFromServer() {
         await this.props.DepartmentActions.getItems();
-        await this.props.StokGrupActions.getItems();
+        // await this.props.StokGrupActions.getItems();
         await this.props.StokActions.getItems();
         await this.props.ExchangeActions.getItems();
         await this.props.ActivityActions.getItems(new Date());
         await this.props.ActivityActions.getTurnikeItems(new Date());
+        // const res = await StokService.getItems3();
     }
 
     async handleComponentMount(payload: NavigationEventPayload) {

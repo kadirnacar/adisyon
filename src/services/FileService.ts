@@ -1,9 +1,31 @@
 import { ApplicationState } from '@store';
 import * as path from 'path';
 import * as RNFS from 'react-native-fs';
+import { IConfig } from '@models';
 
 class FileServiceHelper {
     stateFile: string = path.join(RNFS.ExternalDirectoryPath, 'state.json');
+    configFile: string = path.join(RNFS.ExternalDirectoryPath, 'config.json');
+
+    public async readConfigFromFile(): Promise<any> {
+        try {
+            if (!RNFS.exists(this.stateFile)) {
+                return {};
+            }
+            const content = await RNFS.readFile(this.configFile);
+            const result: IConfig = JSON.parse(content);
+            return result;
+        } catch (ex) {
+            console.warn(ex)
+            return {};
+        }
+    }
+
+    public async saveConfigToFile(config: IConfig): Promise<void> {
+        try {
+            await RNFS.writeFile(this.configFile, JSON.stringify(config));
+        } catch{ }
+    }
 
     public async readStateFromFile(): Promise<any> {
         try {

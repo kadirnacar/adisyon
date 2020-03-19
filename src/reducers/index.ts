@@ -10,5 +10,4 @@ export * from './Stok';
 export * from './StokGrup';
 export * from './Table';
 export * from './User';
-export * from './Config';
 

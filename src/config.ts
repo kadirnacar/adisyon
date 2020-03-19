@@ -1,4 +1,6 @@
 import { IConfig } from "@models";
+import { FileService } from "./services/FileService";
+import { TouchableHighlightBase } from "react-native";
 
 // const config = {
 //     restUrl: 'https://5004.hoteladvisor.net/',
@@ -11,12 +13,16 @@ class config {
     public static tenant: number = 341;
     public static useAlagart: boolean = false;
 
-    public static setConfig(config: IConfig) {
+    public static async setConfig(config: IConfig) {
         if (config) {
-            this.restUrl = config.restUrl;
-            this.tenant = config.tenant;
-            this.useAlagart = config.useAlagart;
+            if (config.restUrl)
+                this.restUrl = config.restUrl;
+            if (config.tenant)
+                this.tenant = config.tenant;
+            if (config.useAlagart)
+                this.useAlagart = config.useAlagart;
         }
+        await FileService.saveConfigToFile({ restUrl: this.restUrl, tenant: this.tenant, useAlagart: this.useAlagart });
     }
 
 }
