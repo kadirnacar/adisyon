@@ -66,7 +66,108 @@ export const actionCreators = {
             await dispatch({ type: Actions.RequestCustomerFreeItems });
             var result = await CustomerService.getFreeItems(customerId);
 
+            result.value = [
+                [{
+                    "ID": 10,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9281,
+                    "ITEMID": null,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 3,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:17:57.010",
+                    "LASTUPDATE_DATE": "2020-03-16 16:17:57.010",
+                    "USEDQUANTITY": null
+                }, {
+                    "ID": 11,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9281,
+                    "ITEMID": null,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 3,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:17:57.010",
+                    "LASTUPDATE_DATE": "2020-03-16 16:17:57.010",
+                    "USEDQUANTITY": null
+                }, {
+                    "ID": 12,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9281,
+                    "ITEMID": null,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 3,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:17:57.010",
+                    "LASTUPDATE_DATE": "2020-03-16 16:17:57.010",
+                    "USEDQUANTITY": null
+                }, {
+                    "ID": 13,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9281,
+                    "ITEMID": null,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 3,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:23:33.300",
+                    "LASTUPDATE_DATE": "2020-03-16 16:23:33.300",
+                    "USEDQUANTITY": null
+                }, {
+                    "ID": 14,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9281,
+                    "ITEMID": null,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 3,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:23:33.300",
+                    "LASTUPDATE_DATE": "2020-03-16 16:23:33.300",
+                    "USEDQUANTITY": null
+                }, {
+                    "ID": 15,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9281,
+                    "ITEMID": null,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 3,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:23:33.300",
+                    "LASTUPDATE_DATE": "2020-03-16 16:23:33.300",
+                    "USEDQUANTITY": null
+                }, {
+                    "ID": 16,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9112,
+                    "ITEMID": 41994,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 5,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:23:33.300",
+                    "LASTUPDATE_DATE": "2020-03-16 16:23:33.300",
+                    "USEDQUANTITY": null
+                }, {
+                    "ID": 17,
+                    "PORTALID": 341,
+                    "PARKGUESTID": 3926,
+                    "DEPID": 9112,
+                    "ITEMID": 40166,
+                    "ITEMGROUPID": null,
+                    "QUANTITY": 5,
+                    "STAFF": 73590,
+                    "CREATION_DATE": "2020-03-16 16:23:33.300",
+                    "LASTUPDATE_DATE": "2020-03-16 16:23:33.300",
+                    "USEDQUANTITY": null
+                }]
+            ];
+
             const customer = result.value && result.value.length > 0 && result.value[0].length > 0 ? result.value[0] : false;
+
             await dispatch({
                 type: Actions.ReceiveCustomerFreeItems,
                 payload: customer

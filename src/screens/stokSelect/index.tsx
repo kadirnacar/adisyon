@@ -1,5 +1,5 @@
 import { colors, StokSelect } from '@components';
-import { IAdisyonProduct } from '@models';
+import { IAdisyonProduct, IAdisyon } from '@models';
 import { AdisyonActions } from '@reducers';
 import { ApplicationState } from '@store';
 import 'intl';
@@ -15,7 +15,7 @@ import { bindActionCreators } from 'redux';
 const { width, scale, height } = Dimensions.get("window");
 
 interface StokSelectState {
-    selectedStoks?: { [key: number]: IAdisyonProduct };
+    selectedStoks?: IAdisyon;
     showBarcode?: boolean;
 }
 
@@ -65,7 +65,9 @@ class StokSelectComp extends Component<Props, StokSelectState> {
         return (
             <View style={{ flex: 1 }} >
 
-                <StokSelect adisyon={this.props.Adisyon.current} onlyList={this.props.navigation.state.params && this.props.navigation.state.params.current} onPress={(data) => {
+                <StokSelect adisyon={this.props.Adisyon.current} 
+                onlyList={this.props.navigation.state.params && this.props.navigation.state.params.current} 
+                onPress={(data) => {
                     this.setState({ selectedStoks: data });
                 }} />
             </View>

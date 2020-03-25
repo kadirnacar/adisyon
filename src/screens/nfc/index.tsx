@@ -79,8 +79,10 @@ class NfcScreen extends Component<Props, CustomerState> {
                 <NfcReader onReadTag={async (tag) => {
                     this.setState({ isRequest: true })
                     const isFind = await this.props.CustomerActions.getItem(tag);
-                    if (!isFind)
+                    if (!isFind) {
+                        this.setState({ isRequest: false })
                         Alert.alert("Kart Bilgisi Bulunamadı.");
+                    }
                     else {
 
                         if (this.props.Application.current == Applications.Siparis) {

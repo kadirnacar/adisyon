@@ -322,4 +322,4 @@ export const StokSelect = withNavigation(connect(
             StokSelectActions: bindActionCreators({ ...StokActions }, dispatch)
         };
     }
-)(StokSelectInfoComp)) as any;
+)(StokSelectInfoComp));

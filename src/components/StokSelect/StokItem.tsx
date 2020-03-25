@@ -61,7 +61,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                         alignSelf: "flex-start",
                         alignItems: "flex-start",
                         alignContent: "flex-start",
-                    }}>{stok.ADI}</Text>
+                    }}>{isFree ? "**" : ""}{stok.ADI}</Text>
                     <TouchableHighlight
                         style={{
                             alignSelf: "flex-end",
