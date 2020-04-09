@@ -106,8 +106,8 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
     async handleComponentMount() {
         if (!this.props.ActivityOrder.current) {
             this.props.ActivityOrderActions.setCurrent({
-                GARSONID: this.props.Garson.current.ID,
-                GUESTID: this.props.Customer.current.GUESTID,
+                GARSONID: this.props.Garson.current.STAFFID,
+                GUESTID: this.props.Customer.current.GUESTNO,
                 ITEMS: [],
                 NOTES: ""
             });
@@ -143,7 +143,7 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
                             password: null
                         });
                         await this.props.ActivityOrderActions.setCurrent({
-                            GARSONID: this.props.Garson.current.ID,
+                            GARSONID: this.props.Garson.current.STAFFID,
                             ITEMS: [],
                             NOTES: ""
                         });

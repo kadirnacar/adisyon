@@ -1,16 +1,15 @@
 export interface ICustomer {
-    BALANCE: number;
-    BOARDTYPE: string;
-    GUESTID: number;
+    GUESTNO: number;
     NAME: string;
-    ODANO: string;
-    RESID: string;
     SURNAME: string;
-    DISCOUNT_RATE: number;
-    ALLINCLUSIVE?: boolean;
-    SALETYPEID?: number;
-    POSCHECKTYPEID?: number;
-    Trans: ICustomerTrans[];
+    ROOMNO: string;
+    BOARDTYPE: string;
+    BALANCE: number;
+    ALLINCLUSIVE: boolean;
+    POSDISCOUNTPERCENT: number;
+    SALETYPEID: number;
+    POSCHECKTYPEID: number;
+    Trans?: ICustomerTrans[];
 }
 export interface ICustomerFreeItems {
     ID: number;

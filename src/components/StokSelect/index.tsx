@@ -188,7 +188,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                                     data={(this.state.source && this.state.search ? this.searchData(this.state.search) : (this.state.source ? this.state.source : [])).filter(stk => (this.state.selectedGrup && this.state.selectedGrup.STOKGRUPID ? stk.STOKGRUPID == this.state.selectedGrup.STOKGRUPID : true))}
                                     renderItem={({ item, index }) => {
                                         let adisyonItem = !this.props.onlyList && this.props.adisyon.ITEMS ? this.props.adisyon.ITEMS.find(itm => itm.ID == item.STOKID && !itm.OLD) : null;
-                                        let discountRate = this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
+                                        let discountRate = this.props.Customer.current ? this.props.Customer.current.POSDISCOUNTPERCENT : 0;
                                         if (!adisyonItem)
                                             adisyonItem = { ID: item.STOKID, QUANTITY: 0 };
                                         let isFree = this.props.Customer.freeItems ? this.props.Customer.freeItems[item.STOKID] != null : false;

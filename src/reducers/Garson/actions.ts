@@ -2,6 +2,7 @@ import { GarsonService } from "@services";
 import { batch } from "react-redux";
 import { Actions } from './state';
 import { Alert } from "react-native";
+import { IGarson } from "@models";
 
 export const actionCreators = {
     getItem: (garsonId: number) => async (dispatch, getState) => {
@@ -10,12 +11,16 @@ export const actionCreators = {
             await dispatch({ type: Actions.RequestGarsonItem });
             var result = await GarsonService.getItem(garsonId);
 
-            const user = result.value && result.value.ResultSets
-                && result.value.ResultSets.length > 0
-                && result.value.ResultSets[0].length > 0 ? result.value.ResultSets[0][0] : null;
+            let userResult = result.value
+                && result.value.length > 0
+                && result.value[0].length > 0 ? result.value[0][0] : null;
+            let garson: IGarson = null;
+            if (userResult) {
+                garson = JSON.parse(userResult.Return);
+            }
             await dispatch({
                 type: Actions.ReceiveGarsonItem,
-                payload: user
+                payload: garson
             });
 
             if (result.hasErrors()) {
@@ -24,7 +29,7 @@ export const actionCreators = {
                 return;
             }
 
-            isSuccess = user != null;
+            isSuccess = garson != null;
         });
         return isSuccess;
     },

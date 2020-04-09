@@ -13,7 +13,7 @@ export const reducer = (currentState: GarsonState = unloadedState, incomingActio
         case Actions.ReceiveGarsonItem:
             if (action.payload) {
                 currentState.current = action.payload;
-                currentState.current.departments = currentState.current.DEPKODU.split(',');
+                // currentState.current.departments = currentState.current.DEPKODU.split(',');
             }
             currentState.isRequest = false;
             return { ...currentState };

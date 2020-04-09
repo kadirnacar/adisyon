@@ -126,8 +126,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
             }
             this.props.AdisyonActions.setCurrent({
                 DEPID: this.props.Department.current.ID,
-                GARSONID: this.props.Garson.current.ID,
-                GUESTID: this.props.Customer.current ? this.props.Customer.current.GUESTID : null,
+                GARSONID: this.props.Garson.current.STAFFID,
+                GUESTID: this.props.Customer.current ? this.props.Customer.current.GUESTNO : null,
                 ITEMS: config.useAlagart && this.props.Table.current && this.props.Table.tableAdisyon ? this.props.Table.tableAdisyon : [],
                 NOTES: ""
             });
@@ -148,7 +148,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
     render() {
         let currentTotal = 0;
-        let discount = this.props.Customer && this.props.Customer.current ? this.props.Customer.current.DISCOUNT_RATE : 0;
+        let discount = this.props.Customer && this.props.Customer.current ? this.props.Customer.current.POSDISCOUNTPERCENT : 0;
         this.props.Adisyon.current && this.props.Adisyon.current.ITEMS ? this.props.Adisyon.current.ITEMS.forEach(i => {
             const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
             if (stokItem)
@@ -166,7 +166,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         });
                         await this.props.AdisyonActions.setCurrent({
                             DEPID: this.props.Department.current.ID,
-                            GARSONID: this.props.Garson.current.ID,
+                            GARSONID: this.props.Garson.current.STAFFID,
                             ITEMS: [],
                             NOTES: ""
                         });
@@ -223,9 +223,9 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             Alert.alert("Kart Bilgisi Bulunamadı.");
                         else {
                             await this.props.CustomerActions.getTrans(tag);
-                            await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTID);
+                            await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTNO);
                             this.props.Adisyon.current.TABLENO = this.props.Table.current ? this.props.Table.current.MASANO : "";
-                            this.props.Adisyon.current.GUESTID = this.props.Customer.current ? this.props.Customer.current.GUESTID : null;
+                            this.props.Adisyon.current.GUESTID = this.props.Customer.current ? this.props.Customer.current.GUESTNO : null;
                             this.props.Adisyon.current.ITEMS = [];
 
                             const isSuccess = await this.props.AdisyonActions.payItem(this.props.Adisyon.current);

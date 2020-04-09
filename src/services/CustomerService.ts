@@ -10,7 +10,7 @@ export class CustomerService extends ServiceBase {
             method: "POST",
             data: {
                 "Action": "Execute",
-                "Object": "SP_EASYPOS3_FINDGUEST",
+                "Object": "SP_POS_FINDGUEST",
                 "Parameters": {
                     "PARKCARDNO": nfcCode
                 }

@@ -39,7 +39,7 @@ export class AdisyonService extends ServiceBase {
                     "PRINTCHECK": 1
                 },
                 "Action": "Execute",
-                "Object": "SP_EASYPOS3_SAVECHECK"
+                "Object": "SP_POS_SAVECHECK"
             }
         });
 

@@ -86,7 +86,7 @@ class NfcScreen extends Component<Props, CustomerState> {
                     else {
 
                         if (this.props.Application.current == Applications.Siparis) {
-                            await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTID);
+                            await this.props.CustomerActions.getFreeItems(this.props.Customer.current.GUESTNO);
                             this.setState({ isRequest: false })
                             this.props.navigation.navigate("Adisyon")
                         }

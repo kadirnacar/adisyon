@@ -14,7 +14,7 @@ export const actionCreators = {
             await dispatch({
                 type: Actions.ReceiveDepartmentItems, payload: depts.map((itm) => {
                     return {
-                        KODU: itm.DEPCODE,
+                        KODU: itm.ID.toString(),
                         ADI: itm.DEPARTMENTNAME,
                         ID: itm.ID,
                         MOBILPOSCONFIG: itm.MOBILPOSCONFIG,

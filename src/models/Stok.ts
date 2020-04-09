@@ -2,7 +2,6 @@ import { IStokGrup } from "./StokGrup";
 
 export interface IStok {
     STOKID: number;
-    GRUP: string;
     BARKOD: string;
     ADI: string;
     SFIYAT1: number;

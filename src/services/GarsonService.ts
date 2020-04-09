@@ -1,10 +1,25 @@
 import config from '@config';
 import { IGarson } from '@models';
-import { AngusResponse } from './AngusResponse';
+import { AngusResponse, AngusFunctionResponse } from './AngusResponse';
 import { ServiceBase } from "./ServiceBase";
 
 export class GarsonService extends ServiceBase {
     public static async getItem(garsonId: number) {
+        var result = await this.requestJson<AngusFunctionResponse<IGarson>>({
+            url: `${config.restUrl}`,
+            method: "POST",
+            data: {
+                "Action": "Function",
+                "Object": "FN_POS_STAFFJSON",
+                "Parameters": {
+                    "STAFFID": garsonId
+                }
+            }
+        });
+
+        return result;
+    }
+    public static async getItem_old(garsonId: number) {
         var result = await this.requestJson<AngusResponse<IGarson>>({
             url: `${config.restUrl}`,
             method: "POST",
@@ -41,7 +56,7 @@ export class GarsonService extends ServiceBase {
                 ]
             }
         });
-       
+
         return result;
     }
 }

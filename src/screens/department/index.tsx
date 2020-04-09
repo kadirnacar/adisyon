@@ -68,7 +68,7 @@ class DepartmentScreen extends Component<Props, DepartmentState> {
                 <View style={{ width: width }}>
                     <FlatList
                         data={this.props.Garson.current ? this.props.Department.items.filter(itm => {
-                            return this.props.Garson.current.departments.indexOf(itm.KODU) > -1
+                            return this.props.Garson.current.STAFFDEPS.findIndex(i => i.DEPID == itm.ID) > -1
                         }) : []}
                         style={{ height: height - 160 }}
                         renderItem={({ item, index }) => {

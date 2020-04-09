@@ -12,7 +12,7 @@ export class StokService extends ServiceBase {
                     "PORTALID": config.tenant,
                 },
                 "Action": "Execute",
-                "Object": "SP_EASYPOS3_GETPOSDATA"
+                "Object": "SP_POS_GETPOSDATA"
             }
         });
 
