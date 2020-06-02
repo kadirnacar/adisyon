@@ -69,7 +69,7 @@ class LoginScreen extends Component<Props, LoginState> {
         } else {
 
             const updater = await UpdaterService.getUpdateInfo();
-            const result = updater.value && updater.value.ResultSets && updater.value.ResultSets.length > 0 && updater.value.ResultSets[0].length > 0 ? updater.value.ResultSets[0][0] : null;
+            const result =null// updater.value && updater.value.ResultSets && updater.value.ResultSets.length > 0 && updater.value.ResultSets[0].length > 0 ? updater.value.ResultSets[0][0] : null;
             if (result && result.POSMOBILE_VERSIONNO && VersionNumber.appVersion != result.POSMOBILE_VERSIONNO) {
                 const updateUrl = result.POSMOBILE_VERSIONURL;
                 this.setState({ isRequest: false, showDownloader: true });

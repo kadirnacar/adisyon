@@ -1,4 +1,4 @@
-import { colors } from '@components';
+import { colors } from '../colors';
 import { IActivity, IActivityProduct } from '@models';
 import moment from 'moment';
 import React, { Component } from 'react';

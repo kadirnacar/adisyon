@@ -1,4 +1,4 @@
-import { colors } from '@components';
+import { colors } from '../colors';
 import { IActivity, IActivityOrder } from '@models';
 import { ActivityActions } from '@reducers';
 import { ApplicationState } from '@store';

@@ -1,55 +1,57 @@
-import { colors } from '@components';
-import { IActivity, IActivityProduct, ISeance } from '@models';
-import moment from 'moment';
-import React, { Component } from 'react';
-import { Dimensions, Text, TextInput, TouchableHighlight, View } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome5';
+import {IActivity} from '@models';
+import React, {Component} from 'react';
+import {Dimensions, Text, TouchableHighlight, View} from 'react-native';
+import {colors} from '../colors';
 
-const { width, scale, height } = Dimensions.get("window");
+const {width, scale, height} = Dimensions.get('window');
 
 interface Props {
-    activity: IActivity;
-    onSelect?: (item: IActivity) => void;
+  activity: IActivity;
+  onSelect?: (item: IActivity) => void;
 }
 
 export class CheckTurnikeSelectItem extends Component<Props, any> {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selectedSeance: null
-        };
-    }
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedSeance: null,
+    };
+  }
 
-    render() {
-        const { activity } = this.props;
+  render() {
+    const {activity} = this.props;
 
-        return (
-            <View style={{
-                flex: 1,
-                borderBottomWidth: 1,
-                paddingVertical: 5,
-                paddingHorizontal: 5,
-                marginVertical: 2,
-                borderBottomColor: colors.borderColor,
-            }}>
-                <TouchableHighlight
-                    onPress={() => {
-                        if (this.props.onSelect)
-                            this.props.onSelect(activity);
-                    }}>
-                    <View style={{ flex: 1, flexDirection: "row" }}>
-                        <View style={{
-                            width: "100%"
-                        }}>
-                            <Text style={{
-                                color: colors.inputTextColor,
-                                fontWeight: "bold",
-                                fontSize: 16
-                            }}>{activity.NAME}</Text>
-                        </View>
-                    </View>
-                </TouchableHighlight>
-                {/* <View style={{
+    return (
+      <View
+        style={{
+          flex: 1,
+          borderBottomWidth: 1,
+          paddingVertical: 5,
+          paddingHorizontal: 5,
+          marginVertical: 2,
+          borderBottomColor: colors.borderColor,
+        }}>
+        <TouchableHighlight
+          onPress={() => {
+            if (this.props.onSelect) this.props.onSelect(activity);
+          }}>
+          <View style={{flex: 1, flexDirection: 'row'}}>
+            <View
+              style={{
+                width: '100%',
+              }}>
+              <Text
+                style={{
+                  color: colors.inputTextColor,
+                  fontWeight: 'bold',
+                  fontSize: 16,
+                }}>
+                {activity.NAME}
+              </Text>
+            </View>
+          </View>
+        </TouchableHighlight>
+        {/* <View style={{
                     flex: 1,
                     flexDirection: "row",
                     width: "100%",
@@ -83,9 +85,7 @@ export class CheckTurnikeSelectItem extends Component<Props, any> {
                         </TouchableHighlight>
                     })}
                 </View> */}
-            </View>
-        )
-    }
+      </View>
+    );
+  }
 }
-
-
