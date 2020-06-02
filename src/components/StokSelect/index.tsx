@@ -61,6 +61,14 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         ? t.departments.indexOf(this.props.Department.current.KODU) > -1
         : false,
     );
+    console.log(
+      'freeitem',
+      this.props.Stok.items.filter(x => x.STOKID == 40166 || x.STOKID == 41994),
+    );
+    console.log(
+        'freegroup',
+        this.props.StokGrup.items.filter(x => x.STOKGRUPID == 40166 || x.STOKGRUPID == 41994),
+      );
     this.setState({
       source,
     });
@@ -76,8 +84,6 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
       .map(i => i.obj);
   }
   render() {
-    console.log('freeItems', this.props.Customer.freeItems);
-    console.log('freeGroups', this.props.Customer.freeGroups);
     return (
       <React.Fragment>
         <Modal
@@ -250,14 +256,6 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                             item.STOKGRUPID.toString()
                           ] != null
                         : false;
-                    if (isFree) {
-                      console.log(
-                        isFree,
-                        item.STOKID,
-                        item.STOKGRUPID,
-                        item.ADI,
-                      );
-                    }
 
                     return (
                       <StokItem
