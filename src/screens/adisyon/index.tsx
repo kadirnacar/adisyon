@@ -252,15 +252,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                   currentTotal += i.QUANTITY * stokItem1.SFIYAT1;
                 });
 
-                if (
-                  this.props.Customer.current &&
-                  stokItem &&
-                  currentTotal + stokItem.SFIYAT1 >
-                    this.props.Customer.current.BALANCE
-                ) {
-                  Alert.alert('Uyarı', 'Yeterli bakiye yok');
-                  return;
-                }
+                // if (
+                //   this.props.Customer.current &&
+                //   stokItem &&
+                //   currentTotal + stokItem.SFIYAT1 >
+                //     this.props.Customer.current.BALANCE
+                // ) {
+                //   Alert.alert('Uyarı', 'Yeterli bakiye yok');
+                //   return;
+                // }
                 if (stokItem) {
                   const adisyonIndex = adisyon.ITEMS.findIndex(
                     i => i.ID == stokItem.STOKID,
@@ -640,14 +640,14 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                           }
                         });
 
-                        if (
-                          this.props.Customer.current &&
-                          currentTotal + itemPrice >
-                            this.props.Customer.current.BALANCE
-                        ) {
-                          Alert.alert('Uyarı', 'Yeterli bakiye yok');
-                          return;
-                        }
+                        // if (
+                        //   this.props.Customer.current &&
+                        //   currentTotal + itemPrice >
+                        //     this.props.Customer.current.BALANCE
+                        // ) {
+                        //   Alert.alert('Uyarı', 'Yeterli bakiye yok');
+                        //   return;
+                        // }
                         if (!change) item.QUANTITY = item.QUANTITY + 1;
                         this.setState({});
                       }}
@@ -792,6 +792,13 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
               padding: 0,
             }}
             onPressIn={async () => {
+              if (
+                this.props.Customer.current &&
+                currentTotal > this.props.Customer.current.BALANCE
+              ) {
+                Alert.alert('Uyarı', 'Yeterli bakiye yok');
+                return;
+              }
               if (
                 this.props.Adisyon.current.ITEMS &&
                 this.props.Adisyon.current.ITEMS.length > 0

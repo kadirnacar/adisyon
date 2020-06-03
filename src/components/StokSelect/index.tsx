@@ -289,14 +289,14 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                           const stokItem = this.props.Stok.items.find(
                             t => t.STOKID == itm.ID,
                           );
-                          if (
-                            this.props.Customer.current &&
-                            currentTotal + stokItem.SFIYAT1 * count >
-                              this.props.Customer.current.BALANCE
-                          ) {
-                            Alert.alert('Uyarı', 'Yeterli bakiye yok');
-                            return;
-                          }
+                          // if (
+                          //   this.props.Customer.current &&
+                          //   currentTotal + stokItem.SFIYAT1 * count >
+                          //     this.props.Customer.current.BALANCE
+                          // ) {
+                          //   Alert.alert('Uyarı', 'Yeterli bakiye yok');
+                          //   return;
+                          // }
 
                           const adisyonIndex = adisyon.ITEMS.findIndex(
                             i => i.ID == itm.ID && !i.OLD,
