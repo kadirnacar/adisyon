@@ -1,28 +1,33 @@
 import {colors, LoaderSpinner} from '@components';
 import {
+  ActivityActions,
   CustomerActions,
-  UserActions,
-  GarsonActions,
   DepartmentActions,
+  ExchangeActions,
+  GarsonActions,
   StokActions,
   StokGrupActions,
-  ActivityActions,
-  ExchangeActions,
+  UserActions,
 } from '@reducers';
+import {UpdaterService} from '@services';
 import {ApplicationState} from '@store';
+import * as path from 'path';
 import React, {Component} from 'react';
 import {
   Dimensions,
+  Modal,
+  ProgressBarAndroid,
   StyleSheet,
   Text,
   TextInput,
   TouchableHighlight,
   View,
-  Modal,
-  ProgressBarAndroid,
-  Alert,
 } from 'react-native';
+import RNApkInstallerN from 'react-native-apk-installer-n';
+import RNFS from 'react-native-fs';
 import SafeAreaView from 'react-native-safe-area-view';
+import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
+import VersionNumber from 'react-native-version-number';
 import {
   NavigationEventPayload,
   NavigationEvents,
@@ -31,13 +36,6 @@ import {
 } from 'react-navigation';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
-import {UpdaterService, StokService} from '@services';
-import VersionNumber from 'react-native-version-number';
-import RNFS from 'react-native-fs';
-import RNApkInstallerN from 'react-native-apk-installer-n';
-
-import * as path from 'path';
 
 const {width, scale, height} = Dimensions.get('window');
 
@@ -67,8 +65,46 @@ class LoginScreen extends Component<Props, LoginState> {
   static navigationOptions = ({navigation}) => {
     return {
       title: 'Şifre Giriş',
+      // headerRight: props => {
+      //   return (
+      //     <View style={{flexDirection: 'row'}}>
+
+      //       <TouchableHighlight
+      //         underlayColor="#ffffff00"
+      //         style={{
+      //           borderRadius: 45,
+      //           borderColor: colors.borderColor,
+      //           borderWidth: 2,
+      //           padding: 5,
+      //           marginRight: 5,
+      //         }}
+      //         onPressIn={async () => {
+      //           await DepartmentActions.getItems()(
+      //             store.dispatch,
+      //             store.getState,
+      //           );
+      //           await StokActions.getItems()(store.dispatch, store.getState);
+      //           await ExchangeActions.getItems()(
+      //             store.dispatch,
+      //             store.getState,
+      //           );
+      //           await ActivityActions.getItems(new Date())(
+      //             store.dispatch,
+      //             store.getState,
+      //           );
+      //           await ActivityActions.getTurnikeItems(new Date())(
+      //             store.dispatch,
+      //             store.getState,
+      //           );
+      //         }}>
+      //         <FontAwesome5Icon name="sync" size={25} color={'#fff'} />
+      //       </TouchableHighlight>
+      //     </View>
+      //   );
+      // },
     };
   };
+
   constructor(props) {
     super(props);
     this.handleLogin = this.handleLogin.bind(this);
@@ -136,7 +172,6 @@ class LoginScreen extends Component<Props, LoginState> {
           this.setState({isRequest: true, showDownloader: false});
         }
       }
-      await this.loadDataFromServer();
       await this.props.CustomerActions.clear();
       const getGarson = await this.props.GarsonActions.getItem(
         this.props.User.current.GARSONID,
@@ -150,15 +185,7 @@ class LoginScreen extends Component<Props, LoginState> {
     this.setState({isRequest: false});
   }
 
-  async loadDataFromServer() {
-    await this.props.DepartmentActions.getItems();
-    // await this.props.StokGrupActions.getItems();
-    await this.props.StokActions.getItems();
-    await this.props.ExchangeActions.getItems();
-    await this.props.ActivityActions.getItems(new Date());
-    await this.props.ActivityActions.getTurnikeItems(new Date());
-    // const res = await StokService.getItems3();
-  }
+ 
 
   async handleComponentMount(payload: NavigationEventPayload) {
     await this.props.UserActions.clear();

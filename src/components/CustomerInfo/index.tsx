@@ -85,6 +85,21 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                     alignItems: 'center',
                     alignSelf: 'center',
                   }}>
+                  <Text style={{fontWeight: 'bold'}}>
+                    {this.props.Customer.current
+                      ? `${this.props.Customer.current.NAME} ${
+                          this.props.Customer.current.SURNAME
+                        }`
+                      : ''}{' '}
+                  </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                  }}>
                   <Text style={{fontWeight: 'bold'}}>Bakiye Bilgisi </Text>
                 </View>
                 {this.props.Exchange && this.props.Exchange.items

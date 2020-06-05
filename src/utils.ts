@@ -108,3 +108,7 @@ export function contrast(colorHex, threshold = 128) {
 
   return rgbToYIQ(rgb) >= threshold ? '#000' : '#fff';
 }
+
+export const distinct = (value, index, self) => {
+  return self.indexOf(value) === index;
+};

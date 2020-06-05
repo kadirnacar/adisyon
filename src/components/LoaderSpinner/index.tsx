@@ -1,10 +1,11 @@
 import React, {Component} from 'react';
-import {ActivityIndicator, Modal, StyleSheet, View} from 'react-native';
+import {ActivityIndicator, Modal, StyleSheet, View, Text} from 'react-native';
 
 interface ILaderSpinnerState {}
 
 interface ILoaderSpinnerProps {
   showLoader?: boolean;
+  infoText?: string;
   onCloseModal?: () => void;
 }
 
@@ -23,6 +24,7 @@ export class LoaderSpinner extends Component<
           }
         }}>
         <View style={[styles.container, styles.horizontal]}>
+          <Text>{this.props.infoText}</Text>
           <ActivityIndicator size="large" color="#0000ff" />
         </View>
       </Modal>
@@ -36,11 +38,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
+    alignContent:"center",
+    alignItems:"center",
     backgroundColor: '#ffffff88',
   },
   horizontal: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+    flexDirection: 'column',
+    justifyContent: 'center',
     padding: 10,
   },
 });

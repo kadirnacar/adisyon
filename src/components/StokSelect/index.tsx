@@ -1,10 +1,10 @@
 import {IAdisyon, IStok, IStokGrup} from '@models';
 import {StokActions} from '@reducers';
 import {ApplicationState} from '@store';
+import {distinct} from '@utils';
 import fuzzysort from 'fuzzysort';
 import React, {Component} from 'react';
 import {
-  Alert,
   Button,
   Dimensions,
   FlatList,
@@ -27,11 +27,13 @@ const {width, scale, height} = Dimensions.get('window');
 
 interface StokSelectState {
   selectedGrup?: IStokGrup;
+  groupIds?: number[];
   search?: string;
   source?: IStok[];
   scrollIndex: number;
   showExchange: boolean;
   currentFiyat: number;
+  exchangeText: string;
 }
 
 interface StokSelectProps {
@@ -49,9 +51,11 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
     this.state = {
       search: '',
       source: [],
+      groupIds: [],
       scrollIndex: 0,
       showExchange: false,
       currentFiyat: 0,
+      exchangeText: '',
     };
   }
 
@@ -61,18 +65,10 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         ? t.departments.indexOf(this.props.Department.current.KODU) > -1
         : false,
     );
-    console.log(
-      'freeitem',
-      this.props.Stok.items.filter(x => x.STOKID == 40166 || x.STOKID == 41994),
-    );
-    console.log(
-      'freegroup',
-      this.props.StokGrup.items.filter(
-        x => x.STOKGRUPID == 40166 || x.STOKGRUPID == 41994,
-      ),
-    );
+    const groups = source.map(x => x.STOKGRUPID).filter(distinct);
     this.setState({
       source,
+      groupIds: groups,
     });
   }
   searchData(search: string) {
@@ -92,7 +88,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
           visible={this.state.showExchange || false}
           transparent={true}
           onRequestClose={() => {
-            this.setState({showExchange: false});
+            this.setState({showExchange: false, exchangeText: ''});
           }}>
           <View
             style={{
@@ -134,6 +130,15 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                     alignSelf: 'center',
                   }}>
                   <Text style={{fontWeight: 'bold'}}>Fiyat Bilgisi </Text>
+                </View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignContent: 'center',
+                    alignItems: 'center',
+                    alignSelf: 'center',
+                  }}>
+                  <Text>{this.state.exchangeText} </Text>
                 </View>
                 {this.props.Exchange && this.props.Exchange.items
                   ? this.props.Exchange.items.map((ex, index) => {
@@ -177,7 +182,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
               <Button
                 title="Tamam"
                 onPress={async () => {
-                  this.setState({showExchange: false});
+                  this.setState({showExchange: false, exchangeText: ''});
                 }}
               />
               {/* <TouchableHighlight
@@ -283,6 +288,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                           this.setState({
                             showExchange: true,
                             currentFiyat: fiyat,
+                            exchangeText: item.ADI,
                           });
                         }}
                         onTextActive={item => {
@@ -363,7 +369,13 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                 keyboardDismissMode="on-drag"
                 style={{flex: 1}}
                 keyboardShouldPersistTaps="always"
-                data={this.props.StokGrup.items}
+                data={
+                  this.props.StokGrup && this.props.StokGrup.items
+                    ? this.props.StokGrup.items.filter(
+                        g => this.state.groupIds.indexOf(g.STOKGRUPID) > -1,
+                      )
+                    : []
+                }
                 updateCellsBatchingPeriod={10}
                 windowSize={20}
                 maxToRenderPerBatch={20}
