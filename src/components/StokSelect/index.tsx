@@ -66,9 +66,11 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
       this.props.Stok.items.filter(x => x.STOKID == 40166 || x.STOKID == 41994),
     );
     console.log(
-        'freegroup',
-        this.props.StokGrup.items.filter(x => x.STOKGRUPID == 40166 || x.STOKGRUPID == 41994),
-      );
+      'freegroup',
+      this.props.StokGrup.items.filter(
+        x => x.STOKGRUPID == 40166 || x.STOKGRUPID == 41994,
+      ),
+    );
     this.setState({
       source,
     });
@@ -89,7 +91,9 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         <Modal
           visible={this.state.showExchange || false}
           transparent={true}
-          onRequestClose={() => {}}>
+          onRequestClose={() => {
+            this.setState({showExchange: false});
+          }}>
           <View
             style={{
               flex: 1,
@@ -131,34 +135,44 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                   }}>
                   <Text style={{fontWeight: 'bold'}}>Fiyat Bilgisi </Text>
                 </View>
-                {this.props.Exchange.items.map((ex, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        flexDirection: 'row',
-                        alignContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        alignSelf: 'flex-start',
-                      }}>
-                      <Text>{ex.TOCUR} : </Text>
-                      <NumberFormat
-                        value={this.state.currentFiyat * ex.RATE}
-                        displayType={'text'}
-                        decimalScale={2}
-                        thousandSeparator={true}
-                        renderText={value => (
-                          <Text
+                {this.props.Exchange && this.props.Exchange.items
+                  ? this.props.Exchange.items.map((ex, index) => {
+                      if (
+                        ex.TOCUR == 'TRY' ||
+                        ex.TOCUR == 'EUR' ||
+                        ex.TOCUR == 'USD'
+                      ) {
+                        return (
+                          <View
+                            key={index}
                             style={{
-                              textDecorationLine: 'underline',
+                              flexDirection: 'row',
+                              alignContent: 'flex-start',
+                              alignItems: 'flex-start',
+                              alignSelf: 'flex-start',
                             }}>
-                            {value}
-                          </Text>
-                        )}
-                      />
-                    </View>
-                  );
-                })}
+                            <Text>{ex.TOCUR} : </Text>
+                            <NumberFormat
+                              value={this.state.currentFiyat * ex.RATE}
+                              displayType={'text'}
+                              decimalScale={2}
+                              thousandSeparator={true}
+                              renderText={value => (
+                                <Text
+                                  style={{
+                                    textDecorationLine: 'underline',
+                                  }}>
+                                  {value}
+                                </Text>
+                              )}
+                            />
+                          </View>
+                        );
+                      } else {
+                        return null;
+                      }
+                    })
+                  : null}
               </View>
               <Button
                 title="Tamam"

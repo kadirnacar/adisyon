@@ -43,7 +43,9 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
         <Modal
           visible={this.state.showExchange || false}
           transparent={true}
-          onRequestClose={() => {}}>
+          onRequestClose={() => {
+            this.setState({showExchange: false});
+          }}>
           <View
             style={{
               flex: 1,
@@ -85,31 +87,43 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                   }}>
                   <Text style={{fontWeight: 'bold'}}>Bakiye Bilgisi </Text>
                 </View>
-                {this.props.Exchange.items.map((ex, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        flexDirection: 'row',
-                        alignContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        alignSelf: 'flex-start',
-                      }}>
-                      <Text>{ex.TOCUR} : </Text>
-                      <NumberFormat
-                        value={
-                          (this.props.Customer.current
-                            ? this.props.Customer.current.BALANCE
-                            : 0) * ex.RATE
-                        }
-                        displayType={'text'}
-                        decimalScale={2}
-                        thousandSeparator={true}
-                        renderText={value => <Text style={{}}>{value}</Text>}
-                      />
-                    </View>
-                  );
-                })}
+                {this.props.Exchange && this.props.Exchange.items
+                  ? this.props.Exchange.items.map((ex, index) => {
+                      if (
+                        ex.TOCUR == 'TRY' ||
+                        ex.TOCUR == 'EUR' ||
+                        ex.TOCUR == 'USD'
+                      ) {
+                        return (
+                          <View
+                            key={index}
+                            style={{
+                              flexDirection: 'row',
+                              alignContent: 'flex-start',
+                              alignItems: 'flex-start',
+                              alignSelf: 'flex-start',
+                            }}>
+                            <Text>{ex.TOCUR} : </Text>
+                            <NumberFormat
+                              value={
+                                (this.props.Customer.current
+                                  ? this.props.Customer.current.BALANCE
+                                  : 0) * ex.RATE
+                              }
+                              displayType={'text'}
+                              decimalScale={2}
+                              thousandSeparator={true}
+                              renderText={value => (
+                                <Text style={{}}>{value}</Text>
+                              )}
+                            />
+                          </View>
+                        );
+                      } else {
+                        return null;
+                      }
+                    })
+                  : null}
               </View>
               <View
                 style={{
@@ -128,29 +142,42 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                   }}>
                   <Text style={{fontWeight: 'bold'}}>Adisyon Tutarı </Text>
                 </View>
-                {this.props.Exchange.items.map((ex, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        flexDirection: 'row',
-                        alignContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        alignSelf: 'flex-start',
-                      }}>
-                      <Text>{ex.TOCUR} : </Text>
-                      <NumberFormat
-                        value={
-                          (this.props.total ? this.props.total : 0) * ex.RATE
-                        }
-                        displayType={'text'}
-                        decimalScale={2}
-                        thousandSeparator={true}
-                        renderText={value => <Text style={{}}>{value}</Text>}
-                      />
-                    </View>
-                  );
-                })}
+                {this.props.Exchange && this.props.Exchange.items
+                  ? this.props.Exchange.items.map((ex, index) => {
+                      if (
+                        ex.TOCUR == 'TRY' ||
+                        ex.TOCUR == 'EUR' ||
+                        ex.TOCUR == 'USD'
+                      ) {
+                        return (
+                          <View
+                            key={index}
+                            style={{
+                              flexDirection: 'row',
+                              alignContent: 'flex-start',
+                              alignItems: 'flex-start',
+                              alignSelf: 'flex-start',
+                            }}>
+                            <Text>{ex.TOCUR} : </Text>
+                            <NumberFormat
+                              value={
+                                (this.props.total ? this.props.total : 0) *
+                                ex.RATE
+                              }
+                              displayType={'text'}
+                              decimalScale={2}
+                              thousandSeparator={true}
+                              renderText={value => (
+                                <Text style={{}}>{value}</Text>
+                              )}
+                            />
+                          </View>
+                        );
+                      } else {
+                        return null;
+                      }
+                    })
+                  : null}
               </View>
               <View
                 style={{
@@ -169,33 +196,45 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
                   }}>
                   <Text style={{fontWeight: 'bold'}}>Kalan Bakiye </Text>
                 </View>
-                {this.props.Exchange.items.map((ex, index) => {
-                  return (
-                    <View
-                      key={index}
-                      style={{
-                        flexDirection: 'row',
-                        alignContent: 'flex-start',
-                        alignItems: 'flex-start',
-                        alignSelf: 'flex-start',
-                      }}>
-                      <Text>{ex.TOCUR} : </Text>
-                      <NumberFormat
-                        value={
-                          ((this.props.Customer.current
-                            ? this.props.Customer.current.BALANCE
-                            : 0) -
-                            (this.props.total ? this.props.total : 0)) *
-                          ex.RATE
-                        }
-                        displayType={'text'}
-                        decimalScale={2}
-                        thousandSeparator={true}
-                        renderText={value => <Text style={{}}>{value}</Text>}
-                      />
-                    </View>
-                  );
-                })}
+                {this.props.Exchange && this.props.Exchange.items
+                  ? this.props.Exchange.items.map((ex, index) => {
+                      if (
+                        ex.TOCUR == 'TRY' ||
+                        ex.TOCUR == 'EUR' ||
+                        ex.TOCUR == 'USD'
+                      ) {
+                        return (
+                          <View
+                            key={index}
+                            style={{
+                              flexDirection: 'row',
+                              alignContent: 'flex-start',
+                              alignItems: 'flex-start',
+                              alignSelf: 'flex-start',
+                            }}>
+                            <Text>{ex.TOCUR} : </Text>
+                            <NumberFormat
+                              value={
+                                ((this.props.Customer.current
+                                  ? this.props.Customer.current.BALANCE
+                                  : 0) -
+                                  (this.props.total ? this.props.total : 0)) *
+                                ex.RATE
+                              }
+                              displayType={'text'}
+                              decimalScale={2}
+                              thousandSeparator={true}
+                              renderText={value => (
+                                <Text style={{}}>{value}</Text>
+                              )}
+                            />
+                          </View>
+                        );
+                      } else {
+                        return null;
+                      }
+                    })
+                  : null}
               </View>
               <TouchableHighlight
                 underlayColor="#ffffff00"

@@ -168,6 +168,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
           this.props.Table.current.MASANO,
         );
       }
+      console.log(this.props.Department)
       if (this.props.Department.useTable) {
         this.setState({showTableNo: true});
       }
@@ -234,7 +235,9 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
         <Modal
           visible={this.state.showBarcode || false}
           transparent={false}
-          onRequestClose={() => {}}>
+          onRequestClose={() => {
+            this.setState({showBarcode: false});
+          }}>
           <BarcodeReader
             onBarcodePress={barcode => {
               const stokItem = this.props.Stok.items.find(i => {
@@ -285,7 +288,9 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
         <Modal
           visible={this.state.showNfc || false}
           transparent={false}
-          onRequestClose={() => {}}>
+          onRequestClose={() => {
+            this.setState({showNfc: false});
+          }}>
           <NfcReader
             onReadTag={async tag => {
               const isFind = await this.props.CustomerActions.getItem(tag);
@@ -321,7 +326,9 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
         <Modal
           visible={this.state.showTableNo || false}
           transparent={true}
-          onRequestClose={() => {}}>
+          onRequestClose={() => {
+            this.setState({showTableNo: false});
+          }}>
           <View
             style={{
               flex: 1,
@@ -398,7 +405,9 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
         <Modal
           visible={this.state.showConfirm || false}
           transparent={true}
-          onRequestClose={() => {}}>
+          onRequestClose={() => {
+            this.setState({showConfirm: false});
+          }}>
           <View
             style={{
               flex: 1,

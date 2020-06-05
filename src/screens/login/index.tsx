@@ -179,7 +179,9 @@ class LoginScreen extends Component<Props, LoginState> {
         <Modal
           visible={this.state.showDownloader || false}
           transparent={true}
-          onRequestClose={() => {}}>
+          onRequestClose={() => {
+            this.setState({showDownloader: false});
+          }}>
           <View
             style={{
               flex: 1,

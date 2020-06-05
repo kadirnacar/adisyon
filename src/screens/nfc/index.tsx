@@ -58,6 +58,8 @@ class NfcScreen extends Component<Props, CustomerState> {
     }
 
     async handleComponentMount() {
+      console.log(this.props.Department.current)
+
         await this.props.CustomerActions.clear();
         await this.props.AdisyonActions.setCurrent(null);
         await this.props.ActivityOrderActions.setCurrent(null);
