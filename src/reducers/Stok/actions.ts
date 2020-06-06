@@ -10,7 +10,7 @@ export const actionCreators = {
         let isSuccess: boolean = false;
         await batch(async () => {
             await dispatch({ type: Actions.RequestStokItems });
-            var result = await StokService.getItems3();
+            var result = await StokService.getItems();
 
             const groups = result.value && result.value.length > 0 ? result.value[0] : [];
             const stoks = result.value && result.value.length > 0 ? result.value[1] : [];
