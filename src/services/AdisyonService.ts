@@ -29,8 +29,12 @@ export class AdisyonService extends ServiceBase {
                 PRODUCTID: item.ID,
                 NOTES: item.DESC,
                 QUANTITY: item.QUANTITY,
-                DISCOUNTMODE: item.ISFREEITEM == true ? 99 : null,
-                UNITPRICE: item.ISFREEITEM == true ? 0 : null,
+                DISCOUNTMODE: item.ISAI
+                  ? 20
+                  : item.ISFREEITEM == true
+                  ? 99
+                  : null, //20 ai
+                UNITPRICE: item.ISFREEITEM == true || item.ISAI ? 0 : null,
               };
             }),
           }),
@@ -41,7 +45,8 @@ export class AdisyonService extends ServiceBase {
         Object: 'SP_POS_SAVECHECK',
       },
     });
-    console.log(JSON.stringify({
+    console.log(
+      JSON.stringify({
         url: `${config.restUrl}`,
         method: 'POST',
         data: {
@@ -77,7 +82,8 @@ export class AdisyonService extends ServiceBase {
           Action: 'Execute',
           Object: 'SP_POS_SAVECHECK',
         },
-      }));
+      }),
+    );
     return result;
   }
 }

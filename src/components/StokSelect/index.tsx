@@ -265,6 +265,17 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                       : 0;
                     if (!adisyonItem)
                       adisyonItem = {ID: item.STOKID, QUANTITY: 0};
+
+                    const isAi =
+                      this.props.Customer.current &&
+                      this.props.Department.current &&
+                      item &&
+                      this.props.Customer.current.ALLINCLUSIVE == true &&
+                      item.INCLUDEDIN_AI == true &&
+                      this.props.Department.current.AIENABLED == true
+                        ? true
+                        : false;
+                    adisyonItem.ISAI = isAi;
                     let isFree = this.props.Customer.freeItems
                       ? this.props.Customer.freeItems[item.STOKID.toString()] !=
                         null

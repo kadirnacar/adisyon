@@ -14,4 +14,5 @@ export interface IAdisyonProduct {
     DESC?: string;
     OLD?: boolean;
     ISFREEITEM?: boolean;
+    ISAI?: boolean;
 }
