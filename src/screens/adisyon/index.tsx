@@ -168,7 +168,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
           this.props.Table.current.MASANO,
         );
       }
-      console.log(this.props.Department)
+      console.log(this.props.Department);
       if (this.props.Department.useTable) {
         this.setState({showTableNo: true});
       }
@@ -204,11 +204,20 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     this.props.Adisyon.current && this.props.Adisyon.current.ITEMS
       ? this.props.Adisyon.current.ITEMS.forEach(i => {
           const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
-          if (stokItem)
+          if (stokItem) {
+            const stokFiyat =
+              this.props.Customer.current &&
+              stokItem &&
+              this.props.Customer.current.ALLINCLUSIVE == true &&
+              stokItem.INCLUDEDIN_AI == true &&
+              this.props.Department.current.AIENABLED == true
+                ? 0
+                : stokItem.SFIYAT1;
             currentTotal +=
               i.QUANTITY *
-              (stokItem.SFIYAT1 -
-                parseFloat((stokItem.SFIYAT1 * (discount / 100)).toFixed(2)));
+              (stokFiyat -
+                parseFloat((stokFiyat * (+discount / 100)).toFixed(2)));
+          }
         })
       : null;
     return (
@@ -252,7 +261,20 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                   const stokItem1 = this.props.Stok.items.find(
                     t => t.STOKID == i.ID,
                   );
-                  currentTotal += i.QUANTITY * stokItem1.SFIYAT1;
+                  if (stokItem1) {
+                    const stokFiyat =
+                      this.props.Customer.current &&
+                      stokItem1 &&
+                      this.props.Customer.current.ALLINCLUSIVE == true &&
+                      stokItem1.INCLUDEDIN_AI == true &&
+                      this.props.Department.current.AIENABLED == true
+                        ? 0
+                        : stokItem1.SFIYAT1;
+                    currentTotal +=
+                      i.QUANTITY *
+                      (stokFiyat -
+                        parseFloat((stokFiyat * (+discount / 100)).toFixed(2)));
+                  }
                 });
 
                 // if (
@@ -638,14 +660,21 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             t => t.STOKID == i.ID,
                           );
                           if (stokItem) {
+                            const stokFiyat =
+                              this.props.Customer.current &&
+                              stokItem &&
+                              this.props.Customer.current.ALLINCLUSIVE ==
+                                true &&
+                              stokItem.INCLUDEDIN_AI == true &&
+                              this.props.Department.current.AIENABLED == true
+                                ? 0
+                                : stokItem.SFIYAT1;
                             currentTotal +=
                               i.QUANTITY *
-                              +(
-                                stokItem.SFIYAT1 -
-                                stokItem.SFIYAT1 * (discount / 100)
-                              ).toFixed(2);
-                            if (stokItem.STOKID == stokId.ID)
-                              itemPrice = stokItem.SFIYAT1;
+                              (stokFiyat -
+                                parseFloat(
+                                  (stokFiyat * (+discount / 100)).toFixed(2),
+                                ));
                           }
                         });
 
