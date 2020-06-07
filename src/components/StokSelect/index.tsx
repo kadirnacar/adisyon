@@ -66,7 +66,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         : false,
     );
     const groups = source.map(x => x.STOKGRUPID).filter(distinct);
-    console.log(source,this.props.Customer.freeItems);
+    console.log(source, this.props.Customer.freeItems);
     this.setState({
       source,
       groupIds: groups,
@@ -309,17 +309,24 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         }}
                         onAddPress={itm => {
                           const {adisyon} = this.props;
-                          let count = 1;
 
-                          const adisyonIndex = adisyon.ITEMS.findIndex(
+                          const adisyonIndex = adisyon.ITEMS.filter(
                             i => i.ID == itm.ID && !i.OLD,
                           );
-                          if (freeItem != null) {
-                            itm.FREEITEMTRANSID = freeItem.ID;
-                            itm.ISFREEITEM = true;
+
+                          if (
+                            adisyonIndex == null ||
+                            adisyonIndex.length == 0
+                          ) {
+                            if (freeItem != null) {
+                              itm.FREEITEMTRANSID = freeItem.ID;
+                              itm.ISFREEITEM = true;
+                            }
+                            itm.QUANTITY = 1;
+                            adisyon.ITEMS.unshift(itm);
+                          } else {
+                            itm.QUANTITY++;
                           }
-                          if (adisyonIndex < 0) adisyon.ITEMS.unshift(itm);
-                          itm.QUANTITY = itm.QUANTITY + count;
                           if (this.props.onPress) this.props.onPress(adisyon);
                           this.setState({});
                         }}

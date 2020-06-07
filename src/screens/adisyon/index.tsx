@@ -230,7 +230,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
               (i.QUANTITY -
                 (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0) >
               0
-                ? i.QUANTITY - (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
+                ? i.QUANTITY -
+                  (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
                 : 0) * birimFiyat;
             currentTotal += fiyat;
           }
@@ -548,7 +549,43 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       : '';
                     this.props.Adisyon.current.POSCHECKTYPEID = this.props.Customer.current.POSCHECKTYPEID;
                     this.setState({showTableNo: false});
-
+                    const items = [];
+                    this.props.Adisyon.current.ITEMS.forEach(item => {
+                      if (item.ISFREEITEM) {
+                        const stokItem = this.props.Stok.items.find(
+                          t => t.STOKID == item.ID,
+                        );
+                        const freeItem = this.getFreeItem(stokItem);
+                        if (
+                          item.QUANTITY <=
+                          freeItem.QUANTITY - freeItem.USEDQUANTITY
+                        ) {
+                          items.push(item);
+                        } else {
+                          items.push({
+                            ...item,
+                            ...{
+                              QUANTITY:
+                                freeItem.QUANTITY - freeItem.USEDQUANTITY,
+                            },
+                          });
+                          const unused =
+                            item.QUANTITY -
+                            (freeItem.QUANTITY - freeItem.USEDQUANTITY);
+                          items.push({
+                            ...item,
+                            ...{
+                              QUANTITY: unused,
+                              ISFREEITEM: false,
+                              FREEITEMTRANSID: null,
+                            },
+                          });
+                        }
+                      } else {
+                        items.push(item);
+                      }
+                    });
+                    this.props.Adisyon.current.ITEMS = items;
                     const isSuccess = await this.props.AdisyonActions.payItem(
                       this.props.Adisyon.current,
                       this.props.Customer.current,
@@ -558,7 +595,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       Alert.alert('Tamam', 'Sipariş tamamlandı.');
                       this.props.navigation.navigate('Nfc');
                     } else {
-                      console.log(isSuccess)
+                      console.log(isSuccess);
                       // Alert.alert('Hata', isSuccess['Message']);
                       this.setState({showConfirm: false});
                     }
@@ -671,8 +708,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       freeItem={freeItem}
                       customer={this.props.Customer.current}
                       onAddPress={(stokId, change) => {
-                        let currentTotal = 0;
-                        let itemPrice = 0;
                         this.props.Adisyon.current.ITEMS.filter(
                           i => !i.OLD,
                         ).forEach(i => {
@@ -697,15 +732,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                                 ));
                           }
                         });
-
-                        // if (
-                        //   this.props.Customer.current &&
-                        //   currentTotal + itemPrice >
-                        //     this.props.Customer.current.BALANCE
-                        // ) {
-                        //   Alert.alert('Uyarı', 'Yeterli bakiye yok');
-                        //   return;
-                        // }
                         if (!change) item.QUANTITY = item.QUANTITY + 1;
                         this.setState({});
                       }}
@@ -864,7 +890,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                 if (this.props.Customer.current) {
                   this.setState({showConfirm: true});
                 } else {
-                  this.setState({showNfc: true});
+                  // this.setState({showNfc: true});
                 }
               } else {
                 Alert.alert(

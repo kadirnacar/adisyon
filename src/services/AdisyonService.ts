@@ -8,6 +8,7 @@ export class AdisyonService extends ServiceBase {
     type: string,
     customer: ICustomer,
   ) {
+   
     var result = await this.requestJson<any>({
       url: `${config.restUrl}`,
       method: 'POST',
@@ -34,7 +35,7 @@ export class AdisyonService extends ServiceBase {
                 PRODUCTID: item.ID,
                 NOTES: item.DESC,
                 QUANTITY: item.QUANTITY,
-                FREEITEMTRANSID:item.FREEITEMTRANSID,
+                FREEITEMTRANSID: item.FREEITEMTRANSID,
                 DISCOUNTMODE: item.ISAI
                   ? 20
                   : item.ISFREEITEM == true

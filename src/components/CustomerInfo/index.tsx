@@ -293,7 +293,6 @@ class CustomerInfoComp extends Component<Props, CustomerState> {
               borderColor: colors.borderColor,
               borderWidth: 2,
               padding: 10,
-              marginHorizontal: 5,
             },
             this.props.style,
           ]}>

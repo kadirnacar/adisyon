@@ -76,45 +76,9 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
     return this.props.Customer.current ? (
       <SafeAreaView style={container}>
         <CustomerInfo style={{height: 80, width: '100%'}} />
-        <View style={{}}>
+        <View style={{flex: 1}}>
           <FlatList
-            ListFooterComponent={props => {
-              let total = 0;
-              if (this.props.Customer.currentTrans) {
-                this.props.Customer.currentTrans.forEach(item => {
-                  total += item.CTOTAL * item.AMOUNT;
-                });
-              }
-              return (
-                <View
-                  style={{
-                    borderBottomWidth: 1,
-                    flex: 1,
-                    flexDirection: 'row',
-                    height: 30,
-                  }}>
-                  <View
-                    style={{borderWidth: 0, flexDirection: 'column', flex: 1}}>
-                    <Text style={{fontWeight: 'bold', fontSize: 16}}>
-                      Toplam
-                    </Text>
-                  </View>
-                  <View
-                    style={{borderWidth: 0, flexDirection: 'column', flex: 1}}>
-                    <View
-                      style={{
-                        borderWidth: 0,
-                        flexWrap: 'nowrap',
-                        alignContent: 'flex-end',
-                        alignItems: 'flex-end',
-                        alignSelf: 'flex-end',
-                      }}>
-                      <Text style={{fontWeight: 'bold', fontSize: 16}}>{total.toFixed(2)}</Text>
-                    </View>
-                  </View>
-                </View>
-              );
-            }}
+            
             data={
               this.props.Customer.currentTrans
                 ? this.props.Customer.currentTrans.sort((a, b) => {
@@ -126,83 +90,142 @@ class CustomerTransScreen extends Component<Props, CustomerTransState> {
                   })
                 : []
             }
-            style={{height: height - 160}}
             renderItem={({item, index}) => {
               return (
-                <View
-                  style={{borderBottomWidth: 1, flex: 1, flexDirection: 'row'}}>
-                  <View
-                    style={{borderWidth: 0, flexDirection: 'column', flex: 1}}>
-                    <Text>{item.LOCATION}</Text>
-                    <Text>{item.PRODUCT}</Text>
+                <View style={{flex: 1, borderBottomWidth: 1}}>
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <Text style={{flex: 1}}>{item.OPERATIONTYPE}</Text>
                   </View>
-                  <View
-                    style={{borderWidth: 0, flexDirection: 'column', flex: 1}}>
-                    <View
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <Text style={{flex: 1}}>{item.LOCATION}</Text>
+                    <Text
                       style={{
-                        borderWidth: 0,
-                        flexWrap: 'nowrap',
                         alignContent: 'flex-end',
                         alignItems: 'flex-end',
                         alignSelf: 'flex-end',
+                        textAlign: 'right',
+                        justifyContent: 'flex-end',
                       }}>
+                      {item.DATE
+                        ? moment
+                            .utc(item.DATE)
+                            .local()
+                            .format('DD.MM.YYYY') +
+                          ' ' +
+                          moment
+                            .utc(item.TIME)
+                            .local()
+                            .format('HH:mm')
+                        : null}
+                    </Text>
+                  </View>
+                  <View style={{flex: 1, flexDirection: 'row'}}>
+                    <Text style={{flex: 1}}>
+                      {item.PRODUCT} x {item.AMOUNT}
+                    </Text>
+                    <NumberFormat
+                      value={item.CTOTAL}
+                      displayType={'text'}
+                      decimalScale={2}
+                      suffix=" ₺"
+                      thousandSeparator={true}
+                      renderText={value => (
+                        <Text
+                          style={{
+                            alignContent: 'flex-end',
+                            alignItems: 'flex-end',
+                            alignSelf: 'flex-end',
+                            textAlign: 'right',
+                            justifyContent: 'flex-end',
+                          }}>
+                          {value}
+                        </Text>
+                      )}
+                    />
+                    {/* <Text
+                      style={{
+                        alignContent: 'flex-end',
+                        alignItems: 'flex-end',
+                        alignSelf: 'flex-end',
+                        textAlign: 'right',
+                        justifyContent: 'flex-end',
+                      }}>
+                      {item.CTOTAL}
+                    </Text> */}
+                  </View>
+                </View>
+                /* <View
+                    style={{
+                      borderBottomWidth: 1,
+                      flex: 1,
+                      flexDirection: 'row',
+                    }}>
+                    <View
+                      style={{
+                        borderWidth: 0,
+                        flexDirection: 'column',
+                        flex: 1,
+                      }}>
+                      <Text>{item.LOCATION}</Text>
                       <Text>
-                        {item.DATE
-                          ? moment
-                              .utc(item.DATE)
-                              .local()
-                              .format('DD.MM.YYYY') +
-                            ' ' +
-                            moment
-                              .utc(item.TIME)
-                              .local()
-                              .format('HH:mm')
-                          : null}
+                        {item.PRODUCT} x {item.AMOUNT}
                       </Text>
                     </View>
                     <View
                       style={{
                         borderWidth: 0,
-                        marginTop: 2,
-                        flexDirection: 'row',
-                        alignContent: 'flex-end',
-                        alignItems: 'flex-end',
-                        alignSelf: 'flex-end',
-                        flexWrap: 'nowrap',
-                        justifyContent: 'flex-end',
+                        flexDirection: 'column',
+                        flex: 1,
                       }}>
-                      <Text style={{}}>{item.AMOUNT} x </Text>
-                      <NumberFormat
-                        value={item.CTOTAL}
-                        displayType={'text'}
-                        decimalScale={2}
-                        suffix=" ₺"
-                        thousandSeparator={true}
-                        renderText={value => <Text style={{}}>{value}</Text>}
-                      />
-
-                      <Text style={{}}> = </Text>
-
-                      <NumberFormat
-                        value={item.CTOTAL * item.AMOUNT}
-                        displayType={'text'}
-                        decimalScale={2}
-                        thousandSeparator={true}
-                        suffix=" ₺"
-                        renderText={value => (
-                          <Text style={{}}>{parseFloat(value).toFixed(2)}</Text>
-                        )}
-                      />
+                      <View
+                        style={{
+                          borderWidth: 0,
+                          flexWrap: 'nowrap',
+                          alignContent: 'flex-end',
+                          alignItems: 'flex-end',
+                          alignSelf: 'flex-end',
+                        }}>
+                        <Text>
+                          {item.DATE
+                            ? moment
+                                .utc(item.DATE)
+                                .local()
+                                .format('DD.MM.YYYY') +
+                              ' ' +
+                              moment
+                                .utc(item.TIME)
+                                .local()
+                                .format('HH:mm')
+                            : null}
+                        </Text>
+                      </View>
+                      <View
+                        style={{
+                          borderWidth: 0,
+                          marginTop: 2,
+                          flexDirection: 'row',
+                          alignContent: 'flex-end',
+                          alignItems: 'flex-end',
+                          alignSelf: 'flex-end',
+                          flexWrap: 'nowrap',
+                          justifyContent: 'flex-end',
+                        }}>
+                        <NumberFormat
+                          value={item.CTOTAL}
+                          displayType={'text'}
+                          decimalScale={2}
+                          suffix=" ₺"
+                          thousandSeparator={true}
+                          renderText={value => <Text style={{}}>{value}</Text>}
+                        />
+                      </View>
                     </View>
-                  </View>
-                </View>
+                  </View>*/
               );
             }}
             numColumns={1}
             keyExtractor={(item, index) => index.toString()}
           />
-        </View>
-        <View style={{position: 'absolute', bottom: 10, width: width}}>
           <TouchableHighlight
             underlayColor="#ffffff00"
             style={{

@@ -3,6 +3,7 @@ import {AdisyonService} from '@services';
 import {Alert} from 'react-native';
 import {batch} from 'react-redux';
 import {Actions} from './state';
+import { ApplicationState } from '../../store';
 
 export const actionCreators = {
   sendItem: (data: IAdisyon, customer: ICustomer) => async (
