@@ -332,6 +332,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
                 const isSuccess = await this.props.AdisyonActions.payItem(
                   this.props.Adisyon.current,
+                  this.props.Customer.current,
                 );
                 if (isSuccess['Success']) {
                   Alert.alert('Tamam', 'Sipariş tamamlandı.');
@@ -534,6 +535,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
 
                     const isSuccess = await this.props.AdisyonActions.payItem(
                       this.props.Adisyon.current,
+                      this.props.Customer.current,
                     );
 
                     if (isSuccess) {
@@ -910,6 +912,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                   this.props.Adisyon.current.POSCHECKTYPEID = this.props.Customer.current.POSCHECKTYPEID;
                   const isSuccess = await this.props.AdisyonActions.sendItem(
                     this.props.Adisyon.current,
+                    this.props.Customer.current,
                   );
                   if (isSuccess) {
                     Alert.alert('Tamam', 'Sipariş tamamlandı.');

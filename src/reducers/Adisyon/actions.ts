@@ -1,15 +1,18 @@
-import {IAdisyon} from '@models';
+import {IAdisyon, ICustomer} from '@models';
 import {AdisyonService} from '@services';
 import {Alert} from 'react-native';
 import {batch} from 'react-redux';
 import {Actions} from './state';
 
 export const actionCreators = {
-  sendItem: (data: IAdisyon) => async (dispatch, getState) => {
+  sendItem: (data: IAdisyon, customer: ICustomer) => async (
+    dispatch,
+    getState,
+  ) => {
     let isSuccess: boolean = false;
     await batch(async () => {
       await dispatch({type: Actions.RequestSendAdisyonItems});
-      var result = await AdisyonService.sendItem(data, 'SAVE');
+      var result = await AdisyonService.sendItem(data, 'SAVE', customer);
 
       const isRequestSuccess =
         result.value && result.value.length > 0 && result.value[0].length > 0
@@ -31,11 +34,14 @@ export const actionCreators = {
 
     return isSuccess;
   },
-  payItem: (data: IAdisyon) => async (dispatch, getState) => {
+  payItem: (data: IAdisyon, customer: ICustomer) => async (
+    dispatch,
+    getState,
+  ) => {
     let isSuccess: boolean = false;
     await batch(async () => {
       await dispatch({type: Actions.RequestSendAdisyonItems});
-      var result = await AdisyonService.sendItem(data, 'ROOM');
+      var result = await AdisyonService.sendItem(data, 'ROOM', customer);
 
       if (result.hasErrors()) {
         Alert.alert(result.errors[0]);
