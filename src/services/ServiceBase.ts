@@ -116,7 +116,7 @@ export abstract class ServiceBase {
     }
     if (config.logRequest) {
       if (opts && opts.data && opts.data.object != 'SP_POS_GETPOSDATA') {
-        FileService.addLogFile(
+        await FileService.addLogFile(
           JSON.stringify({
             request: opts,
             response: result,

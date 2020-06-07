@@ -9,7 +9,7 @@ import {
   StokGrupActions,
   UserActions,
 } from '@reducers';
-import {UpdaterService} from '@services';
+import {UpdaterService, FileService} from '@services';
 import {ApplicationState} from '@store';
 import * as path from 'path';
 import React, {Component} from 'react';
@@ -36,6 +36,7 @@ import {
 } from 'react-navigation';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import config from '@config';
 
 const {width, scale, height} = Dimensions.get('window');
 
@@ -168,6 +169,11 @@ class LoginScreen extends Component<Props, LoginState> {
           }
         } catch (error) {
           console.warn(error);
+          if (config.logRequest) {
+            try {
+              await FileService.addLogFile(JSON.stringify(error));
+            } catch {}
+          }
           // Alert.alert(JSON.stringify(error));
           this.setState({isRequest: true, showDownloader: false});
         }
@@ -184,8 +190,6 @@ class LoginScreen extends Component<Props, LoginState> {
     }
     this.setState({isRequest: false});
   }
-
- 
 
   async handleComponentMount(payload: NavigationEventPayload) {
     await this.props.UserActions.clear();
