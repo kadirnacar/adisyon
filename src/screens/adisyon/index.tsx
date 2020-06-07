@@ -226,11 +226,12 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
             const birimFiyat =
               stokFiyat -
               parseFloat((stokFiyat * (+discount / 100)).toFixed(2));
-            const fiyat = (
-              (i.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
-                ? i.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
-                : 0) * birimFiyat
-            );
+            const fiyat =
+              (i.QUANTITY -
+                (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0) >
+              0
+                ? i.QUANTITY - (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
+                : 0) * birimFiyat;
             currentTotal += fiyat;
           }
         })
@@ -353,7 +354,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                   Alert.alert('Tamam', 'Sipariş tamamlandı.');
                   this.props.navigation.navigate('TableSelect');
                 } else {
-                  Alert.alert('Hata', isSuccess['Message']);
+                  // Alert.alert('Hata', isSuccess['Message']);
                 }
               }
               this.setState({showNfc: false});
@@ -557,7 +558,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       Alert.alert('Tamam', 'Sipariş tamamlandı.');
                       this.props.navigation.navigate('Nfc');
                     } else {
-                      Alert.alert('Hata', isSuccess['Message']);
+                      console.log(isSuccess)
+                      // Alert.alert('Hata', isSuccess['Message']);
                       this.setState({showConfirm: false});
                     }
                   }}>
@@ -936,8 +938,8 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       this.props.navigation.navigate('TableSelect');
                     else this.props.navigation.navigate('Nfc');
                   } else {
-                    console.log(isSuccess)
-                    Alert.alert('Hata', isSuccess['Message']);
+                    console.log(isSuccess);
+                    // Alert.alert('Hata', isSuccess['Message']);
                   }
                 } else {
                   Alert.alert(

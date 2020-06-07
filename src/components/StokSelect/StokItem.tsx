@@ -135,10 +135,10 @@ export class StokItemComp extends Component<Props, StokItemState> {
                 justifyContent:"flex-end",
                 textAlign:"right"
               }}>
-              {freeItem != null ? 'Cabana : ' + freeItem.QUANTITY + " + ": ''} 
+              {freeItem != null ? 'Cabana : ' + (freeItem.QUANTITY - freeItem.USEDQUANTITY) + " + ": ''} 
               {(
-                (item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
-                  ? item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
+                (item.QUANTITY - (freeItem ? freeItem.QUANTITY  - freeItem.USEDQUANTITY: 0) > 0
+                  ? item.QUANTITY - (freeItem ? freeItem.QUANTITY  - freeItem.USEDQUANTITY: 0)
                   : 0) * fiyat
               ).toFixed(2)}₺
             </Text>

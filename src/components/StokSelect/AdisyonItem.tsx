@@ -51,8 +51,11 @@ export class AdisyonItem extends Component<Props, any> {
     const birimFiyat =
       stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2));
     const fiyat = (
-      (item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
-        ? item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
+      (item.QUANTITY -
+        (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0) >
+      0
+        ? item.QUANTITY -
+          (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
         : 0) * birimFiyat
     ).toFixed(2);
     return (
@@ -148,11 +151,13 @@ export class AdisyonItem extends Component<Props, any> {
                       textAlign: 'left',
                     }}>
                     {freeItem != null
-                      ? 'Cabana : ' + freeItem.QUANTITY + ' + '
+                      ? 'Cabana : ' +
+                        (freeItem.QUANTITY - freeItem.USEDQUANTITY) +
+                        ' + '
                       : ''}
                     {(
-                      (item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
-                        ? item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
+                      (item.QUANTITY - (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0) > 0
+                        ? item.QUANTITY - (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
                         : 0) * birimFiyat
                     ).toFixed(2)}
                     ₺
