@@ -168,7 +168,6 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
           this.props.Table.current.MASANO,
         );
       }
-      console.log(this.props.Department);
       if (this.props.Department.useTable) {
         this.setState({showTableNo: true});
       }

@@ -4,13 +4,22 @@ import * as RNFS from 'react-native-fs';
 import {IConfig} from '@models';
 
 class FileServiceHelper {
-  stateFile: string = path.join(RNFS.ExternalDirectoryPath, 'state.json');
-  configFile: string = path.join(RNFS.ExternalDirectoryPath, 'config.json');
-  logFile: string = path.join(RNFS.DownloadDirectoryPath, 'landoflegens-log.txt');
+  stateFile: string = path.join(
+    RNFS.ExternalStorageDirectoryPath,
+    'state.json',
+  );
+  configFile: string = path.join(
+    RNFS.ExternalStorageDirectoryPath,
+    'config.json',
+  );
+  logFile: string = path.join(
+    RNFS.DownloadDirectoryPath,
+    'landoflegens-log.txt',
+  );
 
   public async readConfigFromFile(): Promise<any> {
     try {
-      if (!RNFS.exists(this.stateFile)) {
+      if (!(await RNFS.exists(this.configFile))) {
         return {};
       }
       const content = await RNFS.readFile(this.configFile);
@@ -24,6 +33,9 @@ class FileServiceHelper {
 
   public async saveConfigToFile(config: IConfig): Promise<void> {
     try {
+      if (await RNFS.exists(this.configFile)) {
+        await RNFS.unlink(this.configFile);
+      }
       await RNFS.writeFile(this.configFile, JSON.stringify(config));
     } catch {}
   }
@@ -34,7 +46,7 @@ class FileServiceHelper {
   }
   public async readStateFromFile(): Promise<any> {
     try {
-      if (!RNFS.exists(this.stateFile)) {
+      if (!(await RNFS.exists(this.stateFile))) {
         return {};
       }
       const content = await RNFS.readFile(this.stateFile);

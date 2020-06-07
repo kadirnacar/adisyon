@@ -16,7 +16,6 @@ export class CustomerService extends ServiceBase {
                 }
             }
         });
-        console.log(result);
         return result;
     }
     public static async getFreeItems(customerId: number) {

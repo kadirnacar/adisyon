@@ -39,15 +39,10 @@ export default class App extends Component<any, any> {
     // this.loadData();
   }
   async loadData() {
-    console.log('DepartmentActions.getItems');
     await DepartmentActions.getItems()(store.dispatch, store.getState);
-    console.log('StokActions.getItems');
     await StokActions.getItems()(store.dispatch, store.getState);
-    console.log('ExchangeActions.getItems');
     await ExchangeActions.getItems()(store.dispatch, store.getState);
-    console.log('ActivityActions.getItems');
     await ActivityActions.getItems(new Date())(store.dispatch, store.getState);
-    console.log('ActivityActions.getTurnikeItems');
     await ActivityActions.getTurnikeItems(new Date())(
       store.dispatch,
       store.getState,

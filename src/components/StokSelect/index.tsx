@@ -1,4 +1,4 @@
-import {IAdisyon, IStok, IStokGrup} from '@models';
+import {IAdisyon, ICustomerFreeItems, IStok, IStokGrup} from '@models';
 import {StokActions} from '@reducers';
 import {ApplicationState} from '@store';
 import {distinct} from '@utils';
@@ -66,6 +66,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         : false,
     );
     const groups = source.map(x => x.STOKGRUPID).filter(distinct);
+    console.log(source,this.props.Customer.freeItems);
     this.setState({
       source,
       groupIds: groups,
@@ -80,6 +81,16 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         keys: ['ADI', 'group.ADI'],
       })
       .map(i => i.obj);
+  }
+  getFreeItem(stok: IStok): ICustomerFreeItems {
+    let freeItem = this.props.Customer.freeItems
+      ? this.props.Customer.freeItems[stok.STOKID]
+      : null;
+    if (freeItem == null)
+      freeItem = this.props.Customer.freeGroups
+        ? this.props.Customer.freeGroups[stok.STOKGRUPID]
+        : null;
+    return freeItem;
   }
   render() {
     return (
@@ -276,22 +287,13 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         ? true
                         : false;
                     adisyonItem.ISAI = isAi;
-                    let isFree = this.props.Customer.freeItems
-                      ? this.props.Customer.freeItems[item.STOKID.toString()] !=
-                        null
-                      : false;
-                    if (!isFree)
-                      isFree = this.props.Customer.freeGroups
-                        ? this.props.Customer.freeGroups[
-                            item.STOKGRUPID.toString()
-                          ] != null
-                        : false;
+                    let freeItem = this.getFreeItem(item);
 
                     return (
                       <StokItem
                         discountRate={discountRate}
                         stok={item}
-                        isFree={isFree}
+                        freeItem={freeItem}
                         addable={!this.props.onlyList}
                         item={adisyonItem}
                         department={this.props.Department.current}
@@ -307,31 +309,15 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         }}
                         onAddPress={itm => {
                           const {adisyon} = this.props;
-
-                          let currentTotal = 0;
                           let count = 1;
-                          adisyon.ITEMS.filter(i => !i.OLD).forEach(i => {
-                            const stokItem = this.props.Stok.items.find(
-                              t => t.STOKID == i.ID,
-                            );
-                            currentTotal += i.QUANTITY * stokItem.SFIYAT1;
-                          });
-
-                          const stokItem = this.props.Stok.items.find(
-                            t => t.STOKID == itm.ID,
-                          );
-                          // if (
-                          //   this.props.Customer.current &&
-                          //   currentTotal + stokItem.SFIYAT1 * count >
-                          //     this.props.Customer.current.BALANCE
-                          // ) {
-                          //   Alert.alert('Uyarı', 'Yeterli bakiye yok');
-                          //   return;
-                          // }
 
                           const adisyonIndex = adisyon.ITEMS.findIndex(
                             i => i.ID == itm.ID && !i.OLD,
                           );
+                          if (freeItem != null) {
+                            itm.FREEITEMTRANSID = freeItem.ID;
+                            itm.ISFREEITEM = true;
+                          }
                           if (adisyonIndex < 0) adisyon.ITEMS.unshift(itm);
                           itm.QUANTITY = itm.QUANTITY + count;
                           if (this.props.onPress) this.props.onPress(adisyon);

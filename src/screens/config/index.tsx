@@ -11,6 +11,7 @@ import {
   CheckBox,
   TouchableHighlight,
   View,
+  KeyboardAvoidingView,
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import {
@@ -68,7 +69,7 @@ class ConfigScreen extends Component<Props, ConfigState> {
           onWillFocus={this.handleComponentMount}
           onWillBlur={this.handleComponentUnMount}
         />
-        <SafeAreaView style={container}>
+        <KeyboardAvoidingView style={container}>
           <View style={styles.formContainer}>
             <TextInput
               placeholder="Server Url"
@@ -124,6 +125,7 @@ class ConfigScreen extends Component<Props, ConfigState> {
             />
             <View
               style={{
+                flexDirection:"row",
                 backgroundColor: colors.inputBackColor,
                 borderColor: colors.borderColor,
                 borderWidth: 1,
@@ -137,6 +139,26 @@ class ConfigScreen extends Component<Props, ConfigState> {
                 onValueChange={text => {
                   const stateConfig = this.state.config;
                   stateConfig.logRequest = text;
+                  this.setState({config: stateConfig});
+                }}
+              />
+            </View>
+            <View
+              style={{
+                flexDirection:"row",
+                backgroundColor: colors.inputBackColor,
+                borderColor: colors.borderColor,
+                borderWidth: 1,
+                paddingVertical: 10,
+                paddingHorizontal: 15,
+                borderRadius: 25,
+              }}>
+              <Text>Test : </Text>
+              <CheckBox
+                value={this.state.config.isTest}
+                onValueChange={text => {
+                  const stateConfig = this.state.config;
+                  stateConfig.isTest = text;
                   this.setState({config: stateConfig});
                 }}
               />
@@ -166,7 +188,7 @@ class ConfigScreen extends Component<Props, ConfigState> {
               </Text>
             </TouchableHighlight>
           </View>
-        </SafeAreaView>
+        </KeyboardAvoidingView>
       </React.Fragment>
     );
   }

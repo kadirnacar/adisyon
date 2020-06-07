@@ -16,7 +16,7 @@ export const actionCreators = {
             const stoks = result.value && result.value.length > 0 ? result.value[1] : [];
             const stokDeps = result.value && result.value.length > 0 ? result.value[2] : [];
             const stokBarcodes = result.value && result.value.length > 0 ? result.value[3] : [];
-            await dispatch({ type: GroupActions.ReceiveStokGrupItems, payload: groups.map(i => { return { ADI: i.NAME, STOKGRUPID: i.ID } }) });
+            await dispatch({ type: GroupActions.ReceiveStokGrupItems, payload: groups.map(i => { return { ADI: i.NAME, STOKGRUPID: i.ID, PARENTGROUPID:i.PARENTGROUPID} }) });
             const state: ApplicationState = getState();
             await dispatch({
                 type: Actions.ReceiveStokItems, payload: stoks.map(i => {

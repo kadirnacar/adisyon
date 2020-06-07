@@ -1,4 +1,4 @@
-import {IAdisyonProduct, IDepartment, IStok} from '@models';
+import {IAdisyonProduct, IDepartment, IStok, ICustomerFreeItems} from '@models';
 import {ExchangeActions} from '@reducers';
 import {ApplicationState} from '@store';
 import {contrast} from '@utils';
@@ -25,7 +25,7 @@ interface StokItemProps {
   item: IAdisyonProduct;
   stok: IStok;
   addable?: boolean;
-  isFree: boolean;
+  freeItem?: ICustomerFreeItems;
   freeQuantity?: number;
   department: IDepartment;
   discountRate: number;
@@ -44,7 +44,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
   }
 
   render() {
-    const {item, stok, isFree, discountRate, department} = this.props;
+    const {item, stok, freeItem, discountRate, department} = this.props;
     const stokFiyat =
       this.props.Customer.current &&
       stok &&
@@ -54,10 +54,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
         ? 0
         : stok.SFIYAT1;
     const fiyat =
-      isFree == true
-        ? 0
-        : stokFiyat -
-          parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2));
+      stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2));
     return (
       <View
         style={{
@@ -84,7 +81,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
               alignItems: 'flex-start',
               alignContent: 'flex-start',
             }}>
-            {isFree ? '**' : ''}
+            {freeItem != null ? '**' : ''}
             {stok.ADI}
           </Text>
           <TouchableHighlight
@@ -127,6 +124,25 @@ export class StokItemComp extends Component<Props, StokItemState> {
               alignItems: 'flex-end',
               alignSelf: 'flex-end',
             }}>
+            <Text
+              style={{
+                marginRight: 5,
+                fontSize: 12,
+                width:130,
+                alignSelf: 'flex-start',
+                alignItems: 'flex-start',
+                alignContent: 'flex-start',
+                justifyContent:"flex-end",
+                textAlign:"right"
+              }}>
+              {freeItem != null ? 'Cabana : ' + freeItem.QUANTITY + " + ": ''} 
+              {(
+                (item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
+                  ? item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
+                  : 0) * fiyat
+              ).toFixed(2)}₺
+            </Text>
+
             <TouchableHighlight
               underlayColor="#ffffff00"
               activeOpacity={1}
@@ -175,7 +191,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                 textAlign: 'center',
                 fontSize: 16,
                 borderRadius: 10,
-                minWidth: 75,
+                minWidth: 55,
               }}
             />
 

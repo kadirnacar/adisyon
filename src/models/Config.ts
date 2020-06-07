@@ -3,4 +3,5 @@ export interface IConfig {
   tenant?: number;
   useAlagart?: boolean;
   logRequest?: boolean;
+  isTest?: boolean;
 }

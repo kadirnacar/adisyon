@@ -34,6 +34,7 @@ export class AdisyonService extends ServiceBase {
                 PRODUCTID: item.ID,
                 NOTES: item.DESC,
                 QUANTITY: item.QUANTITY,
+                FREEITEMTRANSID:item.FREEITEMTRANSID,
                 DISCOUNTMODE: item.ISAI
                   ? 20
                   : item.ISFREEITEM == true
