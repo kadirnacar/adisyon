@@ -936,6 +936,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       this.props.navigation.navigate('TableSelect');
                     else this.props.navigation.navigate('Nfc');
                   } else {
+                    console.log(isSuccess)
                     Alert.alert('Hata', isSuccess['Message']);
                   }
                 } else {
