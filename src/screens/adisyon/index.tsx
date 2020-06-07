@@ -44,6 +44,7 @@ import {
 } from 'react-navigation-stack';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {IStok, ICustomerFreeItems} from '@models';
 const {width, scale, height} = Dimensions.get('window');
 
 interface AdisyonState {
@@ -193,7 +194,16 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
   async handleComponentUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
-
+  getFreeItem(stok: IStok): ICustomerFreeItems {
+    let freeItem = this.props.Customer.freeItems
+      ? this.props.Customer.freeItems[stok.STOKID]
+      : null;
+    if (freeItem == null)
+      freeItem = this.props.Customer.freeGroups
+        ? this.props.Customer.freeGroups[stok.STOKGRUPID]
+        : null;
+    return freeItem;
+  }
   render() {
     let currentTotal = 0;
     let discount =
@@ -204,6 +214,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
       ? this.props.Adisyon.current.ITEMS.forEach(i => {
           const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
           if (stokItem) {
+            let freeItem = this.getFreeItem(stokItem);
             const stokFiyat =
               this.props.Customer.current &&
               stokItem &&
@@ -212,10 +223,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
               this.props.Department.current.AIENABLED == true
                 ? 0
                 : stokItem.SFIYAT1;
-            currentTotal +=
-              i.QUANTITY *
-              (stokFiyat -
-                parseFloat((stokFiyat * (+discount / 100)).toFixed(2)));
+            const birimFiyat =
+              stokFiyat -
+              parseFloat((stokFiyat * (+discount / 100)).toFixed(2));
+            const fiyat = (
+              (i.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
+                ? i.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
+                : 0) * birimFiyat
+            );
+            currentTotal += fiyat;
           }
         })
       : null;
@@ -642,6 +658,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                   const stok = this.props.Stok.items.find(
                     itm => itm.STOKID == item.ID,
                   );
+                  let freeItem = this.getFreeItem(stok);
                   return (
                     <AdisyonItem
                       key={index}
@@ -649,7 +666,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       department={this.props.Department.current}
                       item={item}
                       stok={stok}
-                      isFree={false}
+                      freeItem={freeItem}
                       customer={this.props.Customer.current}
                       onAddPress={(stokId, change) => {
                         let currentTotal = 0;

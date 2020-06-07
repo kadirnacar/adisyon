@@ -1,4 +1,10 @@
-import {IAdisyonProduct, ICustomer, IDepartment, IStok} from '@models';
+import {
+  IAdisyonProduct,
+  ICustomer,
+  IDepartment,
+  IStok,
+  ICustomerFreeItems,
+} from '@models';
 import React, {Component} from 'react';
 import {Text, TextInput, TouchableHighlight, View} from 'react-native';
 import Collapsible from 'react-native-collapsible';
@@ -9,7 +15,7 @@ import {colors} from '../colors';
 interface Props {
   item: IAdisyonProduct;
   stok: IStok;
-  isFree: boolean;
+  freeItem?: ICustomerFreeItems;
   customer: ICustomer;
   department: IDepartment;
   onAddPress?: (item: IAdisyonProduct, change?: boolean) => void;
@@ -26,7 +32,14 @@ export class AdisyonItem extends Component<Props, any> {
   }
 
   render() {
-    const {item, stok, isFree, customer, discountRate, department} = this.props;
+    const {
+      item,
+      stok,
+      freeItem,
+      customer,
+      discountRate,
+      department,
+    } = this.props;
     const stokFiyat =
       customer &&
       stok &&
@@ -35,15 +48,13 @@ export class AdisyonItem extends Component<Props, any> {
       department.AIENABLED == true
         ? 0
         : stok.SFIYAT1;
-    const fiyat =
-      isFree == true
-        ? 0
-        : (
-            parseFloat(
-              (stokFiyat - stokFiyat * (discountRate / 100)).toFixed(2),
-            ) * item.QUANTITY
-          ).toFixed(2);
-
+    const birimFiyat =
+      stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2));
+    const fiyat = (
+      (item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
+        ? item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
+        : 0) * birimFiyat
+    ).toFixed(2);
     return (
       <View
         style={{
@@ -54,20 +65,21 @@ export class AdisyonItem extends Component<Props, any> {
           marginVertical: 2,
           borderBottomColor: colors.borderColor,
         }}>
-        <View style={{flex: 1, flexDirection: 'row'}}>
+        <View style={{flex: 1}}>
           <View
             style={{
-              flex: 2,
+              flex: 1,
             }}>
             <TouchableHighlight
               underlayColor="#ffffff00"
-              style={{flexDirection: 'row'}}
+              style={{flexDirection: 'row', flex: 1}}
               onPressIn={() =>
                 this.setState({collapsed: !this.state.collapsed})
               }>
               <React.Fragment>
                 <Icon
                   style={{
+                    flexDirection: 'column',
                     borderWidth: 1,
                     alignContent: 'center',
                     alignSelf: 'center',
@@ -82,40 +94,71 @@ export class AdisyonItem extends Component<Props, any> {
                   name={this.state.collapsed ? 'angle-down' : 'angle-up'}
                   size={15}
                 />
-                <Text style={{fontSize: 16}}>{stok.ADI}</Text>
+                <Text style={{fontSize: 16, flexDirection: 'column'}}>
+                  {stok.ADI}
+                </Text>
+                {/* <View
+                  style={{
+                    flex: 1,
+                    flexDirection: 'column',
+                    marginBottom: 3,
+                    alignSelf: 'flex-end',
+                    alignContent: 'flex-end',
+                    alignItems: 'flex-end',
+                  }}>
+                  <NumberFormat
+                    value={fiyat}
+                    displayType={'text'}
+                    thousandSeparator={true}
+                    suffix=" ₺"
+                    renderText={value => (
+                      <Text
+                        style={{
+                          textDecorationLine: 'underline',
+                          fontSize: 15,
+                        }}>
+                        {value}
+                      </Text>
+                    )}
+                  />
+                </View> */}
               </React.Fragment>
             </TouchableHighlight>
           </View>
           <View
             style={{
               flex: 1,
+              flexDirection: 'row',
+              alignContent: 'flex-end',
+              alignItems: 'flex-end',
+              alignSelf: 'flex-end',
             }}>
-            <View
-              style={{
-                flex: 1,
-                flexDirection: 'row',
-                marginBottom: 3,
-                alignSelf: 'flex-end',
-              }}>
-              <NumberFormat
-                value={fiyat}
-                displayType={'text'}
-                thousandSeparator={true}
-                suffix=" ₺"
-                renderText={value => (
+            {!this.props.item.OLD ? (
+              <React.Fragment>
+                <View style={{flexDirection: 'row'}}>
                   <Text
                     style={{
-                      textDecorationLine: 'underline',
-                      fontSize: 15,
+                      flexDirection: 'row',
+                      marginRight: 5,
+                      fontSize: 18,
+                      alignSelf: 'flex-start',
+                      alignItems: 'flex-start',
+                      alignContent: 'flex-start',
+                      justifyContent: 'flex-start',
+                      textAlign: 'left',
                     }}>
-                    {value}
+                    {freeItem != null
+                      ? 'Cabana : ' + freeItem.QUANTITY + ' + '
+                      : ''}
+                    {(
+                      (item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0) > 0
+                        ? item.QUANTITY - (freeItem ? freeItem.QUANTITY : 0)
+                        : 0) * birimFiyat
+                    ).toFixed(2)}
+                    ₺
                   </Text>
-                )}
-              />
-            </View>
-            <View style={{flex: 1, flexDirection: 'row'}}>
-              {!this.props.item.OLD ? (
-                <React.Fragment>
+                </View>
+                <View style={{flexDirection: 'row'}}>
                   <TouchableHighlight
                     underlayColor="#ffffff00"
                     activeOpacity={1}
@@ -195,15 +238,15 @@ export class AdisyonItem extends Component<Props, any> {
                     }}>
                     <Icon name="plus" size={30} />
                   </TouchableHighlight>
-                </React.Fragment>
-              ) : (
-                <Text>{item.QUANTITY}</Text>
-              )}
-            </View>
+                </View>
+              </React.Fragment>
+            ) : (
+              <Text>{item.QUANTITY}</Text>
+            )}
           </View>
         </View>
-        <Collapsible collapsed={this.state.collapsed}>
-          <View style={{}}>
+        <Collapsible style={{flex: 1}} collapsed={this.state.collapsed}>
+          <View style={{flex: 1}}>
             <TextInput
               value={item ? item.DESC : ''}
               editable={item && item.QUANTITY > 0 ? true : false}
@@ -213,6 +256,7 @@ export class AdisyonItem extends Component<Props, any> {
               }}
               style={{
                 width: '100%',
+                flex: 1,
                 borderColor: colors.inputBackColor,
                 borderWidth: 1,
                 paddingVertical: 1,
