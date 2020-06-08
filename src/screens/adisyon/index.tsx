@@ -194,14 +194,27 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
   async handleComponentUnmount() {
     BackHandler.removeEventListener('hardwareBackPress', this.handleBackPress);
   }
+  getGroupFreeItem(groupId?) {
+    if (!groupId || !this.props.Customer.freeGroups) {
+      return null;
+    }
+    const freeGroup = this.props.Customer.freeGroups[groupId];
+    if (freeGroup) {
+      return freeGroup;
+    }else{
+      return this.getGroupFreeItem(this.props.StokGrup.groups[groupId]?.PARENTGROUPID);
+    }
+  }
   getFreeItem(stok: IStok): ICustomerFreeItems {
     let freeItem = this.props.Customer.freeItems
       ? this.props.Customer.freeItems[stok.STOKID]
       : null;
-    if (freeItem == null)
-      freeItem = this.props.Customer.freeGroups
-        ? this.props.Customer.freeGroups[stok.STOKGRUPID]
-        : null;
+    if (freeItem == null) {
+      freeItem = this.getGroupFreeItem(stok.STOKGRUPID);
+    }
+    if(freeItem && !freeItem.UsedItems){
+      freeItem.UsedItems=[];
+    }
     return freeItem;
   }
   render() {
@@ -228,10 +241,10 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
               parseFloat((stokFiyat * (+discount / 100)).toFixed(2));
             const fiyat =
               (i.QUANTITY -
-                (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0) >
+                (freeItem ?  (freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed : 0) >
               0
                 ? i.QUANTITY -
-                  (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
+                  (freeItem ? (freeItem.QUANTITY - freeItem.USEDQUANTITY) - freeItem.TotalUsed: 0)
                 : 0) * birimFiyat;
             currentTotal += fiyat;
           }
@@ -558,7 +571,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         const freeItem = this.getFreeItem(stokItem);
                         if (
                           item.QUANTITY <=
-                          freeItem.QUANTITY - freeItem.USEDQUANTITY
+                          (freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed
                         ) {
                           items.push(item);
                         } else {
@@ -566,12 +579,12 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             ...item,
                             ...{
                               QUANTITY:
-                                freeItem.QUANTITY - freeItem.USEDQUANTITY,
+                              (freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed,
                             },
                           });
                           const unused =
                             item.QUANTITY -
-                            (freeItem.QUANTITY - freeItem.USEDQUANTITY);
+                            ((freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed);
                           items.push({
                             ...item,
                             ...{
@@ -733,6 +746,12 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                           }
                         });
                         if (!change) item.QUANTITY = item.QUANTITY + 1;
+                        if(freeItem!=null){
+                          if(!freeItem.TotalUsed){
+                            freeItem.TotalUsed=0;
+                          }
+                          freeItem.TotalUsed++;
+                        }
                         this.setState({});
                       }}
                       onRemovePress={stokId => {
@@ -740,11 +759,24 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                           stokId.QUANTITY = stokId.QUANTITY - 1;
                           if (stokId.QUANTITY <= 0)
                             this.props.Adisyon.current.ITEMS.splice(index, 1);
+                            if(freeItem!=null){
+                              if(!freeItem.TotalUsed){
+                                freeItem.TotalUsed=0;
+                              }
+                              freeItem.TotalUsed--;
+                            }
                           this.setState({});
                         } else if (index >= 0) {
                           this.props.Adisyon.current.ITEMS.splice(index, 1);
+                          if(freeItem!=null){
+                            if(!freeItem.TotalUsed){
+                              freeItem.TotalUsed=0;
+                            }
+                            freeItem.TotalUsed--;
+                          }
                           this.setState({});
                         }
+                        
                       }}
                     />
                   );

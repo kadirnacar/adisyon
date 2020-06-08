@@ -50,14 +50,14 @@ export class AdisyonItem extends Component<Props, any> {
         : stok.SFIYAT1;
     const birimFiyat =
       stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2));
-    const fiyat = (
-      (item.QUANTITY -
-        (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0) >
-      0
-        ? item.QUANTITY -
-          (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
-        : 0) * birimFiyat
-    ).toFixed(2);
+    const fiyat = freeItem
+      ? freeItem.TotalUsed > freeItem.QUANTITY - freeItem.USEDQUANTITY
+        ? birimFiyat
+        : 0
+      : birimFiyat;
+    const quantity = freeItem
+      ? freeItem.TotalUsed - (freeItem.QUANTITY - freeItem.USEDQUANTITY)
+      : item.QUANTITY;
     return (
       <View
         style={{
@@ -152,13 +152,13 @@ export class AdisyonItem extends Component<Props, any> {
                     }}>
                     {freeItem != null
                       ? 'Cabana : ' +
-                        (freeItem.QUANTITY - freeItem.USEDQUANTITY) +
+                        (freeItem.QUANTITY -
+                          freeItem.USEDQUANTITY -
+                          freeItem.TotalUsed) +
                         ' + '
                       : ''}
                     {(
-                      (item.QUANTITY - (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0) > 0
-                        ? item.QUANTITY - (freeItem ? freeItem.QUANTITY - freeItem.USEDQUANTITY : 0)
-                        : 0) * birimFiyat
+                      quantity * fiyat
                     ).toFixed(2)}
                     ₺
                   </Text>

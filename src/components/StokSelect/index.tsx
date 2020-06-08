@@ -1,27 +1,17 @@
-import {IAdisyon, ICustomerFreeItems, IStok, IStokGrup} from '@models';
-import {StokActions} from '@reducers';
-import {ApplicationState} from '@store';
-import {distinct} from '@utils';
+import { IAdisyon, ICustomerFreeItems, IStok, IStokGrup } from '@models';
+import { StokActions } from '@reducers';
+import { ApplicationState } from '@store';
+import { distinct } from '@utils';
 import fuzzysort from 'fuzzysort';
-import React, {Component} from 'react';
-import {
-  Button,
-  Dimensions,
-  FlatList,
-  Modal,
-  StyleProp,
-  Text,
-  TextInput,
-  View,
-  ViewStyle,
-} from 'react-native';
-import {NavigationInjectedProps, withNavigation} from 'react-navigation';
+import React, { Component } from 'react';
+import { Button, Dimensions, FlatList, Modal, StyleProp, Text, TextInput, View, ViewStyle } from 'react-native';
+import { NavigationInjectedProps, withNavigation } from 'react-navigation';
 import NumberFormat from 'react-number-format';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
-import {colors} from '../colors';
-import {GroupItem} from './GroupItem';
-import {StokItem} from './StokItem';
+import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { colors } from '../colors';
+import { GroupItem } from './GroupItem';
+import { StokItem } from './StokItem';
 
 const {width, scale, height} = Dimensions.get('window');
 
@@ -66,7 +56,6 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
         : false,
     );
     const groups = source.map(x => x.STOKGRUPID).filter(distinct);
-    console.log(source, this.props.Customer.freeItems);
     this.setState({
       source,
       groupIds: groups,
@@ -82,14 +71,28 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
       })
       .map(i => i.obj);
   }
+  getGroupFreeItem(groupId?) {
+    if (!groupId || !this.props.Customer.freeGroups) {
+      return null;
+    }
+    const freeGroup = this.props.Customer.freeGroups[groupId];
+    if (freeGroup) {
+      return freeGroup;
+    }else{
+      return this.getGroupFreeItem(this.props.StokGrup.groups[groupId]?.PARENTGROUPID);
+    }
+  }
   getFreeItem(stok: IStok): ICustomerFreeItems {
     let freeItem = this.props.Customer.freeItems
       ? this.props.Customer.freeItems[stok.STOKID]
       : null;
-    if (freeItem == null)
-      freeItem = this.props.Customer.freeGroups
-        ? this.props.Customer.freeGroups[stok.STOKGRUPID]
-        : null;
+      if (freeItem == null) {
+        freeItem = this.getGroupFreeItem(stok.STOKGRUPID);
+      }
+      if(freeItem && !freeItem.UsedItems){
+        freeItem.TotalUsed=0;
+        freeItem.UsedItems={};
+      }
     return freeItem;
   }
   render() {
@@ -309,9 +312,9 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         }}
                         onAddPress={itm => {
                           const {adisyon} = this.props;
-
+                          let freeItem = this.getFreeItem(item);
                           const adisyonIndex = adisyon.ITEMS.filter(
-                            i => i.ID == itm.ID && !i.OLD,
+                            i => i.ID == itm.ID && !i.OLD
                           );
 
                           if (
@@ -327,18 +330,75 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                           } else {
                             itm.QUANTITY++;
                           }
+                          if(freeItem!=null){
+                            freeItem.TotalUsed++;
+                            if(freeItem.TotalUsed<=(freeItem.QUANTITY-freeItem.USEDQUANTITY)){
+                              if(freeItem.UsedItems[itm.ID]){
+                                if(!freeItem.UsedItems[itm.ID].used){
+                                  freeItem.UsedItems[itm.ID].used=0;
+                                  freeItem.UsedItems[itm.ID].unused=0;
+                                }
+                                freeItem.UsedItems[itm.ID].used++;
+                              }else{
+                                freeItem.UsedItems[itm.ID]={used:1,unused:0};
+                              }
+                            }else{
+                              if(freeItem.UsedItems[itm.ID]){
+                                if(!freeItem.UsedItems[itm.ID].used){
+                                  freeItem.UsedItems[itm.ID].used=0;
+                                  freeItem.UsedItems[itm.ID].unused=0;
+                                }
+                                freeItem.UsedItems[itm.ID].unused++;
+                              }else{
+                                freeItem.UsedItems[itm.ID]={used:0,unused:1};
+                              }
+                            }
+                          }
                           if (this.props.onPress) this.props.onPress(adisyon);
                           this.setState({});
                         }}
                         onRemovePress={itm => {
                           const {adisyon} = this.props;
                           const adisyonIndex = adisyon.ITEMS.findIndex(
-                            i => i.ID == itm.ID && !i.OLD,
+                            i => i.ID == itm.ID && !i.OLD
                           );
+                          let freeItem = this.getFreeItem(item);
+
                           if (itm.QUANTITY - 1 > 0) {
                             itm.QUANTITY = itm.QUANTITY - 1;
                           } else if (adisyonIndex >= 0) {
                             adisyon.ITEMS.splice(adisyonIndex, 1);
+                          }
+                          if(freeItem!=null){
+                            if(freeItem.TotalUsed>0 && itm.QUANTITY >= 0){
+                            freeItem.TotalUsed--;
+                            }
+                            if(freeItem.TotalUsed==0){
+                              freeItem.UsedItems={};
+                            }
+                            
+                            let totalused=0;
+                            let totalunused=0;
+                            Object.keys(freeItem.UsedItems).forEach(key=>{
+                              totalused+=freeItem.UsedItems[key].used;
+                              totalunused+=freeItem.UsedItems[key].unused;
+                            });
+                            if(itm.ID in freeItem.UsedItems){
+                              if(freeItem.UsedItems[itm.ID].unused>0){
+                                freeItem.UsedItems[itm.ID].unused--;
+                                totalunused--;
+                              }else if(freeItem.UsedItems[itm.ID].used>0){
+                                freeItem.UsedItems[itm.ID].used--;
+                                totalused--;
+                              }
+                            if(freeItem.TotalUsed <= freeItem.QUANTITY-freeItem.USEDQUANTITY && totalunused>0){
+                              Object.keys(freeItem.UsedItems).forEach(key=>{
+                                freeItem.UsedItems[key].used += freeItem.UsedItems[key].unused;
+                                freeItem.UsedItems[key].unused=0;;
+                              });
+                            }
+
+                            }
                           }
                           if (this.props.onPress) this.props.onPress(adisyon);
                         }}

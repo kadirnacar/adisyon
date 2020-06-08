@@ -53,8 +53,17 @@ export class StokItemComp extends Component<Props, StokItemState> {
       department.AIENABLED == true
         ? 0
         : stok.SFIYAT1;
-    const fiyat =
+    const birimFiyat =
       stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2));
+
+    const quantity = freeItem
+      ? freeItem.TotalUsed >= freeItem.QUANTITY - freeItem.USEDQUANTITY
+        ? item.ID in freeItem.UsedItems
+          ? freeItem.UsedItems[item.ID].unused
+          : 0
+        : 0
+      : item.QUANTITY;
+    console.log(freeItem.UsedItems, item.ID,freeItem.TotalUsed);
     return (
       <View
         style={{
@@ -94,10 +103,11 @@ export class StokItemComp extends Component<Props, StokItemState> {
             }}
             underlayColor="#ffffff00"
             onPress={() => {
-              if (this.props.onShowExhange) this.props.onShowExhange(fiyat);
+              if (this.props.onShowExhange)
+                this.props.onShowExhange(birimFiyat);
             }}>
             <NumberFormat
-              value={fiyat}
+              value={birimFiyat}
               displayType={'text'}
               thousandSeparator={true}
               suffix=" ₺"
@@ -124,24 +134,29 @@ export class StokItemComp extends Component<Props, StokItemState> {
               alignItems: 'flex-end',
               alignSelf: 'flex-end',
             }}>
-            <Text
-              style={{
-                marginRight: 5,
-                fontSize: 12,
-                width:130,
-                alignSelf: 'flex-start',
-                alignItems: 'flex-start',
-                alignContent: 'flex-start',
-                justifyContent:"flex-end",
-                textAlign:"right"
-              }}>
-              {freeItem != null ? 'Cabana : ' + (freeItem.QUANTITY - freeItem.USEDQUANTITY) + " + ": ''} 
-              {(
-                (item.QUANTITY - (freeItem ? freeItem.QUANTITY  - freeItem.USEDQUANTITY: 0) > 0
-                  ? item.QUANTITY - (freeItem ? freeItem.QUANTITY  - freeItem.USEDQUANTITY: 0)
-                  : 0) * fiyat
-              ).toFixed(2)}₺
-            </Text>
+            <NumberFormat
+              value={quantity * birimFiyat}
+              displayType={'text'}
+              decimalScale={2}
+              suffix=" ₺"
+              thousandSeparator={true}
+              renderText={value => (
+                <Text
+                  style={{
+                    marginRight: 5,
+                    fontSize: 12,
+                  }}>
+                  {freeItem != null
+                    ? 'Cabana : ' +
+                      (freeItem.QUANTITY -
+                        freeItem.USEDQUANTITY -
+                        freeItem.TotalUsed) +
+                      ' + '
+                    : ''}
+                  {value}
+                </Text>
+              )}
+            />
 
             <TouchableHighlight
               underlayColor="#ffffff00"

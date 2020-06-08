@@ -1,20 +1,21 @@
-import { IStokGrup } from '@models';
-import { IBaseReducer } from '../BaseReducer';
+import {IStokGrup} from '@models';
+import {IBaseReducer} from '../BaseReducer';
 
 export enum Actions {
-    RequestStokGrupItems = "REQUEST_STOKGRUP_ITEMS",
-    ReceiveStokGrupItems = "RECEIVE_STOKGRUP_ITEMS"
+  RequestStokGrupItems = 'REQUEST_STOKGRUP_ITEMS',
+  ReceiveStokGrupItems = 'RECEIVE_STOKGRUP_ITEMS',
 }
 
 export interface StokGrupState extends IBaseReducer {
-    items?: IStokGrup[];
+  items?: IStokGrup[];
+  groups?: {[key: number]: IStokGrup};
 }
 
 export interface IRequestStokGrupItemsAction {
-    type: Actions.RequestStokGrupItems;
+  type: Actions.RequestStokGrupItems;
 }
 
 export interface IReceiveStokGrupItemsAction {
-    type: Actions.ReceiveStokGrupItems;
-    payload: IStokGrup[];
+  type: Actions.ReceiveStokGrupItems;
+  payload: IStokGrup[];
 }

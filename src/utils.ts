@@ -31,10 +31,10 @@ export const enumVales = (myEnum): string[] => {
   }
   return result;
 };
-export const arrayToObject = (array, key, value) => {
+export const arrayToObject = (array, key, value?) => {
   if (!array) return {};
   return array.reduce((obj, item) => {
-    obj[item[key]] = item[value];
+    obj[item[key]] = value != null ? item[value] : item;
     return obj;
   }, {});
 };
