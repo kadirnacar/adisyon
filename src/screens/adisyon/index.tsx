@@ -209,12 +209,13 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     let freeItem = this.props.Customer.freeItems
       ? this.props.Customer.freeItems[stok.STOKID]
       : null;
-    if (freeItem == null) {
-      freeItem = this.getGroupFreeItem(stok.STOKGRUPID);
-    }
-    if(freeItem && !freeItem.UsedItems){
-      freeItem.UsedItems=[];
-    }
+      if (freeItem == null) {
+        freeItem = this.getGroupFreeItem(stok.STOKGRUPID);
+      }
+      if(freeItem && !freeItem.UsedItems){
+        freeItem.TotalUsed=0;
+        freeItem.UsedItems={};
+      }
     return freeItem;
   }
   render() {
@@ -239,13 +240,14 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
             const birimFiyat =
               stokFiyat -
               parseFloat((stokFiyat * (+discount / 100)).toFixed(2));
-            const fiyat =
-              (i.QUANTITY -
-                (freeItem ?  (freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed : 0) >
-              0
-                ? i.QUANTITY -
-                  (freeItem ? (freeItem.QUANTITY - freeItem.USEDQUANTITY) - freeItem.TotalUsed: 0)
-                : 0) * birimFiyat;
+              const quantity = freeItem
+              ? freeItem.TotalUsed >= freeItem.QUANTITY - freeItem.USEDQUANTITY
+                ? i.ID in freeItem.UsedItems
+                  ? freeItem.UsedItems[i.ID].unused
+                  : 0
+                : 0
+              : i.QUANTITY;
+            const fiyat =quantity * birimFiyat;
             currentTotal += fiyat;
           }
         })
@@ -569,31 +571,28 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                           t => t.STOKID == item.ID,
                         );
                         const freeItem = this.getFreeItem(stokItem);
-                        if (
-                          item.QUANTITY <=
-                          (freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed
-                        ) {
-                          items.push(item);
-                        } else {
-                          items.push({
-                            ...item,
-                            ...{
-                              QUANTITY:
-                              (freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed,
-                            },
-                          });
-                          const unused =
-                            item.QUANTITY -
-                            ((freeItem.QUANTITY - freeItem.USEDQUANTITY)- freeItem.TotalUsed);
-                          items.push({
-                            ...item,
-                            ...{
-                              QUANTITY: unused,
-                              ISFREEITEM: false,
-                              FREEITEMTRANSID: null,
-                            },
-                          });
+                        if(freeItem && item.ID in freeItem.UsedItems){
+                          const usedItem=freeItem.UsedItems[item.ID];
+                          if(usedItem.used>0){
+                            items.push({
+                              ...item,
+                              ...{
+                                QUANTITY:usedItem.used
+                              }
+                            })
+                          }
+                          if(usedItem.unused>0){
+                            items.push({
+                              ...item,
+                              ...{
+                                QUANTITY:usedItem.unused,
+                                ISFREEITEM: false,
+                                FREEITEMTRANSID: null
+                              }
+                            })
+                          }
                         }
+                        
                       } else {
                         items.push(item);
                       }
@@ -747,10 +746,28 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         });
                         if (!change) item.QUANTITY = item.QUANTITY + 1;
                         if(freeItem!=null){
-                          if(!freeItem.TotalUsed){
-                            freeItem.TotalUsed=0;
-                          }
                           freeItem.TotalUsed++;
+                          if(freeItem.TotalUsed<=(freeItem.QUANTITY-freeItem.USEDQUANTITY)){
+                            if(freeItem.UsedItems[item.ID]){
+                              if(!freeItem.UsedItems[item.ID].used){
+                                freeItem.UsedItems[item.ID].used=0;
+                                freeItem.UsedItems[item.ID].unused=0;
+                              }
+                              freeItem.UsedItems[item.ID].used++;
+                            }else{
+                              freeItem.UsedItems[item.ID]={used:1,unused:0};
+                            }
+                          }else{
+                            if(freeItem.UsedItems[item.ID]){
+                              if(!freeItem.UsedItems[item.ID].used){
+                                freeItem.UsedItems[item.ID].used=0;
+                                freeItem.UsedItems[item.ID].unused=0;
+                              }
+                              freeItem.UsedItems[item.ID].unused++;
+                            }else{
+                              freeItem.UsedItems[item.ID]={used:0,unused:1};
+                            }
+                          }
                         }
                         this.setState({});
                       }}
@@ -760,19 +777,69 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                           if (stokId.QUANTITY <= 0)
                             this.props.Adisyon.current.ITEMS.splice(index, 1);
                             if(freeItem!=null){
-                              if(!freeItem.TotalUsed){
-                                freeItem.TotalUsed=0;
-                              }
+                              if(freeItem.TotalUsed>0 && item.QUANTITY >= 0){
                               freeItem.TotalUsed--;
+                              }
+                              if(freeItem.TotalUsed==0){
+                                freeItem.UsedItems={};
+                              }
+                              
+                              let totalused=0;
+                              let totalunused=0;
+                              Object.keys(freeItem.UsedItems).forEach(key=>{
+                                totalused+=freeItem.UsedItems[key].used;
+                                totalunused+=freeItem.UsedItems[key].unused;
+                              });
+                              if(item.ID in freeItem.UsedItems){
+                                if(freeItem.UsedItems[item.ID].unused>0){
+                                  freeItem.UsedItems[item.ID].unused--;
+                                  totalunused--;
+                                }else if(freeItem.UsedItems[item.ID].used>0){
+                                  freeItem.UsedItems[item.ID].used--;
+                                  totalused--;
+                                }
+                              if(freeItem.TotalUsed <= freeItem.QUANTITY-freeItem.USEDQUANTITY && totalunused>0){
+                                Object.keys(freeItem.UsedItems).forEach(key=>{
+                                  freeItem.UsedItems[key].used += freeItem.UsedItems[key].unused;
+                                  freeItem.UsedItems[key].unused=0;;
+                                });
+                              }
+  
+                              }
                             }
                           this.setState({});
                         } else if (index >= 0) {
                           this.props.Adisyon.current.ITEMS.splice(index, 1);
                           if(freeItem!=null){
-                            if(!freeItem.TotalUsed){
-                              freeItem.TotalUsed=0;
-                            }
+                            if(freeItem.TotalUsed>0 && item.QUANTITY >= 0){
                             freeItem.TotalUsed--;
+                            }
+                            if(freeItem.TotalUsed==0){
+                              freeItem.UsedItems={};
+                            }
+                            
+                            let totalused=0;
+                            let totalunused=0;
+                            Object.keys(freeItem.UsedItems).forEach(key=>{
+                              totalused+=freeItem.UsedItems[key].used;
+                              totalunused+=freeItem.UsedItems[key].unused;
+                            });
+                            if(item.ID in freeItem.UsedItems){
+                              if(freeItem.UsedItems[item.ID].unused>0){
+                                freeItem.UsedItems[item.ID].unused--;
+                                totalunused--;
+                              }else if(freeItem.UsedItems[item.ID].used>0){
+                                freeItem.UsedItems[item.ID].used--;
+                                totalused--;
+                              }
+                            if(freeItem.TotalUsed <= freeItem.QUANTITY-freeItem.USEDQUANTITY && totalunused>0){
+                              Object.keys(freeItem.UsedItems).forEach(key=>{
+                                freeItem.UsedItems[key].used += freeItem.UsedItems[key].unused;
+                                freeItem.UsedItems[key].unused=0;;
+                              });
+                            }
+
+                            }
                           }
                           this.setState({});
                         }

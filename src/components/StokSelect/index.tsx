@@ -263,9 +263,10 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                     : []
                   ).filter(stk =>
                     this.state.selectedGrup &&
-                    this.state.selectedGrup.STOKGRUPID
+                    this.state.selectedGrup.STOKGRUPID == -1 ?(stk.INCLUDEDIN_AI == true):(
+                      this.state.selectedGrup && this.state.selectedGrup.STOKGRUPID
                       ? stk.STOKGRUPID == this.state.selectedGrup.STOKGRUPID
-                      : true,
+                      : true),
                   )}
                   renderItem={({item, index}) => {
                     let adisyonItem =
@@ -419,6 +420,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
               }}>
               <FlatList
                 ListHeaderComponent={
+                  <React.Fragment>
                   <GroupItem
                     selected={
                       !this.state.selectedGrup ||
@@ -429,6 +431,18 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                       this.setState({selectedGrup: group});
                     }}
                   />
+                  {this.props.Department.current.AIENABLED == true && this.props.Customer.current.ALLINCLUSIVE == true?
+                   <GroupItem
+                    selected={
+                      this.state.selectedGrup &&
+                      this.state.selectedGrup.STOKGRUPID == -1
+                    }
+                    group={{ADI: 'Herşey Dahil', STOKGRUPID: -1, color: '#ff55ff'}}
+                    onPress={group => {
+                      this.setState({selectedGrup: group});
+                    }}
+                  />:null}
+                  </React.Fragment>
                 }
                 keyboardDismissMode="on-drag"
                 style={{flex: 1}}

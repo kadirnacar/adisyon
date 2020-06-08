@@ -63,7 +63,6 @@ export class StokItemComp extends Component<Props, StokItemState> {
           : 0
         : 0
       : item.QUANTITY;
-    console.log(freeItem.UsedItems, item.ID,freeItem.TotalUsed);
     return (
       <View
         style={{
@@ -99,7 +98,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
               alignItems: 'flex-end',
               alignContent: 'flex-end',
               right: 0,
-              width: 50,
+              width: 120,
             }}
             underlayColor="#ffffff00"
             onPress={() => {
@@ -179,6 +178,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
               <Icon name="minus" size={30} />
             </TouchableHighlight>
             <TextInput
+              editable={false}
               value={item.QUANTITY != null ? item.QUANTITY.toString() : ''}
               keyboardType="numeric"
               onChangeText={text => {

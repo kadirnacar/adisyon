@@ -50,13 +50,13 @@ export class AdisyonItem extends Component<Props, any> {
         : stok.SFIYAT1;
     const birimFiyat =
       stokFiyat - parseFloat((stokFiyat * (+discountRate / 100)).toFixed(2));
-    const fiyat = freeItem
-      ? freeItem.TotalUsed > freeItem.QUANTITY - freeItem.USEDQUANTITY
-        ? birimFiyat
-        : 0
-      : birimFiyat;
+
     const quantity = freeItem
-      ? freeItem.TotalUsed - (freeItem.QUANTITY - freeItem.USEDQUANTITY)
+      ? freeItem.TotalUsed >= freeItem.QUANTITY - freeItem.USEDQUANTITY
+        ? item.ID in freeItem.UsedItems
+          ? freeItem.UsedItems[item.ID].unused
+          : 0
+        : 0
       : item.QUANTITY;
     return (
       <View
@@ -150,17 +150,14 @@ export class AdisyonItem extends Component<Props, any> {
                       justifyContent: 'flex-start',
                       textAlign: 'left',
                     }}>
-                    {freeItem != null
-                      ? 'Cabana : ' +
-                        (freeItem.QUANTITY -
-                          freeItem.USEDQUANTITY -
-                          freeItem.TotalUsed) +
-                        ' + '
-                      : ''}
-                    {(
-                      quantity * fiyat
-                    ).toFixed(2)}
-                    ₺
+                   {freeItem != null
+                    ? 'Cabana : ' +
+                      (freeItem.QUANTITY -
+                        freeItem.USEDQUANTITY -
+                        freeItem.TotalUsed) +
+                      ' + '
+                    : ''}
+                    {(quantity * birimFiyat).toFixed(2)}₺
                   </Text>
                 </View>
                 <View style={{flexDirection: 'row'}}>
@@ -189,6 +186,7 @@ export class AdisyonItem extends Component<Props, any> {
                     value={
                       item.QUANTITY != null ? item.QUANTITY.toString() : ''
                     }
+                    editable={false}
                     keyboardType="numeric"
                     onChangeText={text => {
                       const quantity = parseFloat(text);
