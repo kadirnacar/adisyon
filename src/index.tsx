@@ -3,15 +3,22 @@ import {AppContainer} from '@navigation';
 import {FileService} from '@services';
 import {ApplicationState} from '@store';
 import React, {Component} from 'react';
-import {AppState, Dimensions, View} from 'react-native';
+import {
+  AppState,
+  Dimensions,
+  View,
+  PermissionsAndroid,
+  Permission,
+} from 'react-native';
 import SafeAreaView, {SafeAreaProvider} from 'react-native-safe-area-view';
 import {Provider} from 'react-redux';
 import {Store} from 'redux';
-import store from './tools/store';
+import {setStore} from './tools/store';
 import {DepartmentActions} from './reducers/Department';
 import {StokActions} from './reducers/Stok';
 import {ExchangeActions} from './reducers/Exchange';
 import {ActivityActions} from './reducers/Activity';
+import {configureStore} from './store/configureStore';
 
 const {width, scale, height} = Dimensions.get('window');
 
@@ -24,29 +31,26 @@ export default class App extends Component<any, any> {
     };
   }
   store: Store<ApplicationState>;
-
+  async requestCameraPermission() {
+    const granted = await PermissionsAndroid.request(
+      'android.permission.WRITE_EXTERNAL_STORAGE',
+    );
+  }
   async componentDidMount() {
-    const initialState = {}; //await FileService.readStateFromFile();
     const initialConfig = await FileService.readConfigFromFile();
     // initialState.User = null;
     // initialState.Garson = null;
+    const initialState = await FileService.readStateFromFile();
 
     if (initialConfig) config.setConfig(initialConfig);
-
-    this.store = store;
-
+    await this.requestCameraPermission();
+    this.store = configureStore(initialState);
+    setStore(this.store);
     this.setState({isLoaded: true});
     // this.loadData();
   }
   async loadData() {
-    await DepartmentActions.getItems()(store.dispatch, store.getState);
-    await StokActions.getItems()(store.dispatch, store.getState);
-    await ExchangeActions.getItems()(store.dispatch, store.getState);
-    await ActivityActions.getItems(new Date())(store.dispatch, store.getState);
-    await ActivityActions.getTurnikeItems(new Date())(
-      store.dispatch,
-      store.getState,
-    );
+   
   }
   render() {
     return (

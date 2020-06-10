@@ -41,7 +41,7 @@ class NfcReaderComp extends Component<Props, NfcReaderState> {
     super(props);
     this.state = {
       showGuestNo: false,
-      guestNo: '5a107569',
+      guestNo: '',
     };
   }
   componentWillUnmount() {

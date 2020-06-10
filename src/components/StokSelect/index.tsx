@@ -51,7 +51,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
 
   componentDidMount() {
     const source = this.props.Stok.items.filter(t =>
-      t.departments
+      t.departments && this.props.Department.current
         ? t.departments.indexOf(this.props.Department.current.KODU) > -1
         : false,
     );
@@ -431,7 +431,8 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                       this.setState({selectedGrup: group});
                     }}
                   />
-                  {this.props.Department.current.AIENABLED == true && this.props.Customer.current.ALLINCLUSIVE == true?
+                  {(this.props.Department.current && this.props.Department.current.AIENABLED == true) ?
+                  (!this.props.Customer.current || (this.props.Customer.current && this.props.Customer.current.ALLINCLUSIVE)?
                    <GroupItem
                     selected={
                       this.state.selectedGrup &&
@@ -441,7 +442,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                     onPress={group => {
                       this.setState({selectedGrup: group});
                     }}
-                  />:null}
+                  />:null):null}
                   </React.Fragment>
                 }
                 keyboardDismissMode="on-drag"

@@ -14,9 +14,10 @@ class FileServiceHelper {
   );
   logFile: string = path.join(
     RNFS.DownloadDirectoryPath,
-    'landoflegens-log.txt',
+    `landoflegens-log-${new Date().toDateString()}.txt`,
   );
-
+  date: Date;
+  username: string;
   public async readConfigFromFile(): Promise<any> {
     try {
       if (!(await RNFS.exists(this.configFile))) {
@@ -50,7 +51,10 @@ class FileServiceHelper {
         return {};
       }
       const content = await RNFS.readFile(this.stateFile);
-      const result: ApplicationState = JSON.parse(content);
+      const json = JSON.parse(content);
+      this.date = new Date(json.date);
+      this.username = json.username;
+      const result: ApplicationState = json.state;
       return result;
     } catch (ex) {
       console.warn(ex);
@@ -60,7 +64,17 @@ class FileServiceHelper {
 
   public async saveStateToFile(state: ApplicationState): Promise<void> {
     try {
-      await RNFS.writeFile(this.stateFile, JSON.stringify(state));
+      if (await RNFS.exists(this.stateFile)) {
+        await RNFS.unlink(this.stateFile);
+      }
+      await RNFS.writeFile(
+        this.stateFile,
+        JSON.stringify({
+          date: new Date().toLocaleDateString(),
+          username: this.username,
+          state,
+        }),
+      );
     } catch {}
   }
 }

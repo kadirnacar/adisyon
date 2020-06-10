@@ -185,12 +185,17 @@ class LoginScreen extends Component<Props, LoginState> {
       if (!getGarson) {
         this.setState({errorMessage: 'Garson Bilgisi Bulunamadı.'});
       } else {
+        FileService.username = this.state.username;
         this.props.navigation.navigate('AppSelector');
       }
     }
     this.setState({isRequest: false});
   }
-
+  componentDidMount() {
+    if (FileService.username) {
+      this.setState({username: FileService.username});
+    }
+  }
   async handleComponentMount(payload: NavigationEventPayload) {
     await this.props.UserActions.clear();
     await this.props.GarsonActions.clear();

@@ -27,6 +27,9 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {NavigationInjectedProps, withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
+import {FileService} from '@services';
+import {setStore, store} from '../../tools/store';
+
 const activityLogo = require('../../../assets/dolphin.png');
 const turnikeLogo = require('../../../assets/turnike.png');
 const {height, width} = Dimensions.get('window');
@@ -55,20 +58,54 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
       title: 'Uygulama Seçiniz',
       headerRight: props => {
         return (
-          <TouchableHighlight
-            underlayColor="#ffffff00"
-            style={{
-              borderRadius: 40,
-              borderColor: colors.borderColor,
-              borderWidth: 2,
-              padding: 5,
-              marginRight: 5,
-            }}
-            onPressIn={() => {
-              navigation.navigate('CustomerTrans', {current: true});
-            }}>
-            <FontAwesome5Icon name="user" size={25} color={'#fff'} />
-          </TouchableHighlight>
+          <View style={{flexDirection: 'row'}}>
+            <TouchableHighlight
+              underlayColor="#ffffff00"
+              style={{
+                borderRadius: 40,
+                borderColor: colors.borderColor,
+                borderWidth: 2,
+                padding: 5,
+                marginRight: 5,
+              }}
+              onPressIn={() => {
+                navigation.navigate('CustomerTrans', {current: true});
+              }}>
+              <FontAwesome5Icon name="user" size={25} color={'#fff'} />
+            </TouchableHighlight>
+            <TouchableHighlight
+              underlayColor="#ffffff00"
+              style={{
+                borderRadius: 40,
+                borderColor: colors.borderColor,
+                borderWidth: 2,
+                padding: 5,
+                marginRight: 5,
+              }}
+              onPressIn={async () => {
+                if (store) {
+                  await DepartmentActions.getItems()(
+                    store.dispatch,
+                    store.getState,
+                  );
+                  await ExchangeActions.getItems()(
+                    store.dispatch,
+                    store.getState,
+                  );
+                  await ActivityActions.getItems(new Date())(
+                    store.dispatch,
+                    store.getState,
+                  );
+                  await ActivityActions.getTurnikeItems(new Date())(
+                    store.dispatch,
+                    store.getState,
+                  );
+                  await StokActions.getItems()(store.dispatch, store.getState);
+                }
+              }}>
+              <FontAwesome5Icon name="sync" size={25} color={'#fff'} />
+            </TouchableHighlight>
+          </View>
         );
       },
     };
@@ -78,22 +115,18 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
     this.state = {loading: false};
   }
   async componentDidMount() {
-    this.setState({loading: true}, async () => {
-      await this.loadDataFromServer();
-    });
+    if (FileService.date.getDate() < new Date().getDate()) {
+      this.setState({loading: true}, async () => {
+        await this.loadDataFromServer();
+      });
+    }
   }
   async loadDataFromServer() {
-    if (
-      !this.props.Stok ||
-      !this.props.Stok.items ||
-      this.props.Stok.items.length <= 0
-    ) {
-      await this.props.DepartmentActions.getItems();
-      await this.props.StokActions.getItems();
-      await this.props.ExchangeActions.getItems();
-      await this.props.ActivityActions.getItems(new Date());
-      await this.props.ActivityActions.getTurnikeItems(new Date());
-    }
+    await this.props.DepartmentActions.getItems();
+    await this.props.ExchangeActions.getItems();
+    await this.props.ActivityActions.getItems(new Date());
+    await this.props.ActivityActions.getTurnikeItems(new Date());
+    await this.props.StokActions.getItems();
     this.setState({loading: false});
   }
   render() {
@@ -102,7 +135,7 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
       <SafeAreaView style={container}>
         <LoaderSpinner
           infoText="Veriler Güncelleniyor..."
-          showLoader={this.state.loading}
+          showLoader={this.props.Stok.isRequest}
           onCloseModal={async () => {}}
         />
         <View
