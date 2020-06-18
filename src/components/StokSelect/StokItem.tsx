@@ -146,7 +146,7 @@ export class StokItemComp extends Component<Props, StokItemState> {
                     fontSize: 12,
                   }}>
                   {freeItem != null
-                    ? 'Cabana : ' +
+                    ? 'Ucretsiz : ' +
                       (freeItem.QUANTITY -
                         freeItem.USEDQUANTITY -
                         freeItem.TotalUsed) +

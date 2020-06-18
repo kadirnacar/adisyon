@@ -151,7 +151,7 @@ export class AdisyonItem extends Component<Props, any> {
                       textAlign: 'left',
                     }}>
                    {freeItem != null
-                    ? 'Cabana : ' +
+                    ? 'Ucretsiz : ' +
                       (freeItem.QUANTITY -
                         freeItem.USEDQUANTITY -
                         freeItem.TotalUsed) +

@@ -46,7 +46,7 @@ export const reducer = (currentState: ActivityState = unloadedState, incomingAct
                 currentState.items = activities;
             }
             return { ...currentState };
-        case Actions.RequestTurnikeItems:
+        case Actions.RequestActivityItems:
             currentState.isRequest = true;
             return { ...currentState };
         case Actions.ReceiveTurnikeItems:

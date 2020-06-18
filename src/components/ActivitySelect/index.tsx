@@ -24,6 +24,7 @@ import NumberFormat from 'react-number-format';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import {OrderItem} from './OrderItem';
+import {LoaderSpinner} from '../LoaderSpinner';
 
 const {width, scale, height} = Dimensions.get('window');
 
@@ -75,6 +76,7 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
       .map(i => i.obj);
   }
   render() {
+    console.log(this.props.Activity.isRequest)
     return (
       <View
         style={{
@@ -82,6 +84,10 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
           height: height - 70,
           flex: 1,
         }}>
+        <LoaderSpinner
+          showLoader={this.props.Activity.isRequest}
+          onCloseModal={async () => {}}
+        />
         <View
           style={{
             flex: 1,
@@ -208,18 +214,15 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
               }}>
               <TouchableHighlight
                 disabled={this.state.date <= new Date()}
-                onPress={() => {
-                  this.setState(
-                    {
-                      date: moment(this.state.date)
-                        .add(-1, 'day')
-                        .toDate(),
-                    },
-                    () => {
-                      this.props.ActivityActions.getItems(this.state.date);
-                      this.setState({source: this.props.Activity.items});
-                    },
-                  );
+                onPress={async () => {
+                  const date = moment(this.state.date)
+                    .add(-1, 'day')
+                    .toDate();
+                  await this.props.ActivityActions.getItems(date);
+                  this.setState({
+                    date: date,
+                    source: this.props.Activity.items,
+                  });
                 }}
                 style={{
                   backgroundColor: colors.buttonBackColor,
@@ -244,18 +247,15 @@ class ActivitySelectInfoComp extends Component<Props, ActivitySelectState> {
                 {moment(this.state.date).format('DD.MM.YYYY')}
               </Text>
               <TouchableHighlight
-                onPress={() => {
-                  this.setState(
-                    {
-                      date: moment(this.state.date)
-                        .add(1, 'day')
-                        .toDate(),
-                    },
-                    () => {
-                      this.props.ActivityActions.getItems(this.state.date);
-                      this.setState({source: this.props.Activity.items});
-                    },
-                  );
+                onPress={async () => {
+                  const date = moment(this.state.date)
+                    .add(1, 'day')
+                    .toDate();
+                  await this.props.ActivityActions.getItems(date);
+                  this.setState({
+                    date: date,
+                    source: this.props.Activity.items,
+                  });
                 }}
                 style={{
                   backgroundColor: colors.buttonBackColor,

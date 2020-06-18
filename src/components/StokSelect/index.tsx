@@ -75,7 +75,16 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
     if (!groupId || !this.props.Customer.freeGroups) {
       return null;
     }
-    const freeGroup = this.props.Customer.freeGroups[groupId];
+    let freeGroup=this.props.Customer.allFreeItems.find(itm=>{
+      if(!itm.ITEMGROUPID){
+        return false;
+      }
+      if(itm.DEPID){
+        return itm.DEPID==this.props.Department.current.ID && itm.ITEMGROUPID==groupId;
+      }else{
+        return itm.ITEMID==groupId;
+      }
+    });
     if (freeGroup) {
       return freeGroup;
     }else{
@@ -83,10 +92,22 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
     }
   }
   getFreeItem(stok: IStok): ICustomerFreeItems {
-    let freeItem = this.props.Customer.freeItems
-      ? this.props.Customer.freeItems[stok.STOKID]
-      : null;
-      if (freeItem == null) {
+
+    let freeItem=this.props.Customer.allFreeItems.find(itm=>{
+      if(!itm.ITEMID){
+        return false;
+      }
+      if(itm.DEPID){
+        return itm.DEPID==this.props.Department.current.ID && itm.ITEMID==stok.STOKID;
+      }else{
+        return itm.ITEMID==stok.STOKID;
+      }
+    });
+
+    // let freeItem = this.props.Customer.freeItems &&  this.props.Customer.freeItems[stok.STOKID] &&  this.props.Customer.freeItems[stok.STOKID].DEPID ? (this.props.Customer.freeItems[stok.STOKID].DEPID == this.props.Department.current.ID ? this.props.Customer.freeItems[stok.STOKID]:null)
+    // : this.props.Customer.freeItems ? this.props.Customer.freeItems[stok.STOKID]
+    // : null;
+    if (freeItem == null) {
         freeItem = this.getGroupFreeItem(stok.STOKGRUPID);
       }
       if(freeItem && !freeItem.UsedItems){
@@ -291,13 +312,13 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         ? true
                         : false;
                     adisyonItem.ISAI = isAi;
-                    let freeItem = this.getFreeItem(item);
+                    let freeItem =!isAi ? this.getFreeItem(item):null;
 
                     return (
                       <StokItem
                         discountRate={discountRate}
                         stok={item}
-                        freeItem={freeItem}
+                        freeItem={!isAi ? freeItem:null}
                         addable={!this.props.onlyList}
                         item={adisyonItem}
                         department={this.props.Department.current}
@@ -313,7 +334,8 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                         }}
                         onAddPress={itm => {
                           const {adisyon} = this.props;
-                          let freeItem = this.getFreeItem(item);
+                          
+                          let freeItem =!isAi ? this.getFreeItem(item):null;
                           const adisyonIndex = adisyon.ITEMS.filter(
                             i => i.ID == itm.ID && !i.OLD
                           );
@@ -345,7 +367,7 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                               }
                             }else{
                               if(freeItem.UsedItems[itm.ID]){
-                                if(!freeItem.UsedItems[itm.ID].used){
+                                if(freeItem.UsedItems[itm.ID].used==null){
                                   freeItem.UsedItems[itm.ID].used=0;
                                   freeItem.UsedItems[itm.ID].unused=0;
                                 }
@@ -363,7 +385,8 @@ class StokSelectInfoComp extends Component<Props, StokSelectState> {
                           const adisyonIndex = adisyon.ITEMS.findIndex(
                             i => i.ID == itm.ID && !i.OLD
                           );
-                          let freeItem = this.getFreeItem(item);
+                          
+                          let freeItem = !isAi?this.getFreeItem(item):null;
 
                           if (itm.QUANTITY - 1 > 0) {
                             itm.QUANTITY = itm.QUANTITY - 1;

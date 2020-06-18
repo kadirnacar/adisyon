@@ -198,7 +198,16 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     if (!groupId || !this.props.Customer.freeGroups) {
       return null;
     }
-    const freeGroup = this.props.Customer.freeGroups[groupId];
+    let freeGroup=this.props.Customer.allFreeItems.find(itm=>{
+      if(!itm.ITEMGROUPID){
+        return false;
+      }
+      if(itm.DEPID){
+        return itm.DEPID==this.props.Department.current.ID && itm.ITEMGROUPID==groupId;
+      }else{
+        return itm.ITEMID==groupId;
+      }
+    });
     if (freeGroup) {
       return freeGroup;
     }else{
@@ -206,9 +215,16 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
     }
   }
   getFreeItem(stok: IStok): ICustomerFreeItems {
-    let freeItem = this.props.Customer.freeItems
-      ? this.props.Customer.freeItems[stok.STOKID]
-      : null;
+    let freeItem=this.props.Customer.allFreeItems.find(itm=>{
+      if(!itm.ITEMID){
+        return false;
+      }
+      if(itm.DEPID){
+        return itm.DEPID==this.props.Department.current.ID && itm.ITEMID==stok.STOKID;
+      }else{
+        return itm.ITEMID==stok.STOKID;
+      }
+    });
       if (freeItem == null) {
         freeItem = this.getGroupFreeItem(stok.STOKGRUPID);
       }
@@ -228,13 +244,17 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
       ? this.props.Adisyon.current.ITEMS.forEach(i => {
           const stokItem = this.props.Stok.items.find(t => t.STOKID == i.ID);
           if (stokItem) {
-            let freeItem = this.getFreeItem(stokItem);
+            const isAi =
+            this.props.Customer.current &&
+            stokItem &&
+            this.props.Customer.current.ALLINCLUSIVE == true &&
+            stokItem.INCLUDEDIN_AI == true &&
+            this.props.Department.current.AIENABLED == true
+              ? true
+              : false;
+            let freeItem =!isAi ? this.getFreeItem(stokItem):null;
             const stokFiyat =
-              this.props.Customer.current &&
-              stokItem &&
-              this.props.Customer.current.ALLINCLUSIVE == true &&
-              stokItem.INCLUDEDIN_AI == true &&
-              this.props.Department.current.AIENABLED == true
+              isAi
                 ? 0
                 : stokItem.SFIYAT1;
             const birimFiyat =
@@ -571,7 +591,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                         const stokItem = this.props.Stok.items.find(
                           t => t.STOKID == item.ID,
                         );
-                        const freeItem = this.getFreeItem(stokItem);
+                        const isAi =
+            this.props.Customer.current &&
+            stokItem &&
+            this.props.Customer.current.ALLINCLUSIVE == true &&
+            stokItem.INCLUDEDIN_AI == true &&
+            this.props.Department.current.AIENABLED == true
+              ? true
+              : false;
+                        const freeItem =!isAi ? this.getFreeItem(stokItem):null;
                         if(freeItem && item.ID in freeItem.UsedItems){
                           const usedItem=freeItem.UsedItems[item.ID];
                           if(usedItem.used>0){
@@ -710,7 +738,15 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                   const stok = this.props.Stok.items.find(
                     itm => itm.STOKID == item.ID,
                   );
-                  let freeItem = this.getFreeItem(stok);
+                  const isAi =
+                  this.props.Customer.current &&
+                  stok &&
+                  this.props.Customer.current.ALLINCLUSIVE == true &&
+                  stok.INCLUDEDIN_AI == true &&
+                  this.props.Department.current.AIENABLED == true
+                    ? true
+                    : false;
+                  let freeItem =!isAi ? this.getFreeItem(stok):null;
                   return (
                     <AdisyonItem
                       key={index}
@@ -718,7 +754,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                       department={this.props.Department.current}
                       item={item}
                       stok={stok}
-                      freeItem={freeItem}
+                      freeItem={!isAi ? freeItem : null}
                       customer={this.props.Customer.current}
                       onAddPress={(stokId, change) => {
                         this.props.Adisyon.current.ITEMS.filter(
@@ -760,7 +796,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
                             }
                           }else{
                             if(freeItem.UsedItems[item.ID]){
-                              if(!freeItem.UsedItems[item.ID].used){
+                              if(freeItem.UsedItems[item.ID].used == null){
                                 freeItem.UsedItems[item.ID].used=0;
                                 freeItem.UsedItems[item.ID].unused=0;
                               }
