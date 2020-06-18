@@ -72,7 +72,8 @@ class ActiviteTypeSelectorScreen extends Component<Props, ActiviteTypeSelectorSt
                             await this.props.ApplicationActions.setCurrent(Applications.AktiviteSatis);
                             await this.props.ApplicationActions.setNfcTitle("Aktivite Satış");
 
-                            this.props.navigation.navigate("Nfc");
+                            // this.props.navigation.navigate("Nfc");
+                            this.props.navigation.navigate("Aktivite");
                         }}>
                         <View style={{
                             alignItems: "center", alignContent: "center",

@@ -10,6 +10,7 @@ import {
   StokActions,
   StokGrupActions,
   UserActions,
+  EcrActions,
 } from '@reducers';
 import {ApplicationState} from '@store';
 import React, {Component} from 'react';
@@ -20,6 +21,7 @@ import {
   Text,
   TouchableHighlight,
   View,
+  Alert,
 } from 'react-native';
 import SafeAreaView from 'react-native-safe-area-view';
 import FontAwesome5Icon from 'react-native-vector-icons/FontAwesome5';
@@ -27,7 +29,7 @@ import MaterialIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {NavigationInjectedProps, withNavigation} from 'react-navigation';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
-import {FileService} from '@services';
+import {FileService, FileServiceHelper} from '@services';
 import {setStore, store} from '../../tools/store';
 
 const activityLogo = require('../../../assets/dolphin.png');
@@ -48,6 +50,7 @@ interface AppSelectorProps {
   StokGrupActions: typeof StokGrupActions;
   ActivityActions: typeof ActivityActions;
   ExchangeActions: typeof ExchangeActions;
+  EcrActions: typeof EcrActions;
 }
 
 type Props = NavigationInjectedProps & AppSelectorProps & ApplicationState;
@@ -100,6 +103,7 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
                     store.dispatch,
                     store.getState,
                   );
+                  await EcrActions.getItems()(store.dispatch, store.getState);
                   await StokActions.getItems()(store.dispatch, store.getState);
                 }
               }}>
@@ -115,18 +119,40 @@ class AppSelectorScreen extends Component<Props, AppSelectorState> {
     this.state = {loading: false};
   }
   async componentDidMount() {
-    if (FileService.date.getDate() < new Date().getDate()) {
+  
+
+    if (
+      FileServiceHelper.date == null ||
+      FileServiceHelper.date.getDate() < new Date().getDate() ||
+      !this.props.Stok.items ||
+      this.props.Stok.items.length == 0 ||
+      !this.props.Ecr.items ||
+      this.props.Ecr.items.length == 0
+    ) {
+      console.log(
+        FileServiceHelper.username,
+        FileServiceHelper.date,
+        FileServiceHelper.date.getDate(),
+        new Date().getDate(),
+        this.props.Ecr.items.length,
+        this.props.Stok.items.length,
+      );
       this.setState({loading: true}, async () => {
         await this.loadDataFromServer();
       });
     }
   }
   async loadDataFromServer() {
-    await this.props.DepartmentActions.getItems();
-    await this.props.ExchangeActions.getItems();
-    await this.props.ActivityActions.getItems(new Date());
-    await this.props.ActivityActions.getTurnikeItems(new Date());
-    await this.props.StokActions.getItems();
+    try {
+      await this.props.DepartmentActions.getItems();
+      await this.props.ExchangeActions.getItems();
+      await this.props.ActivityActions.getItems(new Date());
+      await this.props.ActivityActions.getTurnikeItems(new Date());
+      await this.props.EcrActions.getItems();
+      await this.props.StokActions.getItems();
+    } catch (ex) {
+      Alert.alert(ex.message ? ex.message : JSON.stringify(ex));
+    }
     this.setState({loading: false});
   }
   render() {
@@ -311,6 +337,7 @@ export const AppSelector = withNavigation(
         StokActions: bindActionCreators({...StokActions}, dispatch),
         StokGrupActions: bindActionCreators({...StokGrupActions}, dispatch),
         ActivityActions: bindActionCreators({...ActivityActions}, dispatch),
+        EcrActions: bindActionCreators({...EcrActions}, dispatch),
       };
     },
   )(AppSelectorScreen),

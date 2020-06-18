@@ -282,7 +282,7 @@ class AdisyonScreen extends Component<Props, AdisyonState> {
           <BarcodeReader
             onBarcodePress={barcode => {
               const stokItem = this.props.Stok.items.find(i => {
-                return i.BARKOD == barcode && i.departments.indexOf(this.props.Department.current.KODU) > -1;
+                return i.BARKOD.indexOf(barcode)>-1 && i.departments.indexOf(this.props.Department.current.KODU) > -1;
               });
               if (stokItem) {
                 const adisyon = this.props.Adisyon.current;

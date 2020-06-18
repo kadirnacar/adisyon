@@ -3,7 +3,7 @@ import * as path from 'path';
 import * as RNFS from 'react-native-fs';
 import {IConfig} from '@models';
 
-class FileServiceHelper {
+export class FileServiceHelper {
   stateFile: string = path.join(
     RNFS.ExternalStorageDirectoryPath,
     'state.json',
@@ -16,8 +16,9 @@ class FileServiceHelper {
     RNFS.DownloadDirectoryPath,
     `landoflegens-log-${new Date().toDateString()}.txt`,
   );
-  date: Date;
-  username: string;
+  static date: Date;
+  static username: string;
+  static password: string;
   public async readConfigFromFile(): Promise<any> {
     try {
       if (!(await RNFS.exists(this.configFile))) {
@@ -52,8 +53,18 @@ class FileServiceHelper {
       }
       const content = await RNFS.readFile(this.stateFile);
       const json = JSON.parse(content);
-      this.date = new Date(json.date);
-      this.username = json.username;
+      FileServiceHelper.date = new Date(json.date);
+
+      FileServiceHelper.username = json.username;
+      console.log(json.password)
+      if (
+        FileServiceHelper.date &&
+        FileServiceHelper.date.getDate() == new Date().getDate()
+      ) {
+        FileServiceHelper.password = json.password;
+      } else {
+        FileServiceHelper.password = null;
+      }
       const result: ApplicationState = json.state;
       return result;
     } catch (ex) {
@@ -70,8 +81,9 @@ class FileServiceHelper {
       await RNFS.writeFile(
         this.stateFile,
         JSON.stringify({
-          date: new Date().toLocaleDateString(),
-          username: this.username,
+          date: new Date(),
+          username: FileServiceHelper.username,
+          password: FileServiceHelper.password,
           state,
         }),
       );

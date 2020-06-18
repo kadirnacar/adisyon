@@ -11,6 +11,8 @@ import {
   CustomerState,
   DepartmentReducer,
   DepartmentState,
+  EcrReducer,
+  EcrState,
   ExchangeReducer,
   ExchangeState,
   GarsonReducer,
@@ -40,6 +42,7 @@ export interface ApplicationState {
   ActivityOrder?: ActivityOrderState;
   Table?: TableState;
   Exchange?: ExchangeState;
+  Ecr?: EcrState;
 }
 
 export const reducers = {
@@ -55,6 +58,7 @@ export const reducers = {
   Application: ApplicationReducer,
   Table: TableReducer,
   Exchange: ExchangeReducer,
+  Ecr: EcrReducer,
 };
 
 export interface AppThunkAction<TAction> {

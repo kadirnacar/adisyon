@@ -27,22 +27,22 @@ class NfcScreen extends Component<Props, CustomerState> {
     static navigationOptions = ({ navigation }) => {
         return {
             title: "Kart Oku",
-            headerRight: (props) => {
-                return <TouchableHighlight
-                    underlayColor="#ffffff00"
-                    style={{
-                        borderRadius: 40,
-                        borderColor: colors.borderColor,
-                        borderWidth: 2,
-                        padding: 5,
-                        marginRight: 5
-                    }}
-                    onPressIn={() => {
-                        navigation.navigate("StokSelect", { current: true });
-                    }}>
-                    <FontAwesome5Icon name="utensils" size={25} color={"#fff"} />
-                </TouchableHighlight>
-            }
+            // headerRight: (props) => {
+            //     return <TouchableHighlight
+            //         underlayColor="#ffffff00"
+            //         style={{
+            //             borderRadius: 40,
+            //             borderColor: colors.borderColor,
+            //             borderWidth: 2,
+            //             padding: 5,
+            //             marginRight: 5
+            //         }}
+            //         onPressIn={() => {
+            //             navigation.navigate("StokSelect", { current: true });
+            //         }}>
+            //         <FontAwesome5Icon name="utensils" size={25} color={"#fff"} />
+            //     </TouchableHighlight>
+            // }
         };
     };
     constructor(props) {

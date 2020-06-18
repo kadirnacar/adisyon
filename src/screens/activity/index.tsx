@@ -4,7 +4,7 @@ import {
   CustomerInfo,
   LoaderSpinner,
 } from '@components';
-import {ActivityOrderActions} from '@reducers';
+import {ActivityOrderActions, EcrActions} from '@reducers';
 import {ApplicationState} from '@store';
 import 'intl';
 import 'intl/locale-data/jsonp/tr';
@@ -16,6 +16,7 @@ import {
   Text,
   TouchableHighlight,
   View,
+  Picker,
 } from 'react-native';
 import {
   default as FontAwesome5Icon,
@@ -39,6 +40,7 @@ interface AktiviteState {}
 
 interface AktiviteProps {
   ActivityOrderActions: typeof ActivityOrderActions;
+  EcrActions: typeof EcrActions;
 }
 type Props = NavigationInjectedProps & AktiviteProps & ApplicationState;
 
@@ -155,7 +157,7 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
 
   render() {
     let currentTotal = 0;
-    this.props.ActivityOrder.current
+    this.props.ActivityOrder.current && this.props.ActivityOrder.current.ITEMS
       ? this.props.ActivityOrder.current.ITEMS.forEach(i => {
           const stokItem = this.props.Activity.items.find(
             t => t.ID == i.ItemID,
@@ -185,26 +187,68 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
           onWillFocus={this.handleComponentMount}
           onWillBlur={this.handleComponentUnmount}
         />
-        <CustomerInfo style={{height: 130, top: 10}} total={currentTotal} />
+        <CustomerInfo style={{height: 130, margin: 5}} total={currentTotal} />
         <View
           style={{
-            flex: 1,
-            flexGrow: 1,
-            width: width - 10,
-            top: 20,
-            marginBottom: 90,
+            flex: 0,
+            height: 50,
+            flexDirection: 'row',
             backgroundColor: colors.transparentBackColor,
             borderRadius: 10,
             borderColor: colors.borderColor,
             borderWidth: 2,
             padding: 5,
-            marginHorizontal: 5,
+            margin: 5,
+          }}>
+          <Text style={{flex: 1, height: 35, textAlignVertical: 'center'}}>
+            Yazarkasa :{' '}
+          </Text>
+          <View
+            style={{
+              flex: 3,
+              backgroundColor: colors.inputBackColor,
+              borderRadius: 5,
+            }}>
+            <Picker
+              selectedValue={
+                this.props.Ecr.current ? this.props.Ecr.current.ID : null
+              }
+              style={{height: 35}}
+              onValueChange={(itemValue, itemIndex) => {
+                if (this.props.Ecr.items)
+                  this.props.EcrActions.setCurrent(
+                    this.props.Ecr.items.find(itm => itm.ID == itemValue),
+                  );
+              }}>
+              <Picker.Item label="Seçiniz.." value="" />
+              {this.props.Ecr.items
+                ? this.props.Ecr.items.map((itm, index) => (
+                    <Picker.Item key={index} label={itm.NAME} value={itm.ID} />
+                  ))
+                : null}
+            </Picker>
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            flexGrow: 1,
+            width: width - 10,
+            top: 0,
+            marginBottom: 70,
+            backgroundColor: colors.transparentBackColor,
+            borderRadius: 10,
+            borderColor: colors.borderColor,
+            borderWidth: 2,
+            padding: 5,
+            margin: 5,
           }}>
           <ScrollView
             keyboardDismissMode="on-drag"
             style={{flex: 1}}
             keyboardShouldPersistTaps="always">
-            {this.props.ActivityOrder.current
+            {this.props.ActivityOrder.current &&
+            this.props.ActivityOrder.current.ITEMS
               ? this.props.ActivityOrder.current.ITEMS.map((item, index) => {
                   const stok = this.props.Activity.items.find(
                     itm => itm.ID == item.ItemID,
@@ -316,20 +360,28 @@ class AktiviteScreen extends Component<Props, AktiviteState> {
               padding: 10,
             }}
             onPressIn={async () => {
-              if (this.props.ActivityOrder.current.ITEMS.length > 0) {
-                const isSuccess = await this.props.ActivityOrderActions.sendItem(
-                  this.props.ActivityOrder.current,
-                );
-                if (isSuccess['SUCCESS']) {
-                  Alert.alert('Tamam', 'Sipariş tamamlandı.');
-                  this.props.navigation.navigate('Nfc');
+              if (this.props.Ecr.current && this.props.Ecr.current.ID > 0) {
+                if (this.props.ActivityOrder.current.ITEMS.length > 0) {
+                  const isSuccess = await this.props.ActivityOrderActions.sendItem(
+                    this.props.ActivityOrder.current,
+                    this.props.Ecr.current.ID,
+                  );
+                  if (isSuccess['SUCCESS']) {
+                    Alert.alert('Tamam', 'Sipariş tamamlandı.');
+                    this.props.navigation.navigate('Nfc');
+                  } else {
+                    // Alert.alert("Hata", isSuccess["Message"]);
+                  }
                 } else {
-                  // Alert.alert("Hata", isSuccess["Message"]);
+                  Alert.alert(
+                    'Ürün Seçin',
+                    'Devam etmek için lütfen ürün seçin.',
+                  );
                 }
               } else {
                 Alert.alert(
-                  'Ürün Seçin',
-                  'Devam etmek için lütfen ürün seçin.',
+                  'Yazarkasa',
+                  'Devam etmek için lütfen yazarkasa seçin.',
                 );
               }
             }}>
@@ -362,6 +414,7 @@ export const Aktivite = withNavigation(
           {...ActivityOrderActions},
           dispatch,
         ),
+        EcrActions: bindActionCreators({...EcrActions}, dispatch),
       };
     },
   )(AktiviteScreen),

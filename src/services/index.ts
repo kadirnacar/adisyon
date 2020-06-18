@@ -1,14 +1,14 @@
-export { ActivityOrderService } from './ActivityOrderService';
-export { ActivityService } from './ActivityService';
-export { AdisyonService } from './AdisyonService';
-export { CustomerService } from './CustomerService';
-export { DepartmentService } from './DepartmentService';
-export { ExchangeService } from './ExchangeService';
-export { FileService } from './FileService';
-export { GarsonService } from './GarsonService';
-export { StokGrupService } from './StokGrupService';
-export { StokService } from './StokService';
-export { TableService } from './TableService';
-export { UpdaterService } from './UpdaterService';
-export { UserService } from './UserService';
-
+export {ActivityOrderService} from './ActivityOrderService';
+export {ActivityService} from './ActivityService';
+export {AdisyonService} from './AdisyonService';
+export {CustomerService} from './CustomerService';
+export {DepartmentService} from './DepartmentService';
+export {EcrService} from './EcrService';
+export {ExchangeService} from './ExchangeService';
+export {FileService, FileServiceHelper} from './FileService';
+export {GarsonService} from './GarsonService';
+export {StokGrupService} from './StokGrupService';
+export {StokService} from './StokService';
+export {TableService} from './TableService';
+export {UpdaterService} from './UpdaterService';
+export {UserService} from './UserService';

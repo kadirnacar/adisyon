@@ -1,4 +1,4 @@
-import { IActivityOrder, IActivity, ISeance } from '@models';
+import { IActivityOrder, IActivity, ISeance, IEcr } from '@models';
 import { IBaseReducer } from '../BaseReducer';
 
 export enum Actions {

@@ -1,9 +1,9 @@
 import { FileService, StokService } from "@services";
-import { batch } from "react-redux";
-import { Actions } from './state';
-import { Actions as GroupActions } from '../StokGrup/state';
 import { Alert } from "react-native";
+import { batch } from "react-redux";
 import { ApplicationState } from "src/store";
+import { Actions as GroupActions } from '../StokGrup/state';
+import { Actions } from './state';
 
 export const actionCreators = {
     getItems: () => async (dispatch, getState) => {
@@ -22,7 +22,7 @@ export const actionCreators = {
                 type: Actions.ReceiveStokItems, payload: stoks.map(i => {
                     return {
                         "STOKID": i.ID,
-                        "BARKOD": stokBarcodes.find(j => j.PRODUCTID == i.ID)?.BARCODE,
+                        "BARKOD": stokBarcodes.filter(j => j.PRODUCTID == i.ID)?.map(j=>j.BARCODE),
                         "ADI": i.NAME,
                         "SFIYAT1": i.PRICE,
                         "SDOVIZ": i.CURCODE,
@@ -40,32 +40,10 @@ export const actionCreators = {
                 isSuccess = false;
                 return;
             }
-
-            await FileService.saveStateToFile(getState());
+            const states = await getState();
+            await FileService.saveStateToFile(states);
             isSuccess = true;
         });
         return isSuccess;
     },
-    getItems_: () => async (dispatch, getState) => {
-        let isSuccess: boolean = false;
-        await batch(async () => {
-            await dispatch({ type: Actions.RequestStokItems });
-            var result = await StokService.getItems();
-            const state: ApplicationState = getState();
-
-            const payload = result.value && result.value.ResultSets && result.value.ResultSets.length > 0 ? result.value.ResultSets[0] : [];
-            await dispatch({ type: Actions.ReceiveStokItems, payload, categories: state.StokGrup.items });
-
-            if (result.hasErrors()) {
-                Alert.alert(result.errors[0]);
-                isSuccess = false;
-                return;
-            }
-
-            // await FileService.saveStateToFile(getState());
-            isSuccess = true;
-        });
-        return isSuccess;
-    },
-
 }

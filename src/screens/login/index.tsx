@@ -9,7 +9,7 @@ import {
   StokGrupActions,
   UserActions,
 } from '@reducers';
-import {UpdaterService, FileService} from '@services';
+import {UpdaterService, FileService, FileServiceHelper} from '@services';
 import {ApplicationState} from '@store';
 import * as path from 'path';
 import React, {Component} from 'react';
@@ -185,15 +185,19 @@ class LoginScreen extends Component<Props, LoginState> {
       if (!getGarson) {
         this.setState({errorMessage: 'Garson Bilgisi Bulunamadı.'});
       } else {
-        FileService.username = this.state.username;
+        FileServiceHelper.username = this.state.username;
+        FileServiceHelper.password = this.state.password;
         this.props.navigation.navigate('AppSelector');
       }
     }
     this.setState({isRequest: false});
   }
   componentDidMount() {
-    if (FileService.username) {
-      this.setState({username: FileService.username});
+    if (FileServiceHelper.username) {
+      this.setState({
+        username: FileServiceHelper.username,
+        password: FileServiceHelper.password,
+      });
     }
   }
   async handleComponentMount(payload: NavigationEventPayload) {
